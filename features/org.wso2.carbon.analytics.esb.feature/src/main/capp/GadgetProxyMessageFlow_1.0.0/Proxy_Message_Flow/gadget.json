@@ -1,0 +1,15 @@
+{
+    "id": "Proxy_Message_Flow",
+    "title": "Message Flow",
+    "type": "gadget",
+    "thumbnail": "store://gadget/usa-business-revenue/index.png",
+    "data": {
+        "url": "store://gadget/Proxy_Message_Flow/index.xml"
+    },
+    "listen": {
+        "subscriber": {
+            "type": "proxy",
+            "description": "Used to listen to Any message of type state"
+        }
+    }
+}

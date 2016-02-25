@@ -1,0 +1,15 @@
+{
+    "id": "Mediator_Message_Table",
+    "title": "Mediator Message Table",
+    "type": "gadget",
+    "thumbnail": "store://gadget/usa-business-revenue/index.png",
+    "data": {
+        "url": "store://gadget/Mediator_Message_Table/index.xml"
+    },
+    "listen": {
+        "subscriber": {
+            "type": "filter",
+            "description": "Used to listen to Any message of type state"
+        }
+    }
+}

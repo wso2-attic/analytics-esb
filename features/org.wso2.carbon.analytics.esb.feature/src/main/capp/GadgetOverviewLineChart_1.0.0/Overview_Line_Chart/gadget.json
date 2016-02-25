@@ -1,0 +1,15 @@
+{
+    "id": "Overview_Line_Chart",
+    "title": "Overall TPS",
+    "type": "gadget",
+    "thumbnail": "store://gadget/usa-business-revenue/index.png",
+    "data": {
+        "url": "store://gadget/Overview_Line_Chart/index.xml"
+    },
+    "notify": {
+        "publisher": {
+            "type": "overview",
+            "description": "This notifies message generated in publisher"
+        }
+    }
+}

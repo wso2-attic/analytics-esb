@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Module>
+    <ModulePrefs title="Publisher" height="50" description="Publisher">
+        <Require feature="pubsub-2"/>
+        <!-- <Require feature="dynamic-height"/> -->
+    </ModulePrefs>
+    <Content type="html">
+        <![CDATA[
+        <head>
+          <script src="../commons/js/jquery-1.10.2.js"></script> 
+          <script type="text/javascript" src="../commons/js/moment.min.js"></script>
+
+          <link rel="stylesheet" type="text/css" href="/portal/libs/bootstrap_3.3.5/css/bootstrap.min.css" />
+          <link rel="stylesheet" type="text/css" href="/portal/libs/theme-wso2_1.0/css/theme-wso2.css" />
+
+          <script src="../commons/js/utils.js"></script>
+
+          <!-- Custom JS -->
+          <script src="js/main.js"></script>
+
+        </head>
+        <body class="add-padding-5x">
+            
+          <form class="form-inline">
+            <div class="form-group">
+              <label class="sr-only" for="exampleInputAmount">Amount (in dollars)</label>
+              <div class="input-group">
+                <input type="text" class="form-control" id="exampleInputAmount" placeholder="Search">
+                <div class="input-group-addon"><i class="glyphicon glyphicon-search"></i></div>
+              </div>
+            </div>
+          </form>
+
+
+        </body>
+        ]]>
+    </Content>
+</Module>

@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Module>
+    <ModulePrefs title="Publisher" height="50" description="Publisher">
+        <Require feature="pubsub-2"/>
+        <!-- <Require feature="dynamic-height"/> -->
+    </ModulePrefs>
+    <Content type="html">
+        <![CDATA[
+        <head>
+          <script src="../commons/js/jquery-1.10.2.js"></script> 
+          <script type="text/javascript" src="../commons/js/moment.min.js"></script>
+
+          <link rel="stylesheet" type="text/css" href="/portal/libs/bootstrap_3.3.5/css/bootstrap.min.css" />
+          <link rel="stylesheet" type="text/css" href="/portal/libs/theme-wso2_1.0/css/theme-wso2.css" />
+           
+          <!-- Include Date Range Picker -->
+          <link rel="stylesheet" type="text/css" href="../commons/css/font-awesome.min.css" />
+          <script type="text/javascript" src="../commons/js/daterangepicker.js"></script>
+          <link rel="stylesheet" type="text/css" href="../commons/css/daterangepicker.css" />
+          
+          <!-- Include VizGrammar -->
+          <script src="../commons/js/d3.min.js"></script>
+          <script src="../commons/js/vega.js"></script>
+          <script src="../commons/js/VizGrammar.min.js"></script>
+
+          <script src="../commons/js/utils.js"></script>
+
+          <!-- Custom JS -->
+          <script src="js/main.js"></script>
+
+        </head>
+        <body class="add-padding-5x">
+            
+            <div class="clearfix">
+                <div class="pull-left">
+                    <div class="input-group" style="width: 200px;">
+                         <div class="input-group-btn">
+                            <label class="control-label">Filter By: </label>
+                        </div>
+                        <select class="form-control" id="filter">
+                            <option value="one" selected="selected">Message Rate</option>
+                            <option value="two">Latency</option>
+                        </select>
+                    </div> 
+                </div>
+
+                <div class="btn-group pull-right" id="date-select">
+                    <div id="timerange" class="btn-group" role="group">
+                        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <i class="glyphicon glyphicon-calendar fa fa-calendar"></i> <span></span>
+                            <b class="caret"></b>
+                        </button>
+                    </div>
+                </div>
+            </div>  
+              
+            <div id="canvas"></div>
+
+        </body>
+        ]]>
+    </Content>
+</Module>

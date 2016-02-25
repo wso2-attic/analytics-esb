@@ -1,5 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <artifacts>
     <artifact name="org.wso2.carbon.analytics.esb" version="1.0.0" type="carbon/application">
+	<dependency artifact="GadgetAllAPIsTable" version="1.0.0" include="true" serverRole="DataAnalyticsServer"/>
+	<dependency artifact="GadgetAllProxiesTable" version="1.0.0" include="true" serverRole="DataAnalyticsServer"/>
+	<dependency artifact="GadgetMediatorLineChart" version="1.0.0" include="true" serverRole="DataAnalyticsServer"/>
+	<dependency artifact="GadgetMediatorMessageTable" version="1.0.0" include="true" serverRole="DataAnalyticsServer"/>
+	<dependency artifact="GadgetOverviewLineChart" version="1.0.0" include="true" serverRole="DataAnalyticsServer"/>
+	<dependency artifact="GadgetProxyLineChart" version="1.0.0" include="true" serverRole="DataAnalyticsServer"/>
+	<dependency artifact="GadgetProxyMessageFlow" version="1.0.0" include="true" serverRole="DataAnalyticsServer"/>
+	<dependency artifact="GadgetProxyMessageTable" version="1.0.0" include="true" serverRole="DataAnalyticsServer"/>
+	<dependency artifact="GadgetProxySearchBox" version="1.0.0" include="true" serverRole="DataAnalyticsServer"/>
+	<dependency artifact="GadgetTopProxies" version="1.0.0" include="true" serverRole="DataAnalyticsServer"/>
+        <dependency artifact="GadgetTopAPIs" version="1.0.0" include="true" serverRole="DataAnalyticsServer"/>
     </artifact>
 </artifacts>
