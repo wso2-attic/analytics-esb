@@ -1,0 +1,140 @@
+<%
+(function () {
+    var TYPE = "type";
+    var CONTENT_TYPE_JSON = "application/json";
+    var AUTHORIZATION_HEADER = "Authorization";
+    var USER_TOKEN = "user";
+    var USERNAME = "username";
+    var HTTP_USER_NOT_AUTHENTICATED = 403;
+    var HTTP_INTERNAL_ERROR = 500;
+    var TYPE_GET_RECORDS = 1;
+    var TYPE_GET_TOP_INVOKED_PROXIES = 2;
+    var TYPE_GET_TOP_INVOKED_APIS = 3;
+    var log = new Log();
+    var carbon = require('carbon');
+    var configs = require('/configs/designer.json');
+    var utils = require('/modules/utils.js');
+    var JSUtils = Packages.org.wso2.carbon.analytics.jsservice.Utils;
+    var AnalyticsCachedJSServiceConnector = Packages.org.wso2.carbon.analytics.jsservice.AnalyticsCachedJSServiceConnector;
+    var AnalyticsCache = Packages.org.wso2.carbon.analytics.jsservice.AnalyticsCachedJSServiceConnector.AnalyticsCache;
+    var cacheTimeoutSeconds = 5;
+    var loggedInUser = null;
+
+    if (configs.cacheTimeoutSeconds) {
+        cacheTimeoutSeconds = parseInt(configs.cacheTimeoutSeconds);
+    }
+    var cacheSizeBytes = 1024 * 1024 * 1024; // 1GB
+    if (configs.cacheSizeBytes) {
+        cacheSizeBytes = parseInt(configs.cacheSizeBytes);
+    }
+
+    response.contentType = CONTENT_TYPE_JSON;
+
+    var authParam = request.getHeader(AUTHORIZATION_HEADER);
+    if (authParam != null) {
+        credentials = JSUtils.authenticate(authParam);
+        loggedInUser = credentials[0];
+    } else {
+        var token = session.get(USER_TOKEN);
+        if (token != null) {
+            loggedInUser = token[USERNAME];
+        } else {
+            log.error("user is not authenticated!");
+            response.status = HTTP_USER_NOT_AUTHENTICATED;
+            print('{ "status": "Failed", "message": "User is not authenticated." }');
+            return;
+        }
+    }
+
+    var cache = application.get("AnalyticsWebServiceCache");
+    if (cache == null) {
+        cache = new AnalyticsCache(cacheTimeoutSeconds, cacheSizeBytes);
+        application.put("AnalyticsWebServiceCache", cache);
+    }
+
+    var connector = new AnalyticsCachedJSServiceConnector(cache);
+
+    var type = 0;
+    var typeParam = request.getParameter(TYPE);
+    if (typeParam != null) {
+        type = parseInt(typeParam);
+    }
+
+    if (type == 0) {
+        log.error("operation type is not specified!");
+        response.status = HTTP_INTERNAL_ERROR;
+        print('{ "status": "Failed", "message": "Operation type is not specified" }');
+        return;
+    }
+
+    var content = request.getContent();
+    if (content != '' && content != null) {
+        if (log.isDebugEnabled()) {
+            log.debug("value of content: " + stringify(contentAsString));
+        }
+    }
+    if (connector != null && loggedInUser != null) {
+        var result = null;
+        var tableName = "ESB-STAT-PER-MINUTE";
+        var query = null;
+        var resp = null;
+        switch (type) {
+            case TYPE_GET_RECORDS:
+            {
+                result = [];
+
+                var timeFrom = request.getParameter("timeFrom");
+                var timeTo = request.getParameter("timeTo");
+                // var tableName = "ESB-STAT-PER-" + timeRange.getUnit();
+                query = stringify({
+                                      "fieldName": "facetStartTime",
+                                      "categoryPath": [],
+                                      "query": "startingTime : [" + timeFrom + " TO " + timeTo + "]",
+                                      "scoreFunction": "noOfInvocation/60"
+                                  });
+                resp = connector.drillDownCategories(loggedInUser, tableName, query);
+                var dataPoints = JSON.parse(resp.getMessage());
+                for (var key in dataPoints["categories"]) {
+                    if (dataPoints["categories"].hasOwnProperty(key)) {
+                        result.push({"timestamp": key, "tps": dataPoints["categories"][key]});
+                    }
+                }
+                break;
+            }
+            case TYPE_GET_TOP_INVOKED_PROXIES:
+            {
+                result = [];
+                query = stringify({
+                                      "fieldName": "componentId",
+                                      "categoryPath": [],
+                                      "query": "*:*",
+                                      "scoreFunction": "noOfInvocation"
+                                  });
+                resp = connector.drillDownCategories(loggedInUser, tableName, query);
+                var drillDownResult = JSON.parse(resp.getMessage());
+                for (var key in drillDownResult["categories"]) {
+                    if (drillDownResult["categories"].hasOwnProperty(key)) {
+                        result.push({"name": key, "requests": drillDownResult["categories"][key]});
+                    }
+                }
+                break;
+            }
+            default:
+                result = '{ "status": "Failed", "message": "Unidentified operation" }';
+        }
+        if (result != null) {
+            if (log.isDebugEnabled()) {
+                log.debug("value of result: " + result);
+            }
+            var finalResult = {
+                status: "success",
+                message: result
+            }
+            print(finalResult);
+        }
+    } else {
+        print('{ "status": "Failed", "statusCode": "500", "message": "AnalyticsCachedWebServiceConnector is unavailable" }');
+    }
+
+}());
+%>
