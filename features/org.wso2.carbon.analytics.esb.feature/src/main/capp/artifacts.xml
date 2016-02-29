@@ -16,5 +16,6 @@
 	<dependency artifact="GadgetTopProxies" version="1.0.0" include="true" serverRole="DataAnalyticsServer"/>
         <dependency artifact="GadgetTopAPIs" version="1.0.0" include="true" serverRole="DataAnalyticsServer"/>
 	<dependency artifact="Dashboard" version="1.0.0" include="true" serverRole="DataAnalyticsServer"/>
+	<dependency artifact="Sparkscripts" version="1.0.0" include="true" serverRole="DataAnalyticsServer"/>
     </artifact>
 </artifacts>
