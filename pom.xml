@@ -8,7 +8,8 @@
 	License for the ~ specific language governing permissions and limitations 
 	~ under the License. -->
 
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
     <parent>
         <groupId>org.wso2</groupId>
@@ -30,7 +31,7 @@
     </licenses>
 
     <modules>
-	<module>components</module>
+        <module>components</module>
         <module>features</module>
         <module>product/org.wso2.das.multitenancy.dashboard.ui</module>
         <module>product/org.wso2.cep.storm.dependencies</module>
@@ -378,6 +379,17 @@
                 <version>${geoip.api.version}</version>
             </dependency>
             <!--END - Samples Dependencies-->
+
+            <dependency>
+                <groupId>org.wso2.orbit.joda-time</groupId>
+                <artifactId>joda-time</artifactId>
+                <version>${orbit.version.joda-time}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.wso2.carbon.analytics</groupId>
+                <artifactId>org.wso2.carbon.analytics.spark.core</artifactId>
+                <version>${carbon.analytics.version}</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
@@ -448,6 +460,7 @@
         <orbit.version.libthrift>0.7.0.wso2v2</orbit.version.libthrift>
         <orbit.version.disruptor>2.10.4-wso2v2</orbit.version.disruptor>
         <orbit.version.h2>1.2.140.wso2v3</orbit.version.h2>
+        <orbit.version.joda-time>2.8.2.wso2v1</orbit.version.joda-time>
 
         <jacoco.agent.version>0.7.4.201502262128</jacoco.agent.version>
         <testng.version>6.1.1</testng.version>
@@ -549,7 +562,7 @@
                 <plugin>
                     <groupId>org.apache.felix</groupId>
                     <artifactId>maven-scr-plugin</artifactId>
-                    <version>1.8.2</version>
+                    <version>1.7.2</version>
                     <executions>
                         <execution>
                             <id>generate-scr-scrdescriptor</id>

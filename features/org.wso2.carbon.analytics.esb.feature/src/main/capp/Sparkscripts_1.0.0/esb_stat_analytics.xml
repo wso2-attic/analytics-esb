@@ -2,84 +2,84 @@
 <Analytics>
     <Name>esb_stat_analytics</Name>
     <Script>
-CREATE TEMPORARY TABLE esbFlowEvent USING CompressedEventAnalytics 
-OPTIONS(tableName "ESB-FLOW-ENTRY-STREAM", 
-schema "messageFlowId STRING, componentType STRING, componentIndex INT,componentId STRING, startTime LONG, endTime LONG, duration FLOAT, beforePayload STRING, afterPayload STRING, contextPropertyMap STRING, transportPropertyMap STRING, children STRING, entryPoint STRING, faultCount INT") 
+        CREATE TEMPORARY TABLE esbFlowEvent USING CompressedEventAnalytics
+        OPTIONS(tableName "ESB-FLOW-ENTRY-STREAM",
+        schema "messageFlowId STRING, componentType STRING, componentIndex INT,componentId STRING, startTime LONG, endTime LONG, duration INT, beforePayload STRING, afterPayload STRING, contextPropertyMap STRING, transportPropertyMap STRING, children STRING, entryPoint STRING, faultCount INT");
 
-CREATE TEMPORARY TABLE esbEvent USING CarbonAnalytics 
-OPTIONS (tableName "ESB-EVENT", 
-schema "messageFlowId FACET -i, componentType FACET -i, componentIndex INT, componentId FACET -i, startTime LONG -i, endTime LONG -i, duration INT, beforePayload STRING, afterPayload STRING, contextPropertyMap STRING, transportPropertyMap STRING, children STRING, entryPoint FACET -i, faultCount INT", 
-primaryKeys "messageFlowId, componentId, componentType, componentIndex", 
-mergeSchema "false");
+        CREATE TEMPORARY TABLE esbEvent USING CarbonAnalytics
+        OPTIONS (tableName "ESB-EVENT",
+        schema "messageFlowId FACET -i, componentType FACET -i, componentIndex INT, componentId FACET -i, startTime LONG -i, endTime LONG -i, duration INT, beforePayload STRING, afterPayload STRING, contextPropertyMap STRING, transportPropertyMap STRING, children STRING, entryPoint FACET -i, faultCount INT",
+        primaryKeys "messageFlowId, componentId, componentType, componentIndex",
+        mergeSchema "false");
 
-INSERT INTO TABLE esbEvent 
-SELECT messageFlowId, componentType, componentIndex, componentId, startTime, endTime, duration, beforePayload, afterPayload, contextPropertyMap, transportPropertyMap, children, entryPoint, faultCount 
-FROM esbFlowEvent;
+        INSERT INTO TABLE esbEvent
+        SELECT messageFlowId, componentType, componentIndex, componentId, startTime, endTime, duration, beforePayload, afterPayload, contextPropertyMap, transportPropertyMap, children, entryPoint, faultCount
+        FROM esbFlowEvent;
 
-CREATE TEMPORARY TABLE esbServiceStatPerSecond USING CarbonAnalytics 
-OPTIONS (tableName "ESB-Stat-per-Second", 
-schema "year INT -i, month INT -i, day INT -i, hour INT -I, minute INT -i, second INT -i, componentId FACET -i, componentType FACET -i, totalDuration LONG, minDuration INT, maxDuration INT, noOfInvocation LONG, faultCount INT, startingTime LONG -i", 
-primaryKeys "year, month, day, hour, minute, second, componentId, componentType", 
-mergeSchema "false");
+        CREATE TEMPORARY TABLE esbServiceStatPerSecond USING CarbonAnalytics
+        OPTIONS (tableName "ESB-Stat-per-Second",
+        schema "year INT -i, month INT -i, day INT -i, hour INT -I, minute INT -i, second INT -i, componentId FACET -i, componentType FACET -i, totalDuration LONG, minDuration INT, maxDuration INT, noOfInvocation LONG, faultCount INT, startingTime LONG -i",
+        primaryKeys "year, month, day, hour, minute, second, componentId, componentType",
+        mergeSchema "false");
 
-INSERT INTO TABLE esbServiceStatPerSecond 
-SELECT year, month, day, hour, minute, second, componentId, componentType, totalDuration, minDuration, maxDuration, noOfInvocation, totalFault, getSecondStartingTime(year, month, day, hour, minute, second) as startingTime  FROM 
-(SELECT temp.year, temp.month, temp.day, temp.hour, temp.minute, temp.second, temp.componentId, temp.componentType, sum(duration) as totalDuration, count(*) as noOfInvocation, sum(faultCount) as totalFault, min(duration) as minDuration, max(duration) as maxDuration FROM 
-(SELECT getYear(startTime) as year, getMonth(startTime) as month, getDay(startTime) as day, getHour(startTime) as hour,  getMinute(startTime) as minute, getSeconds(startTime) as second,  duration as duration, componentType, componentId, (CASE WHEN faultCount > 0 then 1 ELSE 0 END) as faultCount FROM esbFlowEvent) temp 
-WHERE temp.componentType = "Proxy Service"
-GROUP BY temp.year, temp.month, temp.day, temp.hour, temp.minute, temp.second, temp.componentId, temp.componentType) result;
+        INSERT INTO TABLE esbServiceStatPerSecond
+        SELECT year, month, day, hour, minute, second, componentId, componentType, totalDuration, minDuration, maxDuration, noOfInvocation, totalFault, getSecondStartingTime(year, month, day, hour, minute, second) as startingTime  FROM
+        (SELECT temp.year, temp.month, temp.day, temp.hour, temp.minute, temp.second, temp.componentId, temp.componentType, sum(duration) as totalDuration, count(*) as noOfInvocation, sum(faultCount) as totalFault, min(duration) as minDuration, max(duration) as maxDuration FROM
+        (SELECT getYear(startTime) as year, getMonth(startTime) as month, getDay(startTime) as day, getHour(startTime) as hour,  getMinute(startTime) as minute, getSeconds(startTime) as second,  duration as duration, componentType, componentId, (CASE WHEN faultCount > 0 then 1 ELSE 0 END) as faultCount FROM esbFlowEvent) temp
+        WHERE temp.componentType = "Proxy Service"
+        GROUP BY temp.year, temp.month, temp.day, temp.hour, temp.minute, temp.second, temp.componentId, temp.componentType) result;
 
-CREATE TEMPORARY TABLE esbServiceStatPerMinute USING CarbonAnalytics 
-OPTIONS (tableName "ESB-Stat-per-Minute", 
-schema "year INT -i, month INT -i, day INT -i, hour INT -I, minute INT -i, componentId FACET -i, componentType FACET -i, totalDuration LONG, minDuration INT, maxDuration INT, noOfInvocation LONG, faultCount INT, startingTime LONG -i", 
-primaryKeys "year, month, day, hour, minute, componentId, componentType", 
-mergeSchema "false");
+        CREATE TEMPORARY TABLE esbServiceStatPerMinute USING CarbonAnalytics
+        OPTIONS (tableName "ESB-Stat-per-Minute",
+        schema "year INT -i, month INT -i, day INT -i, hour INT -i, minute INT -i, componentId FACET -i,componentType FACET -i, totalDuration LONG, minDuration INT, maxDuration INT, noOfInvocation LONG -sp, faultCount INT, startingTime LONG -i, facetStartTime FACET -i",
+        primaryKeys "year, month, day, hour, minute, componentId, componentType",
+        mergeSchema "false");
 
-INSERT INTO TABLE esbServiceStatPerMinute 
-SELECT year, month, day, hour, minute, componentId, componentType, totalDuration, minDuration, maxDuration, noOfInvocation, totalFault, getMinuteStartingTime(year, month, day, hour, minute) as startingTime  FROM 
-(SELECT temp.year, temp.month, temp.day, temp.hour, temp.minute, temp.componentId, temp.componentType, sum(duration) as totalDuration, sum(faultCount) as totalFault, count(*) as noOfInvocation, min(duration) as minDuration, max(duration) as maxDuration FROM 
-(SELECT getYear(startTime) as year, getMonth(startTime) as month, getDay(startTime) as day, getHour(startTime) as hour,  getMinute(startTime) as minute, duration as duration, componentType, componentId, (CASE WHEN faultCount > 0 then 1 ELSE 0 END) as faultCount FROM esbFlowEvent) temp 
-WHERE temp.componentType = "Proxy Service"
-GROUP BY temp.year, temp.month, temp.day, temp.hour, temp.minute, temp.componentId, temp.componentType) result;
+        INSERT INTO TABLE esbServiceStatPerMinute
+        SELECT year, month, day, hour, minute, componentId, componentType, totalDuration, minDuration, maxDuration, noOfInvocation, totalFault, getMinuteStartingTime(year, month, day, hour, minute) as startingTime, cast(getMinuteStartingTime(year, month, day, hour, minute) as STRING) as facetStartTime  FROM
+        (SELECT temp.year, temp.month, temp.day, temp.hour, temp.minute, temp.componentId, temp.componentType, sum(duration) as totalDuration, sum(faultCount) as totalFault, count(*) as noOfInvocation, min(duration) as minDuration, max(duration) as maxDuration FROM
+        (SELECT getYear(startTime) as year, getMonth(startTime) as month, getDay(startTime) as day, getHour(startTime) as hour,  getMinute(startTime) as minute, duration as duration, componentType, componentId, (CASE WHEN faultCount > 0 then 1 ELSE 0 END) as faultCount FROM esbFlowEvent) temp
+        WHERE temp.componentType = "Proxy Service"
+        GROUP BY temp.year, temp.month, temp.day, temp.hour, temp.minute, temp.componentId, temp.componentType) result;
 
-CREATE TEMPORARY TABLE esbServiceStatPerHour USING CarbonAnalytics 
-OPTIONS (tableName "ESB-Stat-per-Hour", 
-schema "year INT -i, month INT -i, day INT -i, hour INT -I, componentId FACET -i, componentType FACET -i, totalDuration LONG, minDuration INT, maxDuration INT, noOfInvocation LONG, faultCount INT, startingTime LONG -i", 
-primaryKeys "year, month, day, hour, componentId, componentType", 
-mergeSchema "false");
+        CREATE TEMPORARY TABLE esbServiceStatPerHour USING CarbonAnalytics
+        OPTIONS (tableName "ESB-Stat-per-Hour",
+        schema "year INT -i, month INT -i, day INT -i, hour INT -I, componentId FACET -i, componentType FACET -i, totalDuration LONG, minDuration INT, maxDuration INT, noOfInvocation LONG, faultCount INT, startingTime LONG -i",
+        primaryKeys "year, month, day, hour, componentId, componentType",
+        mergeSchema "false");
 
-INSERT INTO TABLE esbServiceStatPerHour 
-SELECT year, month, day, hour, componentId, componentType, totalDuration, minDuration, maxDuration, noOfInvocation, totalFault, getHourStartingTime(year, month, day, hour) as startingTime  FROM 
-(SELECT temp.year, temp.month, temp.day, temp.hour, temp.componentId, temp.componentType, sum(duration) as totalDuration, sum(faultCount) as totalFault, min(duration) as minDuration, max(duration) as maxDuration, count(*) as noOfInvocation FROM 
-(SELECT getYear(startTime) as year, getMonth(startTime) as month, getDay(startTime) as day, getHour(startTime) as hour, duration as duration, componentType, componentId, (CASE WHEN faultCount > 0 then 1 ELSE 0 END) as faultCount FROM esbFlowEvent) temp 
-WHERE temp.componentType = "Proxy Service"
-GROUP BY temp.year, temp.month, temp.day, temp.hour, temp.componentId, temp.componentType) result;
+        INSERT INTO TABLE esbServiceStatPerHour
+        SELECT year, month, day, hour, componentId, componentType, totalDuration, minDuration, maxDuration, noOfInvocation, totalFault, getHourStartingTime(year, month, day, hour) as startingTime  FROM
+        (SELECT temp.year, temp.month, temp.day, temp.hour, temp.componentId, temp.componentType, sum(duration) as totalDuration, sum(faultCount) as totalFault, min(duration) as minDuration, max(duration) as maxDuration, count(*) as noOfInvocation FROM
+        (SELECT getYear(startTime) as year, getMonth(startTime) as month, getDay(startTime) as day, getHour(startTime) as hour, duration as duration, componentType, componentId, (CASE WHEN faultCount > 0 then 1 ELSE 0 END) as faultCount FROM esbFlowEvent) temp
+        WHERE temp.componentType = "Proxy Service"
+        GROUP BY temp.year, temp.month, temp.day, temp.hour, temp.componentId, temp.componentType) result;
 
-CREATE TEMPORARY TABLE esbServiceStatPerDay USING CarbonAnalytics 
-OPTIONS (tableName "ESB-Stat-per-Day", 
-schema "year INT -i, month INT -i, day INT -i, componentId FACET -i, componentType FACET -i, totalDuration LONG, minDuration INT, maxDuration INT, noOfInvocation LONG, faultCount INT, startingTime LONG -i", 
-primaryKeys "year, month, day, componentId, componentType", 
-mergeSchema "false");
+        CREATE TEMPORARY TABLE esbServiceStatPerDay USING CarbonAnalytics
+        OPTIONS (tableName "ESB-Stat-per-Day",
+        schema "year INT -i, month INT -i, day INT -i, componentId FACET -i, componentType FACET -i, totalDuration LONG, minDuration INT, maxDuration INT, noOfInvocation LONG, faultCount INT, startingTime LONG -i",
+        primaryKeys "year, month, day, componentId, componentType",
+        mergeSchema "false");
 
-INSERT INTO TABLE esbServiceStatPerDay 
-SELECT year, month, day, componentId, componentType, totalDuration, minDuration, maxDuration, noOfInvocation, totalFault, getDateStartingTime(year, month, day) as startingTime  FROM 
-(SELECT temp.year, temp.month, temp.day, temp.componentId, temp.componentType, sum(duration) as totalDuration, sum(faultCount) as totalFault, min(duration) as minDuration, max(duration) as maxDuration, count(*) as noOfInvocation FROM 
-(SELECT getYear(startTime) as year, getMonth(startTime) as month, getDay(startTime) as day, duration as duration, componentType, componentId, (CASE WHEN faultCount > 0 then 1 ELSE 0 END) as faultCount FROM esbFlowEvent) temp 
-WHERE temp.componentType = "Proxy Service"
-GROUP BY temp.year, temp.month, temp.day, temp.componentId, temp.componentType) result;
+        INSERT INTO TABLE esbServiceStatPerDay
+        SELECT year, month, day, componentId, componentType, totalDuration, minDuration, maxDuration, noOfInvocation, totalFault, getDateStartingTime(year, month, day) as startingTime  FROM
+        (SELECT temp.year, temp.month, temp.day, temp.componentId, temp.componentType, sum(duration) as totalDuration, sum(faultCount) as totalFault, min(duration) as minDuration, max(duration) as maxDuration, count(*) as noOfInvocation FROM
+        (SELECT getYear(startTime) as year, getMonth(startTime) as month, getDay(startTime) as day, duration as duration, componentType, componentId, (CASE WHEN faultCount > 0 then 1 ELSE 0 END) as faultCount FROM esbFlowEvent) temp
+        WHERE temp.componentType = "Proxy Service"
+        GROUP BY temp.year, temp.month, temp.day, temp.componentId, temp.componentType) result;
 
-CREATE TEMPORARY TABLE esbServiceStatPerMonth USING CarbonAnalytics 
-OPTIONS (tableName "ESB-Stat-per-Month", 
-schema "year INT -i, month INT -i, componentId FACET -i, componentType FACET -i, totalDuration LONG, minDuration INT, maxDuration INT, noOfInvocation LONG, faultCount INT, startingTime LONG -i", 
-primaryKeys "year, month, componentId, componentType", 
-mergeSchema "false");
+        CREATE TEMPORARY TABLE esbServiceStatPerMonth USING CarbonAnalytics
+        OPTIONS (tableName "ESB-Stat-per-Month",
+        schema "year INT -i, month INT -i, componentId FACET -i, componentType FACET -i, totalDuration LONG, minDuration INT, maxDuration INT, noOfInvocation LONG, faultCount INT, startingTime LONG -i",
+        primaryKeys "year, month, componentId, componentType",
+        mergeSchema "false");
 
-INSERT INTO TABLE esbServiceStatPerMonth 
-SELECT year, month, componentId, componentType, totalDuration, minDuration, maxDuration, noOfInvocation, totalFault, getMonthStartingTime(year, month) as startingTime  FROM 
-(SELECT temp.year, temp.month, temp.componentId, temp.componentType, sum(duration) as totalDuration, sum(faultCount) as totalFault, min(duration) as minDuration, max(duration) as maxDuration, count(*) as noOfInvocation FROM 
-(SELECT getYear(startTime) as year, getMonth(startTime) as month, duration as duration, componentType, componentId, (CASE WHEN faultCount > 0 then 1 ELSE 0 END) as faultCount FROM esbFlowEvent) temp 
-WHERE temp.componentType = "Proxy Service"
-GROUP BY temp.year, temp.month, temp.componentId, temp.componentType) result;
+        INSERT INTO TABLE esbServiceStatPerMonth
+        SELECT year, month, componentId, componentType, totalDuration, minDuration, maxDuration, noOfInvocation, totalFault, getMonthStartingTime(year, month) as startingTime  FROM
+        (SELECT temp.year, temp.month, temp.componentId, temp.componentType, sum(duration) as totalDuration, sum(faultCount) as totalFault, min(duration) as minDuration, max(duration) as maxDuration, count(*) as noOfInvocation FROM
+        (SELECT getYear(startTime) as year, getMonth(startTime) as month, duration as duration, componentType, componentId, (CASE WHEN faultCount > 0 then 1 ELSE 0 END) as faultCount FROM esbFlowEvent) temp
+        WHERE temp.componentType = "Proxy Service"
+        GROUP BY temp.year, temp.month, temp.componentId, temp.componentType) result;
     </Script>
     <CronExpression>0 * * * * ?</CronExpression>
 </Analytics>
