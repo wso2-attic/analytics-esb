@@ -17,8 +17,8 @@
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
-    <groupId>org.wso2.das4esb</groupId>
-    <artifactId>wso2das4esb-parent</artifactId>
+    <groupId>org.wso2.analytics.esb</groupId>
+    <artifactId>wso2analytics-esb-parent</artifactId>
     <packaging>pom</packaging>
     <version>1.0.0-SNAPSHOT</version>
 
