@@ -1,20 +1,17 @@
-    var TYPE_TOP_PROXIES = 4;
-    var TYPE_TOP_API = 5;
+    var TYPE = 4;
     var TOPIC = "subscriber";
 
     $(function() {
-        var timeFrom = moment().subtract(1, 'hours'); 
-        var timeTo = moment();
-
-        var qs = getQueryString();
-        if(qs.timeFrom != null) {
-            timeFrom = qs.timeFrom;
-        }
-        if(qs.timeTo != null) {
-            timeTo = qs.timeTo;
-        }
+        //if there are url elemements present, use them. 
+        //Otherwis use DEFAULT_END_TIME defined in the gadget-utils.js
+        var timeFrom = gadgetUtil.timeFrom();
+        var timeTo = gadgetUtil.timeTo();
         console.log("TOP_PROXIES: TimeFrom: " + timeFrom + " TimeTo: " + timeTo); 
-        fetchData(timeFrom, timeTo,null);        
+        gadgetUtil.fetchData(CONTEXT, {
+            type: TYPE,
+            timeFrom: timeFrom,
+            timeTo: timeTo
+        }, onData, onError);
     });
 
     gadgets.HubSettings.onConnect = function() {
@@ -24,21 +21,11 @@
     };
 
     function onTimeRangeChanged(data) {
-       fetchData(data.timeFrom,data.timeTo,data.filter);
-    }
-
-    //Call the backend and read some data
-    function fetchData(timeFrom, timeTo, filter) {
-        $.ajax({
-            url: CONTEXT + "?type=" + TYPE_TOP_PROXIES + "&timeFrom=" + timeFrom + "&timeTo=" + timeTo,
-            type: "GET",
-            success: function(data) {
-                onData(data);
-            },
-            error: function(msg) {
-                onError(msg);
-            }
-        });
+        gadgetUtil.fetchData(CONTEXT, {
+           type: TYPE,
+           timeFrom: data.timeFrom,
+           timeTo: data.timeTo
+       }, onData, onError);
     }
 
     function onData(data) {
@@ -52,21 +39,24 @@
         }];
 
         var config = {
-            charts: [{ type: "arc", x: "requests", color: "name", mode: "pie" }],
-            width: 400,
-            height: 250
-        }
+            type: "bar",
+            x : "name",
+            charts : [{type: "bar",  y : "requests", orientation : "left"}],
+            width: 500,
+            height: 200,
+            padding: { "top": 10, "left": 140, "bottom": 40, "right": 50 }
+        };
 
-        data.forEach(function(row,i) {
+        data.message.forEach(function(row,i) {
             schema[0].data.push([row.name,row.requests]);
         });
 
         var onChartClick = function(event, item) {
-            var proxyId = -1;
+            var proxyName = -1;
             if(item != null) {
-                proxyId = item.datum.name;
+                proxyName = item.datum.name;
             }
-            parent.window.location = "/portal/dashboards/esb-analytics/proxies" + "?id=" + proxyId;
+            parent.window.location = PROXY_PAGE_URL + "?" + PARAM_PROXY_NAME + "=" + proxyName;
         };
 
         var chart = new vizg(schema, config);

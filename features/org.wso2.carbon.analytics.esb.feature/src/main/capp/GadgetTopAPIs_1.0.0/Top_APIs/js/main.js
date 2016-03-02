@@ -2,18 +2,16 @@
     var TOPIC = "subscriber";
 
     $(function() {
-        var timeFrom = moment().subtract(1, 'hours'); 
-        var timeTo = moment();
-
-        var qs = getQueryString();
-        if(qs.timeFrom != null) {
-            timeFrom = qs.timeFrom;
-        }
-        if(qs.timeTo != null) {
-            timeTo = qs.timeTo;
-        }
+        //if there are url elemements present, use them. 
+        //Otherwis use DEFAULT_END_TIME defined in the gadget-utils.js
+        var timeFrom = gadgetUtil.timeFrom();
+        var timeTo = gadgetUtil.timeTo();
+        gadgetUtil.fetchData(CONTEXT, {
+            type: TYPE,
+            timeFrom: timeFrom,
+            timeTo: timeTo
+        }, onData, onError);
         console.log("TOP_APIS: TimeFrom: " + timeFrom + " TimeTo: " + timeTo); 
-        fetchData(timeFrom, timeTo,null);        
     });
 
     gadgets.HubSettings.onConnect = function() {
@@ -23,21 +21,11 @@
     };
 
     function onTimeRangeChanged(data) {
-       fetchData(data.timeFrom,data.timeTo,data.filter);
-    }
-
-    //Call the backend and read some data
-    function fetchData(timeFrom, timeTo, filter) {
-        $.ajax({
-            url: CONTEXT + "?type=" + TYPE + "&timeFrom=" + timeFrom + "&timeTo=" + timeTo,
-            type: "GET",
-            success: function(data) {
-                onData(data);
-            },
-            error: function(msg) {
-                onError(msg);
-            }
-        });
+        gadgetUtil.fetchData(CONTEXT, {
+           type: TYPE,
+           timeFrom: data.timeFrom,
+           timeTo: data.timeTo
+       }, onData, onError);
     }
 
     function onData(data) {
@@ -51,12 +39,15 @@
         }];
 
         var config = {
-            charts: [{ type: "arc", x: "requests", color: "name", mode: "pie" }],
-            width: 400,
-            height: 250
-        }
+            type: "bar",
+            x : "name",
+            charts : [{type: "bar",  y : "requests", orientation : "left"}],
+            width: 500,
+            height: 200,
+            padding: { "top": 10, "left": 100, "bottom": 40, "right": 10 }
+        };
 
-        data.forEach(function(row,i) {
+        data.message.forEach(function(row,i) {
             schema[0].data.push([row.name,row.requests]);
         });
 

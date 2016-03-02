@@ -1,32 +1,24 @@
+var TYPE = 9;
+var TOPIC = "subscriber";
+
 $(function() {
-    var TOPIC = "subscriber";
-
-    var timeFrom = moment().subtract(1, 'hours'); 
-    var timeTo = moment();
-    var dataTable = null;
-
-    var qs = getQueryString();
-    if(qs.timeFrom != null) {
-        timeFrom = qs.timeFrom;
+    var qs = gadgetUtil.getQueryString();
+    if (qs[PARAM_PROXY_NAME] == null) {
+        $("#canvas").html(gadgetUtil.getEmptyProxyText());
+        return;
     }
-    if(qs.timeTo != null) {
-        timeTo = qs.timeTo;
-    }
-    console.log("TimeFrom: " + timeFrom + " TimeTo: " + timeTo); 
+    var timeFrom = gadgetUtil.timeFrom();
+    var timeTo = gadgetUtil.timeTo();
+    console.log("PROXY_MESSAGES: TimeFrom: " + timeFrom + " TimeTo: " + timeTo);
 
-    $.ajax({
-        url: CONTEXT + "?type=2&timeFrom=" + timeFrom + "&timeTo=" + timeTo,
-        type: "GET",
-        success: function(data) {
-            onData(data);
-        },
-        error: function(msg) {
-            onError(msg);
-        }
-    });
+    gadgetUtil.fetchData(CONTEXT, {
+        type: TYPE,
+        timeFrom: timeFrom,
+        timeTo: timeTo
+    }, onData, onError);
 
     $('#tblProxies tbody').on('click', 'tr', function() {
-        parent.window.location = "https://localhost:9443/portal/dashboards/esb-analytics/proxies";
+        parent.window.location = PROXY_PAGE_URL;
         if ($(this).hasClass('selected')) {
             $(this).removeClass('selected');
         } else {
@@ -38,28 +30,27 @@ $(function() {
 });
 
 gadgets.HubSettings.onConnect = function() {
-    gadgets.Hub.subscribe("subscriber", function(topic, data, subscriberData) {
-        onTimeRangeChange(data);
+    gadgets.Hub.subscribe(TOPIC, function(topic, data, subscriberData) {
+        onTimeRangeChanged(data);
     });
 };
 
-function onTimeRangeChange(data) {
-    console.log(data); 
-    $.ajax({
-        url: CONTEXT + "?type=2",
-        type: "GET",
-        success: function(data) {
-            onData(data);
-        },
-        error: function(msg) {
-            onError(msg);
-        }
-    });
+function onTimeRangeChanged(data) {
+    gadgetUtil.fetchData(CONTEXT, {
+        type: TYPE,
+        timeFrom: data.timeFrom,
+        timeTo: data.timeTo
+    }, onData, onError);
 }
 
-function onData(data) {
+function onData(response) {
+    var data = response.message;
+    if (data.length == 0) {
+        $("#canvas").html('<div align="center" style="margin-top:20px"><h4>No records found.</h4></div>');
+        return;
+    }
     $("#tblProxies tbody").empty();
-    var columns = ["name", "min", "avg", "max", "requests", "faults"];
+    var columns = ["messageId", "payload", "entryType","timestamp"];
     var tbody = $("#tblProxies tbody");
     data.forEach(function(row, i) {
         var tr = jQuery('<tr/>');

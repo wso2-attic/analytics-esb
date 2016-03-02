@@ -1,0 +1,224 @@
+<%
+(function () {
+    var TYPE = "type";
+    var CONTENT_TYPE_JSON = "application/json";
+    var AUTHORIZATION_HEADER = "Authorization";
+    var USER_TOKEN = "user";
+    var USERNAME = "username";
+    var HTTP_USER_NOT_AUTHENTICATED = 403;
+    var HTTP_INTERNAL_ERROR = 500;
+    var log = new Log();
+    var carbon = require('carbon');
+    var configs = require('/configs/designer.json');
+    var utils = require('/modules/utils.js');
+    var JSUtils = Packages.org.wso2.carbon.analytics.jsservice.Utils;
+    var AnalyticsCachedJSServiceConnector = Packages.org.wso2.carbon.analytics.jsservice.AnalyticsCachedJSServiceConnector;
+    var AnalyticsCache = Packages.org.wso2.carbon.analytics.jsservice.AnalyticsCachedJSServiceConnector.AnalyticsCache;
+    var cacheTimeoutSeconds = 5;
+    var loggedInUser = null;
+
+    var TYPE_OVERALL_TPS = 1;
+    var TYPE_OVERALL_MESSAGE_COUNT = 2;
+    var TYPE_OVERALL_FAULT_COUNT = 3;
+    var TYPE_TOP_INVOKED_PROXIES = 4;
+    var TYPE_TOP_INVOKED_APIS = 5;
+    var TYPE_PROXY_NAMES = 6;
+    var TYPE_PROXY_MESSAGE_RATE = 7;
+    var TYPE_PROXY_LATENCY = 8;
+    var TYPE_PROXY_MESSAGES = 9;
+
+    if (configs.cacheTimeoutSeconds) {
+        cacheTimeoutSeconds = parseInt(configs.cacheTimeoutSeconds);
+    }
+    var cacheSizeBytes = 1024 * 1024 * 1024; // 1GB
+    if (configs.cacheSizeBytes) {
+        cacheSizeBytes = parseInt(configs.cacheSizeBytes);
+    }
+
+    response.contentType = CONTENT_TYPE_JSON;
+
+    var authParam = request.getHeader(AUTHORIZATION_HEADER);
+    if (authParam != null) {
+        credentials = JSUtils.authenticate(authParam);
+        loggedInUser = credentials[0];
+    } else {
+        var token = session.get(USER_TOKEN);
+        if (token != null) {
+            loggedInUser = token[USERNAME];
+        } else {
+            log.error("user is not authenticated!");
+            response.status = HTTP_USER_NOT_AUTHENTICATED;
+            print('{ "status": "Failed", "message": "User is not authenticated." }');
+            return;
+        }
+    }
+
+    var cache = application.get("AnalyticsWebServiceCache");
+    if (cache == null) {
+        cache = new AnalyticsCache(cacheTimeoutSeconds, cacheSizeBytes);
+        application.put("AnalyticsWebServiceCache", cache);
+    }
+
+    var connector = new AnalyticsCachedJSServiceConnector(cache);
+
+    var type = 0;
+    var typeParam = request.getParameter(TYPE);
+    if (typeParam != null) {
+        type = parseInt(typeParam);
+    }
+
+    if (type == 0) {
+        log.error("operation type is not specified!");
+        response.status = HTTP_INTERNAL_ERROR;
+        print('{ "status": "Failed", "message": "Operation type is not specified" }');
+        return;
+    }
+
+    var content = request.getContent();
+    if (content != '' && content != null) {
+        if (log.isDebugEnabled()) {
+            log.debug("value of content: " + stringify(contentAsString));
+        }
+    }
+    if (connector != null && loggedInUser != null) {
+        var result = null;
+        var tableName = "ESB-STAT-PER-MINUTE";
+        var query = null;
+        var resp = null;
+        switch (type) {
+            case TYPE_OVERALL_TPS:
+            {
+                result = [];
+
+                var timeFrom = request.getParameter("timeFrom");
+                var timeTo = request.getParameter("timeTo");
+                // var tableName = "ESB-STAT-PER-" + timeRange.getUnit();
+                query = stringify({
+                                      "fieldName": "facetStartTime",
+                                      "categoryPath": [],
+                                      "query": "startingTime : [" + timeFrom + " TO " + timeTo + "]",
+                                      "scoreFunction": "noOfInvocation/60"
+                                  });
+                resp = connector.drillDownCategories(loggedInUser, tableName, query);
+                var dataPoints = JSON.parse(resp.getMessage());
+                for (var key in dataPoints["categories"]) {
+                    if (dataPoints["categories"].hasOwnProperty(key)) {
+                        result.push({"timestamp": key, "tps": dataPoints["categories"][key]});
+                    }
+                }
+                break;
+            }
+            case TYPE_OVERALL_MESSAGE_COUNT:
+            {
+                var result = [
+                    {"timestamp":1388514600000,"success":3456,"fault": 123},
+                    {"timestamp":1420050600000,"success":1345,"fault": 23},
+                    {"timestamp":1451586600000,"success":3890,"fault": 765},
+                    {"timestamp":1398882600000,"success":4563,"fault": 245},
+                    {"timestamp":1430422200000,"success":3421,"fault": 67},
+                    {"timestamp":1451590200000,"success":4567,"fault": 6},
+                    {"timestamp":1440790200000,"success":567,"fault": 4},
+                    {"timestamp":1440703800000,"success":5,"fault": 0},
+                    {"timestamp":1440709440000,"success":234,"fault": 1},
+                    {"timestamp":1440709560000,"success":4440,"fault": 2}
+                ];
+                break;
+            }
+            case TYPE_TOP_INVOKED_PROXIES:
+            {
+                result = [];
+                query = stringify({
+                                      "fieldName": "componentId",
+                                      "categoryPath": [],
+                                      "query": "*:*",
+                                      "scoreFunction": "noOfInvocation"
+                                  });
+                resp = connector.drillDownCategories(loggedInUser, tableName, query);
+                var drillDownResult = JSON.parse(resp.getMessage());
+                for (var key in drillDownResult["categories"]) {
+                    if (drillDownResult["categories"].hasOwnProperty(key)) {
+                        result.push({"name": key, "requests": drillDownResult["categories"][key]});
+                    }
+                }
+                break;
+            }
+            case TYPE_TOP_INVOKED_APIS:
+            {
+                result = [
+                    {"timestamp":"1433233269","name":"AuthService","min":37,"avg":8,"max":8,"requests":5233,"faults":6498},
+                    {"timestamp":"1424174379","name":"TransformerAPI","min":80,"avg":87,"max":5,"requests":7646,"faults":3903},
+                    {"timestamp":"1453947951","name":"CreditService","min":43,"avg":33,"max":82,"requests":1226,"faults":8607},
+                    {"timestamp":"1439724229","name":"CustomerInfo","min":70,"avg":6,"max":21,"requests":6605,"faults":1596},
+                    {"timestamp":"1446351266","name":"TransformerAPI","min":84,"avg":65,"max":23,"requests":8958,"faults":4738},
+                    {"timestamp":"1422101941","name":"AuthService","min":85,"avg":45,"max":11,"requests":7617,"faults":3900},
+                    {"timestamp":"1430806924","name":"CustomerInfo","min":46,"avg":93,"max":85,"requests":3902,"faults":6214},
+                    {"timestamp":"1446880089","name":"AuthService","min":96,"avg":99,"max":42,"requests":3215,"faults":3405},
+                    {"timestamp":"1432379255","name":"AuthService","min":97,"avg":9,"max":86,"requests":8646,"faults":6750},
+                    {"timestamp":"1421298621","name":"TransformerAPI","min":8,"avg":36,"max":29,"requests":1267,"faults":7658}
+                ];
+                break;
+            }
+            case TYPE_PROXY_NAMES:
+            {
+                var result = ["Foo", "Bar", "Baz"];
+                break;
+            }
+            case TYPE_PROXY_MESSAGE_RATE:
+            {
+                result = [
+                    {"timestamp":1398882600000,"count":3906},
+                    {"timestamp":1440709440000,"count":5781},
+                    {"timestamp":1430422200000,"count":5598},
+                    {"timestamp":1440790200000,"count":7932},
+                    {"timestamp":1451586600000,"count":6797},
+                    {"timestamp":1440703800000,"count":3821},
+                    {"timestamp":1440709560000,"count":8601},
+                    {"timestamp":1420050600000,"count":6344},
+                    {"timestamp":1451590200000,"count":7995},
+                    {"timestamp":1388514600000,"count":8982}
+                ];   
+                break;
+            }
+            case TYPE_PROXY_LATENCY:
+            {
+                result = [
+                    {"timestamp":1388514600000,"value":8982},
+                    {"timestamp":1420050600000,"value":6344},
+                    {"timestamp":1451586600000,"value":6797},
+                    {"timestamp":1398882600000,"value":3906},
+                    {"timestamp":1430422200000,"value":5598},
+                    {"timestamp":1451590200000,"value":7995},
+                    {"timestamp":1440790200000,"value":7932},
+                    {"timestamp":1440703800000,"value":3821},
+                    {"timestamp":1440709440000,"value":5781},
+                    {"timestamp":1440709560000,"value":8601}
+                ];
+                break;
+            }
+            case TYPE_PROXY_MESSAGES:
+            {
+                result = [
+                    {"messageId":"8e29cfa8-6612-4bc6-a4a7-c76d20a6b572","payload":"some JSON string","entryType" : "Proxy:TestProxy","timestamp" : "2015-09-14 19:35:45"},
+                    {"messageId":"a2a64d06-2d5d-4ee3-b76c-a83b7809867c","payload":"some JSON string","entryType" : "Proxy:TestProxy","timestamp" : "2015-09-12 19:35:45"}
+                ];   
+                break;
+            }
+            default:
+                result = '{ "status": "Failed", "message": "Unidentified operation" }';
+        }
+        if (result != null) {
+            if (log.isDebugEnabled()) {
+                log.debug("value of result: " + result);
+            }
+            var finalResult = {
+                status: "success",
+                message: result
+            }
+            print(finalResult);
+        }
+    } else {
+        print('{ "status": "Failed", "statusCode": "500", "message": "AnalyticsCachedWebServiceConnector is unavailable" }');
+    }
+
+}());
+%>

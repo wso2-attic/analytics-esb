@@ -1,14 +1,14 @@
 {
-    "id": "Proxy_Message_Table",
-    "title": "Proxy Messages",
+    "id": "Overall TPS",
+    "title": "Overall TPS",
     "type": "gadget",
     "thumbnail": "store://gadget/usa-business-revenue/index.png",
     "data": {
-        "url": "store://gadget/Proxy_Message_Table/index.xml"
+        "url": "store://gadget/Overall_TPS/index.xml"
     },
     "listen": {
         "subscriber": {
-            "type": "proxy",
+            "type": "overview",
             "description": "Used to listen to Any message of type state"
         }
     }

@@ -1,0 +1,15 @@
+{
+    "id": "DTP",
+    "title": "DTP",
+    "type": "gadget",
+    "thumbnail": "store://gadget/usa-business-revenue/index.png",
+    "data": {
+        "url": "store://gadget/DTP/index.xml"
+    },
+    "notify": {
+        "publisher": {
+            "type": "overview",
+            "description": "This notifies message generated in publisher"
+        }
+    }
+}

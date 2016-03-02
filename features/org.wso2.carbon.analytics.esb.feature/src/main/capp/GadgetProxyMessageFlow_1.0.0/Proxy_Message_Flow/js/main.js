@@ -1,49 +1,32 @@
-    var TYPE = 5;
+    var TYPE = 1;
     var TOPIC = "subscriber";
 
     $(function() {
-        // var timeFrom = moment().subtract(1, 'hours'); 
-        // var timeTo = moment();
+        var timeFrom = gadgetUtil.timeFrom();
+        var timeTo = gadgetUtil.timeTo();
+        console.log("PROXY_MESSAGE_FLOW: TimeFrom: " + timeFrom + " TimeTo: " + timeTo);
 
-        // var qs = getQueryString();
-        // if(qs.timeFrom != null) {
-        //     timeFrom = qs.timeFrom;
-        // }
-        // if(qs.timeTo != null) {
-        //     timeTo = qs.timeTo;
-        // }
-        // console.log("TOP_APIS: TimeFrom: " + timeFrom + " TimeTo: " + timeTo); 
-        // fetchData(timeFrom, timeTo,null);  
+        gadgetUtil.fetchData(CONTEXT, {
+            type: TYPE,
+            timeFrom: timeFrom,
+            timeTo: timeTo
+        }, onData, onError);
 
-        var workers = {
-
-            "identifier": {
-                "consumers": 2,
-                "count": 20
+        var nodes = {
+            "a": {
+                "count": 2
             },
-            "lost-and-found": {
-                "consumers": 1,
-                "count": 1,
-                "inputQueue": "identifier",
-                "inputThroughput": 50
+            "b": {
+                "count": 5,
+                "parent": ["a"]
             },
-            "monitor": {
-                "consumers": 1,
-                "count": 0,
-                "inputQueue": "identifier",
-                "inputThroughput": 50
+            "c": {
+                "count": 4,
+                "parent": ["a"]
             },
-            "meta-enricher": {
-                "consumers": 4,
-                "count": 9900,
-                "inputQueue": "identifier",
-                "inputThroughput": 50
-            },
-            "geo-enricher": {
-                "consumers": 2,
-                "count": 1,
-                "inputQueue": "meta-enricher",
-                "inputThroughput": 50
+            "d": {
+                "count": 7,
+                "parent": ["b", "c"]
             }
         };
 
@@ -54,12 +37,12 @@
                 inner.attr("transform", "translate(" + d3.event.translate + ")" +
                     "scale(" + d3.event.scale + ")");
             });
-        svg.call(zoom);
-
+        // svg.call(zoom);
         var render = new dagreD3.render();
 
         // Left-to-right layout
         var g = new dagreD3.graphlib.Graph();
+
         g.setGraph({
             nodesep: 20,
             ranksep: 50,
@@ -68,97 +51,88 @@
             marginy: 20
         });
 
-        function draw(isUpdate) {
-            for (var id in workers) {
-                var worker = workers[id];
-                var className = worker.consumers ? "running" : "stopped";
-                if (worker.count > 10000) {
-                    className += " warn";
-                }
+        function draw() {
+            for (var id in nodes) {
+                var node = nodes[id];
+
                 var html = "<div>";
-                html += "<span class=status></span>";
-                html += "<span class=consumers>" + worker.consumers + "</span>";
                 html += "<span class=name>" + id + "</span>";
-                html += "<span class=queue><span class=counter>" + worker.count + "</span></span>";
+                html += "<span class=queue><span class=counter>" + node.count + "</span></span>";
                 html += "</div>";
+
+                var className = "foo";
 
                 g.setNode(id, {
                     labelType: "html",
-                    label: "<div>Mediator</div>",
+                    label: html,
                     rx: 5,
                     ry: 5,
                     padding: 5,
                     class: className
                 });
 
-                if (worker.inputQueue) {
-                    g.setEdge(worker.inputQueue, id, {
-                        label: worker.inputThroughput + "/s",
-                        width: 40
+                if (node.parent) {
+                    node.parent.forEach(function(parent) {
+                        g.setEdge(parent, id, {
+                            label: "s",
+                            width: 40
+                        });
                     });
+
                 }
             }
-
             inner.call(render, g);
-        }
-
-
+        };
 
         draw();
     });
 
-    // gadgets.HubSettings.onConnect = function() {
-    //     gadgets.Hub.subscribe(TOPIC, function(topic, data, subscriberData) {
-    //         onTimeRangeChanged(data);
-    //     });
-    // };
+    gadgets.HubSettings.onConnect = function() {
+        gadgets.Hub.subscribe(TOPIC, function(topic, data, subscriberData) {
+            onTimeRangeChanged(data);
+        });
+    };
 
-    // function onTimeRangeChanged(data) {
-    //    fetchData(data.timeFrom,data.timeTo,data.filter);
-    // }
+    function onTimeRangeChanged(data) {
+        gadgetUtil.fetchData(CONTEXT, {
+            type: TYPE,
+            timeFrom: data.timeFrom,
+            timeTo: data.timeTo
+        }, onData, onError);
+    };
 
-    // //Call the backend and read some data
-    // function fetchData(timeFrom, timeTo, filter) {
-    //     $.ajax({
-    //         url: CONTEXT + "?type=" + TYPE + "&timeFrom=" + timeFrom + "&timeTo=" + timeTo,
-    //         type: "GET",
-    //         success: function(data) {
-    //             onData(data);
-    //         },
-    //         error: function(msg) {
-    //             onError(msg);
-    //         }
-    //     });
-    // }
+    function onData(data) {
+        if (data.message.length == 0) {
+            $("#canvas").html('<div align="center" style="margin-top:20px"><h4>No records found.</h4></div>');
+            return;
+        }
+        $("#canvas").empty();
+        var columns = ["timestamp", "tps"];
+        var schema = [{
+            "metadata": {
+                "names": ["Time", "TPS"],
+                "types": ["time", "linear"]
+            },
+            "data": []
+        }];
 
-    // function onData(data) {
-    //     $("#canvas").empty();
-    //     var schema = [{
-    //         "metadata": {
-    //             "names": ["name", "requests"],
-    //             "types": ["ordinal", "linear"]
-    //         },
-    //         "data": []
-    //     }];
+        //sort the timestamps
+        data.message.sort(function(a, b) {
+            return a.timestamp - b.timestamp;
+        });
 
-    //     var config = {
-    //         charts: [{ type: "arc", x: "requests", color: "name", mode: "pie" }],
-    //         width: 400,
-    //         height: 250
-    //     }
+        data.message.forEach(function(row, i) {
+            var record = [];
+            columns.forEach(function(column) {
+                var value = row[column];
+                record.push(value);
+            });
+            schema[0].data.push(record);
+        });
 
-    //     data.forEach(function(row,i) {
-    //         schema[0].data.push([row.name,row.requests]);
-    //     });
+       
+    };
 
-    //     var onChartClick = function(event, item) {
-    //         parent.window.location = "/portal/dashboards/esb-analytics/proxies";
-    //     };
+    function onError(msg) {
 
-    //     var chart = new vizg(schema, config);
-    //     chart.draw("#canvas", [{ type: "click", callback: onChartClick }]);
-    // };
-
-    // function onError(msg) {
-
-    // };
+    };
