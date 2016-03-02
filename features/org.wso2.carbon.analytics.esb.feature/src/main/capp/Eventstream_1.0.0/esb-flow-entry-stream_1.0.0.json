@@ -5,8 +5,8 @@
   "description": "",
   "metaData": [
     {
-      "name": "host",
-      "type": "STRING"
+      "name": "compressed",
+      "type": "BOOL"
     }
   ],
   "payloadData": [
