@@ -109,7 +109,7 @@
                                     org.wso2.orbit.joda-time:joda-time
                                 </bundleDef>
                                 <bundleDef>
-                                    org.wso2.das4esb:org.wso2.carbon.analytics.esb:${esb.analytics.version}
+                                    org.wso2.analytics.esb:org.wso2.carbon.analytics.esb:${esb.analytics.version}
                                 </bundleDef>
                             </bundles>
                         </configuration>
