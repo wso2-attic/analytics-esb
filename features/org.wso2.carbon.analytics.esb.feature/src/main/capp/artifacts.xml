@@ -4,6 +4,7 @@
 	<dependency artifact="Eventstream" version="1.0.0" include="true" serverRole="DataAnalyticsServer"/>
         <dependency artifact="Eventsink" version="1.0.0" include="true" serverRole="DataAnalyticsServer"/>
         <dependency artifact="Eventreceiver" version="1.0.0" include="true" serverRole="DataAnalyticsServer"/>
+	<dependency artifact="GadgetCommons" version="1.0.0" include="true" serverRole="DataAnalyticsServer"/>
 	<dependency artifact="GadgetDTP" version="1.0.0" include="true" serverRole="DataAnalyticsServer"/>
 	<dependency artifact="GadgetOverallTPS" version="1.0.0" include="true" serverRole="DataAnalyticsServer"/>
 	<dependency artifact="GadgetOverallMessageCount" version="1.0.0" include="true" serverRole="DataAnalyticsServer"/>
