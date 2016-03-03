@@ -591,6 +591,10 @@
                                     <version>${carbon.event-processing.version}</version>
                                 </feature>
                                 <feature>
+                                    <id>org.wso2.carbon.event.processor.server.feature.group</id>
+                                    <version>${carbon.event-processing.version}</version>
+                                </feature>
+                                <feature>
                                     <id>org.wso2.carbon.event.tracer.feature.group</id>
                                     <version>${carbon.analytics.common.version}</version>
                                 </feature>
