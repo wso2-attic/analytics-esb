@@ -17,6 +17,7 @@
     var cacheTimeoutSeconds = 5;
     var loggedInUser = null;
 
+    //operation types
     var TYPE_OVERALL_TPS = 1;
     var TYPE_OVERALL_MESSAGE_COUNT = 2;
     var TYPE_OVERALL_FAULT_COUNT = 3;
@@ -26,6 +27,16 @@
     var TYPE_PROXY_MESSAGE_RATE = 7;
     var TYPE_PROXY_LATENCY = 8;
     var TYPE_PROXY_MESSAGES = 9;
+    var TYPE_PROXY_MESSAGE_FLOW = 10;
+    var TYPE_API_NAMES = 11;
+    var TYPE_API_MESSAGE_RATE = 12;
+    var TYPE_API_LATENCY = 13;
+    var TYPE_API_MESSAGES = 14;
+    var TYPE_API_MESSAGE_FLOW = 15;
+    var TYPE_MEDIATOR_NAMES = 16;
+    var TYPE_MEDIATOR_MESSAGE_RATE = 17;
+    var TYPE_MEDIATOR_LATENCY = 18;
+    var TYPE_MEDIATOR_MESSAGES = 19;
 
     if (configs.cacheTimeoutSeconds) {
         cacheTimeoutSeconds = parseInt(configs.cacheTimeoutSeconds);
@@ -111,16 +122,16 @@
             case TYPE_OVERALL_MESSAGE_COUNT:
             {
                 var result = [
-                    {"timestamp":1388514600000,"success":3456,"fault": 123},
-                    {"timestamp":1420050600000,"success":1345,"fault": 23},
-                    {"timestamp":1451586600000,"success":3890,"fault": 765},
-                    {"timestamp":1398882600000,"success":4563,"fault": 245},
-                    {"timestamp":1430422200000,"success":3421,"fault": 67},
-                    {"timestamp":1451590200000,"success":4567,"fault": 6},
-                    {"timestamp":1440790200000,"success":567,"fault": 4},
-                    {"timestamp":1440703800000,"success":5,"fault": 0},
-                    {"timestamp":1440709440000,"success":234,"fault": 1},
-                    {"timestamp":1440709560000,"success":4440,"fault": 2}
+                    {"timestamp":1388514600000,"success":3456,"faults": 123},
+                    {"timestamp":1420050600000,"success":1345,"faults": 23},
+                    {"timestamp":1451586600000,"success":3890,"faults": 765},
+                    {"timestamp":1398882600000,"success":4563,"faults": 245},
+                    {"timestamp":1430422200000,"success":3421,"faults": 67},
+                    {"timestamp":1451590200000,"success":4567,"faults": 6},
+                    {"timestamp":1440790200000,"success":567,"faults": 4},
+                    {"timestamp":1440703800000,"success":5,"faults": 0},
+                    {"timestamp":1440709440000,"success":234,"faults": 1},
+                    {"timestamp":1440709560000,"success":4440,"faults": 2}
                 ];
                 break;
             }
@@ -195,11 +206,109 @@
                 ];
                 break;
             }
+            case TYPE_PROXY_MESSAGE_FLOW:
+            {
+                result = ["Damn it! this needs to be thought..."];   
+                break;
+            }
             case TYPE_PROXY_MESSAGES:
             {
                 result = [
                     {"messageId":"8e29cfa8-6612-4bc6-a4a7-c76d20a6b572","payload":"some JSON string","entryType" : "Proxy:TestProxy","timestamp" : "2015-09-14 19:35:45"},
                     {"messageId":"a2a64d06-2d5d-4ee3-b76c-a83b7809867c","payload":"some JSON string","entryType" : "Proxy:TestProxy","timestamp" : "2015-09-12 19:35:45"}
+                ];   
+                break;
+            }
+            case TYPE_API_NAMES:
+            {
+                var result = ["Foo", "Bar", "Baz"];
+                break;
+            }
+            case TYPE_API_MESSAGE_RATE:
+            {
+                var result = [
+                    {"timestamp":1388514600000,"success":3456,"faults": 2},
+                    {"timestamp":1420050600000,"success":1345,"faults": 65},
+                    {"timestamp":1451586600000,"success":3890,"faults": 2},
+                    {"timestamp":1398882600000,"success":4563,"faults": 6},
+                    {"timestamp":1430422200000,"success":3421,"faults": 67},
+                    {"timestamp":1451590200000,"success":4567,"faults": 456},
+                    {"timestamp":1440790200000,"success":567,"faults": 234},
+                    {"timestamp":1440703800000,"success":5,"faults":4},
+                    {"timestamp":1440709440000,"success":234,"faults": 1}
+                ];
+                break;
+            }
+            case TYPE_API_LATENCY:
+            {
+                result = [
+                    {"timestamp":1388514600000,"value":8982},
+                    {"timestamp":1420050600000,"value":6344},
+                    {"timestamp":1451586600000,"value":6797},
+                    {"timestamp":1398882600000,"value":3906},
+                    {"timestamp":1430422200000,"value":5598},
+                    {"timestamp":1451590200000,"value":7995},
+                    {"timestamp":1440790200000,"value":7932},
+                    {"timestamp":1440703800000,"value":3821},
+                    {"timestamp":1440709440000,"value":5781},
+                    {"timestamp":1440709560000,"value":8601}
+                ];
+                break;
+            }
+            case TYPE_API_MESSAGE_FLOW:
+            {
+                result = ["Damn it! this needs to be thought..."];   
+                break;
+            }
+            case TYPE_API_MESSAGES:
+            {
+                result = [
+                    {"messageId":"8e29cfa8-6612-4bc6-a4a7-c76d20a6b572","payload":"some JSON string","entryType" : "API:AuthService","timestamp" : "2015-09-14 19:35:45"},
+                    {"messageId":"a2a64d06-2d5d-4ee3-b76c-a83b7809867c","payload":"some JSON string","entryType" : "API:TestAPI","timestamp" : "2015-09-12 19:35:45"}
+                ];   
+                break;
+            }
+            case TYPE_MEDIATOR_NAMES:
+            {
+                var result = ["Foo", "Bar", "Baz"];
+                break;
+            }
+            case TYPE_MEDIATOR_MESSAGE_RATE:
+            {
+                var result = [
+                    {"timestamp":1388514600000,"success":3456,"faults": 2},
+                    {"timestamp":1420050600000,"success":1345,"faults": 65},
+                    {"timestamp":1451586600000,"success":3890,"faults": 2},
+                    {"timestamp":1398882600000,"success":4563,"faults": 6},
+                    {"timestamp":1430422200000,"success":3421,"faults": 67},
+                    {"timestamp":1451590200000,"success":4567,"faults": 456},
+                    {"timestamp":1440790200000,"success":567,"faults": 234},
+                    {"timestamp":1440703800000,"success":5,"faults":4},
+                    {"timestamp":1440709440000,"success":234,"faults": 1}
+                ];
+                break;
+            }
+            case TYPE_MEDIATOR_LATENCY:
+            {
+                result = [
+                    {"timestamp":1388514600000,"value":8982},
+                    {"timestamp":1420050600000,"value":6344},
+                    {"timestamp":1451586600000,"value":6797},
+                    {"timestamp":1398882600000,"value":3906},
+                    {"timestamp":1430422200000,"value":5598},
+                    {"timestamp":1451590200000,"value":7995},
+                    {"timestamp":1440790200000,"value":7932},
+                    {"timestamp":1440703800000,"value":3821},
+                    {"timestamp":1440709440000,"value":5781},
+                    {"timestamp":1440709560000,"value":8601}
+                ];
+                break;
+            }
+            case TYPE_MEDIATOR_MESSAGES:
+            {
+                result = [
+                    {"messageId":"8e29cfa8-6612-4bc6-a4a7-c76d20a6b572","payload":"some JSON string","entryType" : "API:AuthService","timestamp" : "2015-09-14 19:35:45"},
+                    {"messageId":"a2a64d06-2d5d-4ee3-b76c-a83b7809867c","payload":"some JSON string","entryType" : "API:TestAPI","timestamp" : "2015-09-12 19:35:45"}
                 ];   
                 break;
             }
