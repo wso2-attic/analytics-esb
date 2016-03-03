@@ -16,6 +16,7 @@
     var AnalyticsCache = Packages.org.wso2.carbon.analytics.jsservice.AnalyticsCachedJSServiceConnector.AnalyticsCache;
     var cacheTimeoutSeconds = 5;
     var loggedInUser = null;
+    var timeRangeUtil = Packages.org.wso2.carbon.analytics.esb.util.TimeRangeUtils;
 
     //operation types
     var TYPE_OVERALL_TPS = 1;
@@ -93,30 +94,59 @@
     }
     if (connector != null && loggedInUser != null) {
         var result = null;
-        var tableName = "ESB-STAT-PER-MINUTE";
         var query = null;
         var resp = null;
         switch (type) {
             case TYPE_OVERALL_TPS:
             {
                 result = [];
-
                 var timeFrom = request.getParameter("timeFrom");
                 var timeTo = request.getParameter("timeTo");
-                // var tableName = "ESB-STAT-PER-" + timeRange.getUnit();
+                var timeUnit = timeRangeUtil.getSuitableTimeRangeUnit(timeFrom, timeTo);
+                var tableName = "ESB-STAT-PER-" + timeUnit;
                 query = stringify({
-                                      "fieldName": "facetStartTime",
-                                      "categoryPath": [],
-                                      "query": "startingTime : [" + timeFrom + " TO " + timeTo + "]",
-                                      "scoreFunction": "noOfInvocation/60"
-                                  });
-                resp = connector.drillDownCategories(loggedInUser, tableName, query);
+                    tableName: tableName,
+                    groupByField: "facetStartTime",
+                    query: "startingTime : [" + timeFrom + " TO " + timeTo + "]",
+                    aggregateFields: [
+                        {
+                            fieldName: "totalDuration",
+                            aggregate: "SUM",
+                            alias: "total_duration_sum"
+                        },
+                        {
+                            fieldName: "noOfInvocation",
+                            aggregate: "SUM",
+                            alias: "total_invocation_sum"
+                        }
+                    ],
+                    aggregateLevel: 0,
+                    parentPath: []
+                });
+                resp = connector.searchWithAggregates(loggedInUser, tableName, query);
                 var dataPoints = JSON.parse(resp.getMessage());
-                for (var key in dataPoints["categories"]) {
-                    if (dataPoints["categories"].hasOwnProperty(key)) {
-                        result.push({"timestamp": key, "tps": dataPoints["categories"][key]});
-                    }
+                var divider = 1;
+                if (timeUnit == 'MONTH') {
+                    divider = 3600 * 24 * 30;
+                } else if (timeUnit == 'DAY') {
+                    divider = 3600 * 24;
+                } else if (timeUnit == 'HOUR') {
+                    divider = 3600;
+                } else if (timeUnit == 'MINUTE') {
+                    divider = 60;
                 }
+
+                for (var i = 0; i < dataPoints.length; i++) {
+                    var obj = dataPoints[i];
+                    log.info(obj.values.total_invocation_sum);
+                    log.info(obj.values.total_duration_sum);
+
+                }
+                /*for (var key in dataPoints) {
+                 log.info(key);
+                 //result.push({"timestamp": key, "tps": dataPoints["categories"][key]});
+
+                 }*/
                 break;
             }
             case TYPE_OVERALL_MESSAGE_COUNT:
@@ -138,12 +168,15 @@
             case TYPE_TOP_INVOKED_PROXIES:
             {
                 result = [];
+                var timeFrom = request.getParameter("timeFrom");
+                var timeTo = request.getParameter("timeTo");
+                var tableName = "ESB-STAT-PER-MINUTE"
                 query = stringify({
-                                      "fieldName": "componentId",
-                                      "categoryPath": [],
-                                      "query": "*:*",
-                                      "scoreFunction": "noOfInvocation"
-                                  });
+                    "fieldName": "componentId",
+                    "categoryPath": [],
+                    "query": "startingTime : [" + timeFrom + " TO " + timeTo + "] AND componentType:\"Proxy Service\"",
+                    "scoreFunction": "noOfInvocation"
+                });
                 resp = connector.drillDownCategories(loggedInUser, tableName, query);
                 var drillDownResult = JSON.parse(resp.getMessage());
                 for (var key in drillDownResult["categories"]) {

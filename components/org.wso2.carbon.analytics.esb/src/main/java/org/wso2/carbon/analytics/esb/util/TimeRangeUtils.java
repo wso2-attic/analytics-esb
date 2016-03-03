@@ -18,13 +18,17 @@
 
 package org.wso2.carbon.analytics.esb.util;
 
+import org.joda.time.DateTime;
 import org.joda.time.DateTimeConstants;
-import org.joda.time.Interval;
+import org.joda.time.Days;
+import org.joda.time.Hours;
+import org.joda.time.Minutes;
+import org.joda.time.Months;
 import org.joda.time.MutableDateTime;
-import org.joda.time.Period;
 import org.wso2.carbon.analytics.esb.bean.TimeRange;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class TimeRangeUtils {
@@ -34,25 +38,28 @@ public class TimeRangeUtils {
     private TimeRangeUtils() {
     }
 
-    public RangeUnit getSuitableTimeRangeUnit(long from, long to) {
-        Interval interval = new Interval(from, to);
-        Period period = interval.toPeriod();
-        RangeUnit range = null;
-        if (period.getMonths() >= INTERVAL) {
+    public static String getSuitableTimeRangeUnit(long from, long to) {
+        DateTime fromTime = new DateTime(from);
+        DateTime toTime = new DateTime(to);
+        RangeUnit range;
+        if (Months.monthsBetween(fromTime.withTimeAtStartOfDay(), toTime.withTimeAtStartOfDay()).getMonths() >= INTERVAL) {
             range = RangeUnit.MONTH;
-        } else if (period.getDays() >= INTERVAL) {
+        } else if (Days.daysBetween(fromTime.withTimeAtStartOfDay(), toTime.withTimeAtStartOfDay()).getDays() >=
+                   INTERVAL) {
             range = RangeUnit.DAY;
-        } else if (period.getHours() >= INTERVAL) {
+        } else if (Hours.hoursBetween(fromTime.withTimeAtStartOfDay(), toTime.withTimeAtStartOfDay()).getHours() >=
+                   INTERVAL) {
             range = RangeUnit.HOUR;
-        } else if (period.getMinutes() >= INTERVAL) {
+        } else if (Minutes.minutesBetween(fromTime.withTimeAtStartOfDay(), toTime.withTimeAtStartOfDay()).getMinutes() >=
+                   INTERVAL) {
             range = RangeUnit.MINUTE;
         } else {
             range = RangeUnit.SECOND;
         }
-        return range;
+        return range.name();
     }
 
-    public List<TimeRange> getDateTimeRanges(long from, long to) {
+    public static List<TimeRange> getDateTimeRanges(long from, long to) {
         List<TimeRange> ranges = new ArrayList<>(10);
         MutableDateTime fromDate = new MutableDateTime(from);
         MutableDateTime toDate = new MutableDateTime(to);
