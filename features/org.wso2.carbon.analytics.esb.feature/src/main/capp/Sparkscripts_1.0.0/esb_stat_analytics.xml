@@ -113,7 +113,7 @@
         getSecondStartingTime(temp.year, temp.month, temp.day, temp.hour, temp.minute, temp.second) as startingTime,
         cast(getSecondStartingTime(year, month, day, hour, minute, second) as STRING) as facetStartTime
 		FROM (SELECT getYear(startTime) as year, getMonth(startTime) as month, getDay(startTime) as day, getHour(startTime) as hour, getMinute(startTime) as minute, getSeconds(startTime) as second, duration as duration, entryPoint, componentIndex, componentType, componentId, (CASE WHEN faultCount > 0 then 1 ELSE 0 END) as faultCount FROM esbFlowEvent) temp 
-		WHERE temp.componentType != "Proxy Service" 
+		WHERE temp.componentType = "Mediator" OR temp.componentType = "Sequence"
 		GROUP BY temp.year, temp.month, temp.day, temp.hour, temp.minute, temp.second, temp.entryPoint, temp.componentIndex, temp.componentId, temp.componentType;   
 
 		CREATE TEMPORARY TABLE mediatorStatPerMinute USING CarbonAnalytics
