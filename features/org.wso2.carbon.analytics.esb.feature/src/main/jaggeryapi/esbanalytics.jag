@@ -197,7 +197,20 @@
             }
             case TYPE_PROXY_NAMES:
             {
-                var result = ["Foo", "Bar", "Baz"];
+                result = [];
+                var tableName = "ESB-STAT-PER-MINUTE";
+
+                //TODO: change "componentId" to "componentName"
+                query = stringify({
+                                    "fieldName": "componentId",
+                                    "query": "componentType : \"Proxy Service\""
+                                  });
+                resp = connector.drillDownCategories(loggedInUser, tableName, query);
+                var proxyNames = JSON.parse(resp.getMessage());
+
+                for (var name in proxyNames["categories"]) {
+                    result.push(name);
+                }
                 break;
             }
             case TYPE_PROXY_MESSAGE_RATE:
@@ -239,15 +252,52 @@
             }
             case TYPE_PROXY_MESSAGES:
             {
-                result = [
-                    {"messageId":"8e29cfa8-6612-4bc6-a4a7-c76d20a6b572","payload":"some JSON string","entryType" : "Proxy:TestProxy","timestamp" : "2015-09-14 19:35:45"},
-                    {"messageId":"a2a64d06-2d5d-4ee3-b76c-a83b7809867c","payload":"some JSON string","entryType" : "Proxy:TestProxy","timestamp" : "2015-09-12 19:35:45"}
-                ];   
+                result = [];
+                var timeFrom = request.getParameter("timeFrom");
+                var timeTo = request.getParameter("timeTo");
+                var proxyName = request.getParameter("proxyName");
+                var tableName = "ESB-EVENT";
+
+                //TODO: change "componentId" to "componentName"
+                query = stringify({
+                                      "query": "componentType : \"Proxy Service\" AND componentId : " + proxyName + " AND startTime : [" + timeFrom + " TO " + timeTo + "]",
+                                      "start": 0,
+                                      "count": 100
+                                  });
+                resp = connector.search(loggedInUser, tableName, query);
+                var dataPoints = JSON.parse(resp.getMessage());
+                var columns = ["messageFlowId", "transportPropertyMap", "contextPropertyMap","beforePayload","timestamp"];
+                for (i = 0 ; i < dataPoints.length ; i++) {
+                    var temp = {};
+                    for (j = 0 ; j < columns.length ; j++) {
+                        var column = columns[j];
+                        if (column == "transportPropertyMap" || column == "contextPropertyMap") {
+                            temp[column] = stringify(dataPoints[i]["values"][column]["map"]);
+                        } else {
+                            temp[column] = dataPoints[i]["values"][column];
+                        }
+                    }
+                    temp["timestamp"] = dataPoints[i]["timestamp"];
+                    result.push(temp);
+                }
                 break;
             }
             case TYPE_API_NAMES:
             {
-                var result = ["Foo", "Bar", "Baz"];
+                result = [];
+                var tableName = "ESB-STAT-PER-MINUTE";
+
+                //TODO: change "componentId" to "componentName"
+                query = stringify({
+                                    "fieldName": "componentId",
+                                    "query": "componentType : API"
+                                  });
+                resp = connector.drillDownCategories(loggedInUser, tableName, query);
+                var proxyNames = JSON.parse(resp.getMessage());
+
+                for (var name in proxyNames["categories"]) {
+                    result.push(name);
+                }
                 break;
             }
             case TYPE_API_MESSAGE_RATE:
@@ -288,10 +338,35 @@
             }
             case TYPE_API_MESSAGES:
             {
-                result = [
-                    {"messageId":"8e29cfa8-6612-4bc6-a4a7-c76d20a6b572","payload":"some JSON string","entryType" : "API:AuthService","timestamp" : "2015-09-14 19:35:45"},
-                    {"messageId":"a2a64d06-2d5d-4ee3-b76c-a83b7809867c","payload":"some JSON string","entryType" : "API:TestAPI","timestamp" : "2015-09-12 19:35:45"}
-                ];   
+                result = [];
+                var timeFrom = request.getParameter("timeFrom");
+                var timeTo = request.getParameter("timeTo");
+                var apiName = request.getParameter("apiName");
+                var tableName = "ESB-EVENT";
+                log.info(stringify(request.getAllParameters("UTF-8")));
+
+                //TODO: change "componentId" to "componentName"
+                query = stringify({
+                                      "query": "componentType : API AND componentId : " + apiName + " AND startTime : [" + timeFrom + " TO " + timeTo + "]",
+                                      "start": 0,
+                                      "count": 100
+                                  });
+                resp = connector.search(loggedInUser, tableName, query);
+                var dataPoints = JSON.parse(resp.getMessage());
+                var columns = ["messageFlowId", "transportPropertyMap", "contextPropertyMap","beforePayload","timestamp"];
+                for (i = 0 ; i < dataPoints.length ; i++) {
+                    var temp = {};
+                    for (j = 0 ; j < columns.length ; j++) {
+                        var column = columns[j];
+                        if (column == "transportPropertyMap" || column == "contextPropertyMap") {
+                            temp[column] = stringify(dataPoints[i]["values"][column]["map"]);
+                        } else {
+                            temp[column] = dataPoints[i]["values"][column];
+                        }
+                    }
+                    temp["timestamp"] = dataPoints[i]["timestamp"];
+                    result.push(temp);
+                }
                 break;
             }
             case TYPE_MEDIATOR_NAMES:
@@ -332,10 +407,33 @@
             }
             case TYPE_MEDIATOR_MESSAGES:
             {
-                result = [
-                    {"messageId":"8e29cfa8-6612-4bc6-a4a7-c76d20a6b572","payload":"some JSON string","entryType" : "API:AuthService","timestamp" : "2015-09-14 19:35:45"},
-                    {"messageId":"a2a64d06-2d5d-4ee3-b76c-a83b7809867c","payload":"some JSON string","entryType" : "API:TestAPI","timestamp" : "2015-09-12 19:35:45"}
-                ];   
+                result = [];
+                var timeFrom = request.getParameter("timeFrom");
+                var timeTo = request.getParameter("timeTo");
+                var componentId = request.getParameter("componentId");
+                var tableName = "ESB-EVENT"; 
+                log.info(stringify(request.getAllParameters("UTF-8")));
+                query = stringify({
+                                      "query": "(componentType : Mediator OR  componentType : Sequence) AND componentId : " + componentId + " AND startTime : [" + timeFrom + " TO " + timeTo + "]",
+                                      "start": 0,
+                                      "count": 100
+                                  });
+                resp = connector.search(loggedInUser, tableName, query);
+                var dataPoints = JSON.parse(resp.getMessage());
+                var columns = ["messageFlowId", "transportPropertyMap", "contextPropertyMap","beforePayload","timestamp"];
+                for (i = 0 ; i < dataPoints.length ; i++) {
+                    var temp = {};
+                    for (j = 0 ; j < columns.length ; j++) {
+                        var column = columns[j];
+                        if (column == "transportPropertyMap" || column == "contextPropertyMap") {
+                            temp[column] = stringify(dataPoints[i]["values"][column]["map"]);
+                        } else {
+                            temp[column] = dataPoints[i]["values"][column];
+                        }
+                    }
+                    temp["timestamp"] = dataPoints[i]["timestamp"];
+                    result.push(temp);
+                }
                 break;
             }
             default:
