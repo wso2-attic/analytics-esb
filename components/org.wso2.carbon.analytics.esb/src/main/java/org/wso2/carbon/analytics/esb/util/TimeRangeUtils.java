@@ -28,7 +28,6 @@ import org.joda.time.MutableDateTime;
 import org.wso2.carbon.analytics.esb.bean.TimeRange;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 public class TimeRangeUtils {
@@ -57,6 +56,12 @@ public class TimeRangeUtils {
             range = RangeUnit.SECOND;
         }
         return range.name();
+    }
+
+    public static int getNoOfSecondForMonthInGivenTimestamp(long timestamp) {
+        DateTime time = new DateTime(timestamp);
+        System.out.println("time.dayOfMonth().getMaximumValue() = " + time.dayOfMonth().getMaximumValue());
+        return time.dayOfMonth().getMaximumValue() * DateTimeConstants.SECONDS_PER_DAY;
     }
 
     public static List<TimeRange> getDateTimeRanges(long from, long to) {

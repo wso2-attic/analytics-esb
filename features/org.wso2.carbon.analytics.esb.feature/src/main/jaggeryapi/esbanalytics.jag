@@ -110,11 +110,6 @@
                     query: "startingTime : [" + timeFrom + " TO " + timeTo + "]",
                     aggregateFields: [
                         {
-                            fieldName: "totalDuration",
-                            aggregate: "SUM",
-                            alias: "total_duration_sum"
-                        },
-                        {
                             fieldName: "noOfInvocation",
                             aggregate: "SUM",
                             alias: "total_invocation_sum"
@@ -135,18 +130,16 @@
                 } else if (timeUnit == 'MINUTE') {
                     divider = 60;
                 }
-
                 for (var i = 0; i < dataPoints.length; i++) {
                     var obj = dataPoints[i];
-                    log.info(obj.values.total_invocation_sum);
-                    log.info(obj.values.total_duration_sum);
-
+                    if (timeUnit == 'MONTH') {
+                        divider = timeRangeUtil.getNoOfSecondForMonthInGivenTimestamp(obj.values.facetStartTime[0]);
+                    }
+                    result.push({
+                        "timestamp": obj.values.facetStartTime[0],
+                        "tps": obj.values.total_invocation_sum / divider
+                    });
                 }
-                /*for (var key in dataPoints) {
-                 log.info(key);
-                 //result.push({"timestamp": key, "tps": dataPoints["categories"][key]});
-
-                 }*/
                 break;
             }
             case TYPE_OVERALL_MESSAGE_COUNT:
