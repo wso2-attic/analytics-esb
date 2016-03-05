@@ -10,16 +10,13 @@
 	<dependency artifact="GadgetOverallMessageCount" version="1.0.0" include="true" serverRole="DataAnalyticsServer"/>
 	<dependency artifact="GadgetTopProxies" version="1.0.0" include="true" serverRole="DataAnalyticsServer"/>
     <dependency artifact="GadgetTopAPIs" version="1.0.0" include="true" serverRole="DataAnalyticsServer"/>
-	<dependency artifact="GadgetProxySearch" version="1.0.0" include="true" serverRole="DataAnalyticsServer"/>
-	<dependency artifact="GadgetProxyLatency" version="1.0.0" include="true" serverRole="DataAnalyticsServer"/>
-	<dependency artifact="GadgetProxyMessageRate" version="1.0.0" include="true" serverRole="DataAnalyticsServer"/>
-	<dependency artifact="GadgetProxyMessageFlow" version="1.0.0" include="true" serverRole="DataAnalyticsServer"/>
-	<dependency artifact="GadgetProxyMessageTable" version="1.0.0" include="true" serverRole="DataAnalyticsServer"/>
+    <dependency artifact="GadgetRateChart" version="1.0.0" include="true" serverRole="DataAnalyticsServer"/>
+    <dependency artifact="GadgetLatencyChart" version="1.0.0" include="true" serverRole="DataAnalyticsServer"/>
+    <dependency artifact="GadgetSearchBox" version="1.0.0" include="true" serverRole="DataAnalyticsServer"/>
+    <dependency artifact="GadgetMessageTable" version="1.0.0" include="true" serverRole="DataAnalyticsServer"/>
 	
 	<dependency artifact="GadgetAllAPIsTable" version="1.0.0" include="true" serverRole="DataAnalyticsServer"/>
 	<dependency artifact="GadgetAllProxiesTable" version="1.0.0" include="true" serverRole="DataAnalyticsServer"/>
-	<dependency artifact="GadgetMediatorLineChart" version="1.0.0" include="true" serverRole="DataAnalyticsServer"/>
-	<dependency artifact="GadgetMediatorMessageTable" version="1.0.0" include="true" serverRole="DataAnalyticsServer"/>
 	<dependency artifact="Dashboard" version="1.0.0" include="true" serverRole="DataAnalyticsServer"/>
 	<dependency artifact="Sparkscripts" version="1.0.0" include="true" serverRole="DataAnalyticsServer"/>
     </artifact>

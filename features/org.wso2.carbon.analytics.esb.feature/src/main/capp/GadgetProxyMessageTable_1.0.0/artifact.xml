@@ -1,5 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<artifact name="GadgetProxyMessageTable" version="1.0.0" type="dashboards/gadget" serverRole="DataAnalyticsServer">
-    <file>Proxy_Message_Table</file>
-</artifact>
-

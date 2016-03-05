@@ -1,0 +1,15 @@
+{
+    "id": "Rate_Chart",
+    "title": "Message Rate",
+    "type": "gadget",
+    "thumbnail": "store://gadget/usa-business-revenue/index.png",
+    "data": {
+        "url": "store://gadget/Rate_Chart/index.xml"
+    },
+    "notify": {
+        "subscriber": {
+            "type": "proxy",
+            "description": "This notifies message generated in publisher"
+        }
+    }
+}

@@ -1,0 +1,13 @@
+{
+  "id": "Search_Box",
+  "title": "Search Box",
+  "type": "gadget",
+  "thumbnail": "store://gadget/usa-business-revenue/index.png",
+  "data": {
+    "url": "store://gadget/Search_Box/index.xml"
+  },
+  "styles": {
+    "borders": false,
+    "title": false
+  },
+}

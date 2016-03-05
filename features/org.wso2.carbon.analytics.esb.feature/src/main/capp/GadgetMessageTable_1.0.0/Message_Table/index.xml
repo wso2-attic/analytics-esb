@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Module>
+    <ModulePrefs title="Subscriber" description="Subscriber">
+        <Require feature="pubsub-2"/>
+        <Require feature="dynamic-height"/>
+    </ModulePrefs>
+    <Content type="html">
+        <![CDATA[
+        <head>
+          <link rel="stylesheet" type="text/css" href="../commons/css/jquery.dataTables.min.css"> 
+
+          <script src="../commons/js/jquery-1.10.2.js"></script> 
+          <script type="text/javascript" src="../commons/js/jquery.dataTables.min.js"></script>
+          <script type="text/javascript" src="../commons/js/moment.min.js"></script>
+
+          <script type="text/javascript" src="../commons/js/gadget-utils.js"></script>
+
+          <!-- Custom JS -->
+          <script type="text/javascript" src="js/gadgetconf.js"></script>
+          <script type="text/javascript" src="js/main.js"></script>
+        </head>
+        <body>
+              <div id="canvas" style="padding:10px;">
+
+               <table id="tblMessages" class="display" cellspacing="0" width="100%">
+                        <thead>
+                            <tr>
+                               
+                            </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                </table>
+                            
+
+               </div>
+        </body>
+        ]]>
+    </Content>
+</Module>
