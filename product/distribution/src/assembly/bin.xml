@@ -242,13 +242,6 @@
                 ../p2-profile-gen/target/wso2carbon-core-${carbon.kernel.version}/repository/deployment/server/jaggeryapps/portal
             </directory>
             <outputDirectory>${pom.artifactId}-${pom.version}/repository/deployment/server/jaggeryapps/portal</outputDirectory>
-            <excludes>
-                <exclude>controllers/index.jag</exclude>
-                <exclude>controllers/apis/analytics.jag</exclude>
-                <exclude>controllers/apis/rt.jag</exclude>
-                <exclude>modules/utils.js</exclude>
-                <exclude>extensions/components/gadget/index.js</exclude>
-            </excludes>
         </fileSet>
 
         <!-- Temporay bundling these files for the fix of DAS-332 --> 
