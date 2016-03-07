@@ -68,7 +68,7 @@
             charts: [{ type: "line", y: "TPS" }],
             width: width,
             height: height,
-            padding: { "top": 10, "left": 30, "bottom": 40, "right": 30 }
+            padding: { "top": 10, "left": 50, "bottom": 40, "right": 30 }
         };
         var chart = new vizg(schema, config);
         chart.draw("#canvas");

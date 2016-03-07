@@ -1,11 +1,12 @@
     var TYPE = 4;
     var TOPIC = "subscriber";
 
+    var timeFrom;
+    var timeTo;
+
     $(function() {
-        //if there are url elemements present, use them. 
-        //Otherwis use DEFAULT_END_TIME defined in the gadget-utils.js
-        var timeFrom = gadgetUtil.timeFrom();
-        var timeTo = gadgetUtil.timeTo();
+        timeFrom = gadgetUtil.timeFrom();
+        timeTo = gadgetUtil.timeTo();
         console.log("TOP_PROXIES: TimeFrom: " + timeFrom + " TimeTo: " + timeTo); 
         gadgetUtil.fetchData(CONTEXT, {
             type: TYPE,
@@ -21,10 +22,12 @@
     };
 
     function onTimeRangeChanged(data) {
+        timeFrom = data.timeFrom;
+        timeTo = data.timeTo;
         gadgetUtil.fetchData(CONTEXT, {
            type: TYPE,
-           timeFrom: data.timeFrom,
-           timeTo: data.timeTo
+           timeFrom: timeFrom,
+           timeTo: timeTo
        }, onData, onError);
     }
 
@@ -60,7 +63,7 @@
             if(item != null) {
                 proxyName = item.datum.name;
             }
-            parent.window.location = PROXY_PAGE_URL + "?" + PARAM_ID + "=" + proxyName;
+            parent.window.location = PROXY_PAGE_URL + "?" + PARAM_ID + "=" + proxyName + "&timeFrom=" + timeFrom + "&timeTo=" + timeTo;
         };
 
         var chart = new vizg(schema, config);
