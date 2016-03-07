@@ -286,7 +286,7 @@
                 result = [];
                 var timeFrom = request.getParameter("timeFrom");
                 var timeTo = request.getParameter("timeTo");
-                var proxyName = request.getParameter("proxyName");
+                var proxyName = request.getParameter("id");
                 var tableName = "ESB-EVENT";
 
                 //TODO: change "componentId" to "componentName"
@@ -372,7 +372,7 @@
                 result = [];
                 var timeFrom = request.getParameter("timeFrom");
                 var timeTo = request.getParameter("timeTo");
-                var apiName = request.getParameter("apiName");
+                var apiName = request.getParameter("id");
                 var tableName = "ESB-EVENT";
                 log.info(stringify(request.getAllParameters("UTF-8")));
 
@@ -441,7 +441,7 @@
                 result = [];
                 var timeFrom = request.getParameter("timeFrom");
                 var timeTo = request.getParameter("timeTo");
-                var componentId = request.getParameter("componentId");
+                var componentId = request.getParameter("id");
                 var tableName = "ESB-EVENT"; 
                 log.info(stringify(request.getAllParameters("UTF-8")));
                 query = stringify({
