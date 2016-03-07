@@ -4,7 +4,7 @@ $(function() {
     var qs = gadgetUtil.getQueryString();
 
     gadgetUtil.fetchData(CONTEXT, {
-        type: page.type
+        type: page.type,
     }, onData, onError);
 
     function onData(response) {

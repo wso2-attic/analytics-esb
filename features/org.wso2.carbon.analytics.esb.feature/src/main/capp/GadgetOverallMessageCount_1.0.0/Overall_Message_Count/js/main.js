@@ -53,7 +53,7 @@
         data.message.forEach(function(row, i) {
             var timestamp = row['timestamp'];
             var success = row["success"];
-            var fault = row["fault"];
+            var fault = row["faults"];
 
             schema[0].data.push([timestamp,"SUCCESS", success]);
             schema[0].data.push([timestamp,"FAULT", fault]);

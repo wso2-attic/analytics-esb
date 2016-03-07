@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Module>
+    <ModulePrefs title="Date Range Picker" description="g1" height="250">
+        <Require feature="pubsub-2"/>
+        <Require feature="dynamic-height"/>
+    </ModulePrefs>
+    <Content type="html">
+        <![CDATA[
+        <head>
+          <script src="js/jquery-1.10.2.js"></script> 
+          <script type="text/javascript" src="js/moment.min.js"></script>
+
+          <link rel="stylesheet" type="text/css" href="/portal/libs/bootstrap_3.3.5/css/bootstrap.min.css" />
+          <link rel="stylesheet" type="text/css" href="/portal/libs/theme-wso2_1.0/css/theme-wso2.css" />
+           
+          <!-- Include Date Range Picker -->
+          <link rel="stylesheet" type="text/css" href="css/font-awesome.min.css" />
+          <script type="text/javascript" src="js/daterangepicker.js"></script>
+          <link rel="stylesheet" type="text/css" href="css/daterangepicker.css" />
+
+          <!-- Custom JS -->
+          <script src="../commons/js/gadget-utils.js"></script>
+          <script src="js/main.js"></script>
+
+        </head>
+        <body>
+            
+            <div class="clearfix">
+                <div class="btn-group pull-right" id="date-select">
+                    <button id="btnLastHour" type="button" class="btn btn-default">Last Hour</button>
+                    <button id="btnLastDay"  type="button" class="btn btn-default">Yesterday</button>
+                    <button id="btnLastMonth" type="button" class="btn btn-default">Last 30 Days</button>
+                    <button id="btnLastYear" type="button" class="btn btn-default">Last Year</button>
+                    <div id="reportrange" class="btn-group" role="group">
+                        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <i class="glyphicon glyphicon-calendar fa fa-calendar"></i> <span></span>
+                            <b class="caret"></b>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+        </body>
+        ]]>
+    </Content>
+</Module>

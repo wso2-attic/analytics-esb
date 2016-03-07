@@ -29,6 +29,10 @@
     }
 
     function onData(data) {
+        if (data.message.length == 0) {
+            $("#canvas").html('<div align="center" style="margin-top:20px"><h4>No records found.</h4></div>');
+            return;
+        }
         $("#canvas").empty();
         var schema = [{
             "metadata": {
@@ -56,7 +60,7 @@
             if(item != null) {
                 proxyName = item.datum.name;
             }
-            parent.window.location = PROXY_PAGE_URL + "?" + PARAM_PROXY_NAME + "=" + proxyName;
+            parent.window.location = PROXY_PAGE_URL + "?" + PARAM_ID + "=" + proxyName;
         };
 
         var chart = new vizg(schema, config);

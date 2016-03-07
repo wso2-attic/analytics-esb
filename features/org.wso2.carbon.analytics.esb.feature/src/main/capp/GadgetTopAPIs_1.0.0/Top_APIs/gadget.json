@@ -8,7 +8,7 @@
     },
     "listen": {
         "subscriber": {
-            "type": "overview",
+            "type": "date-range",
             "description": "Used to listen to Any message of type state"
         }
     }

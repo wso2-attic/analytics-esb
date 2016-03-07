@@ -6,9 +6,9 @@
     "data": {
         "url": "store://gadget/Latency_Chart/index.xml"
     },
-    "notify": {
+    "listen": {
         "subscriber": {
-            "type": "proxy",
+            "type": "date-range",
             "description": "This notifies message generated in publisher"
         }
     }

@@ -262,7 +262,7 @@
             </directory>
             <outputDirectory>${pom.artifactId}-${pom.version}/repository/deployment/server/jaggeryapps/portal/configs</outputDirectory>
             <includes>
-                <include>designer.json</include>
+                <include>**/*</include>
             </includes>
         </fileSet>
 

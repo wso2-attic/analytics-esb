@@ -22,6 +22,7 @@
           <script src="../commons/js/d3.min.js"></script>
           <script src="../commons/js/vega.js"></script>
           <script src="../commons/js/VizGrammar.min.js"></script>
+          <script src="/portal/extensions/themes/analytics/js/colorbrewer.js"></script>
           <script src="/portal/extensions/themes/analytics/js/VizGrammarSettings.js"></script>
 
           <script src="../commons/js/gadget-utils.js"></script>

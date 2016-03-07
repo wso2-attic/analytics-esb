@@ -29,6 +29,10 @@
     }
 
     function onData(data) {
+        if (data.message.length == 0) {
+            $("#canvas").html('<div align="center" style="margin-top:20px"><h4>No records found.</h4></div>');
+            return;
+        }
         $("#canvas").empty();
         var schema = [{
             "metadata": {
@@ -44,7 +48,7 @@
             charts : [{type: "bar",  y : "requests", orientation : "left"}],
             width: 500,
             height: 200,
-            padding: { "top": 10, "left": 100, "bottom": 40, "right": 10 }
+            padding: { "top": 10, "left": 140, "bottom": 40, "right": 10 }
         };
 
         data.message.forEach(function(row,i) {
@@ -52,11 +56,11 @@
         });
 
         var onChartClick = function(event, item) {
-            var proxyId = -1;
+            var apiName = -1;
             if(item != null) {
-                proxyId = item.datum.name;
+                apiName = item.datum.name;
             }
-            parent.window.location = "/portal/dashboards/esb-analytics/proxies" + "?id=" + proxyId;
+            parent.window.location = API_PAGE_URL + "?" + PARAM_ID + "=" + apiName;
         };
 
         var chart = new vizg(schema, config);

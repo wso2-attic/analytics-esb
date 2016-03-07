@@ -8,7 +8,7 @@
     },
     "listen": {
         "subscriber": {
-            "type": "proxy",
+            "type": "time-range",
             "description": "Used to listen to Any message of type state"
         }
     }
