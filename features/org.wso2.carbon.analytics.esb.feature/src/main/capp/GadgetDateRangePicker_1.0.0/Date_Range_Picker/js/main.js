@@ -41,14 +41,13 @@ $(function() {
     $("#btnLastHour").click(function() {
         $("#date-select button").removeClass("active");
         $(this).addClass("active");
-        var timeFrom = new Date(moment().subtract(24, 'hours')).getTime();
+        var timeFrom = new Date(moment().subtract(1, 'hours')).getTime();
         var timeTo = new Date(moment()).getTime();
         var message = {
             timeFrom: timeFrom,
             timeTo: timeTo
         };
         gadgets.Hub.publish(TOPIC, message);
-        parent.window.location.hash = "#timeFrom";
     });
 
     $("#btnLastDay").click(function() {
@@ -80,6 +79,10 @@ $(function() {
         };
         gadgets.Hub.publish(TOPIC, message);
     });
+
+    function appendToHash(timeFrom,timeTo) {
+        parent.window.location.hash = "#timeFrom=" + timeFrom + "&timeTo=" + timeTo;
+    }
 
 });
 
