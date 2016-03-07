@@ -297,7 +297,7 @@
                                   });
                 resp = connector.search(loggedInUser, tableName, query);
                 var dataPoints = JSON.parse(resp.getMessage());
-                var columns = ["messageFlowId", "transportPropertyMap", "contextPropertyMap","beforePayload","timestamp"];
+                var columns = ["messageFlowId", "transportPropertyMap", "contextPropertyMap","beforePayload","timestamp","host"];
                 for (i = 0 ; i < dataPoints.length ; i++) {
                     var temp = {};
                     for (j = 0 ; j < columns.length ; j++) {
@@ -384,7 +384,7 @@
                                   });
                 resp = connector.search(loggedInUser, tableName, query);
                 var dataPoints = JSON.parse(resp.getMessage());
-                var columns = ["messageFlowId", "transportPropertyMap", "contextPropertyMap","beforePayload","timestamp"];
+                var columns = ["messageFlowId", "transportPropertyMap", "contextPropertyMap","beforePayload","timestamp","host"];
                 for (i = 0 ; i < dataPoints.length ; i++) {
                     var temp = {};
                     for (j = 0 ; j < columns.length ; j++) {
