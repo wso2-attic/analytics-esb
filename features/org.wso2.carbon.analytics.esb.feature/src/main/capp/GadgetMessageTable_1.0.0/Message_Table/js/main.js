@@ -69,7 +69,7 @@ function onData(response) {
             columns.forEach(function(column) {
                 var td = jQuery('<td/>');
                 var value = row[column.name];
-                td.append(value);
+                td.text(value);
                 td.appendTo(tr);
 
             });
