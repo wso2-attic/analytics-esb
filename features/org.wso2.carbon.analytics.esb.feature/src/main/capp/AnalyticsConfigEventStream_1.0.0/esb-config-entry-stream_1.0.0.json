@@ -9,6 +9,10 @@
       "type": "STRING"
     },
     {
+      "name": "entryName",
+      "type": "STRING"
+    },
+    {
       "name": "configData",
       "type": "STRING"
     }
