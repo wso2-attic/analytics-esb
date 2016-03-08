@@ -110,7 +110,7 @@
                     query: "startingTime : [" + timeFrom + " TO " + timeTo + "]",
                     aggregateFields: [
                         {
-                            fieldName: "noOfInvocation",
+                            fields: ["noOfInvocation"],
                             aggregate: "SUM",
                             alias: "total_invocation_sum"
                         }
@@ -155,12 +155,12 @@
                     query: "startingTime : [" + timeFrom + " TO " + timeTo + "]",
                     aggregateFields: [
                         {
-                            fieldName: "noOfInvocation",
+                            fields: ["noOfInvocation"],
                             aggregate: "SUM",
                             alias: "total_invocation_sum"
                         },
                         {
-                            fieldName: "faultCount",
+                            fields: ["faultCount"],
                             aggregate: "SUM",
                             alias: "total_fault_count"
                         }
@@ -260,12 +260,12 @@
                     query: query,
                     aggregateFields: [
                         {
-                            fieldName: "noOfInvocation",
+                            fields: ["noOfInvocation"],
                             aggregate: "SUM",
                             alias: "total_invocation_sum"
                         },
                         {
-                            fieldName: "faultCount",
+                            fields: ["faultCount"],
                             aggregate: "SUM",
                             alias: "total_fault_count"
                         }
@@ -387,12 +387,12 @@
                     query: query,
                     aggregateFields: [
                         {
-                            fieldName: "noOfInvocation",
+                            fields: ["noOfInvocation"],
                             aggregate: "SUM",
                             alias: "total_invocation_sum"
                         },
                         {
-                            fieldName: "faultCount",
+                            fields: ["faultCount"],
                             aggregate: "SUM",
                             alias: "total_fault_count"
                         }
