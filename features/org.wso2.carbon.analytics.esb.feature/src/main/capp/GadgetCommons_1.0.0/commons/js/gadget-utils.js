@@ -30,6 +30,7 @@ var TYPE_MEDIATOR = "mediator";
 var TYPE_MESSAGE = "message";
 
 var PARAM_ID = "id";
+var PARAM_TYPE = "type";
 
 var PROXY_PAGE_URL = BASE_URL + TYPE_PROXY;
 var API_PAGE_URL = BASE_URL + TYPE_API;
@@ -54,6 +55,16 @@ function GadgetUtil() {
         return qsJsonObject;
     };
 
+    this.getGadgetConfig = function (typeName) {
+        var config = null;
+        configs.forEach(function(item, i) {
+            if (item.name === typeName) {
+                config = item;
+            }
+        });
+        return config;
+    };
+
     this.getCurrentPage = function() {
         var page, pageName;
         var href = parent.window.location.href;
@@ -63,12 +74,7 @@ function GadgetUtil() {
         } else {
             pageName = lastSegment.substr(0, lastSegment.indexOf('?'));
         }
-        pages.forEach(function(item, i) {
-            if (item.name === pageName) {
-                page = item;
-            }
-        });
-        return page;
+        return this.getGadgetConfig(pageName);
     };
 
     this.timeFrom = function() {

@@ -1,4 +1,4 @@
-var pages = [{
+var configs = [{
         name: TYPE_PROXY,
         type: 9,
         columns: [
