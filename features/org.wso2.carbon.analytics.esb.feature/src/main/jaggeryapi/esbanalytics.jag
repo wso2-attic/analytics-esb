@@ -187,7 +187,7 @@
                 var timeTo = request.getParameter("timeTo");
                 var tableName = "ESB-STAT-PER-MINUTE"
                 query = stringify({
-                    "fieldName": "componentId",
+                    "fieldName": "componentName",
                     "categoryPath": [],
                     "query": "startingTime : [" + timeFrom + " TO " + timeTo + "] AND componentType:\"Proxy Service\"",
                     "scoreFunction": "noOfInvocation"
@@ -208,7 +208,7 @@
                 var timeTo = request.getParameter("timeTo");
                 var tableName = "ESB-STAT-PER-MINUTE"
                 query = stringify({
-                    "fieldName": "componentId",
+                    "fieldName": "componentName",
                     "categoryPath": [],
                     "query": "startingTime : [" + timeFrom + " TO " + timeTo + "] AND componentType:API",
                     "scoreFunction": "noOfInvocation"
@@ -226,10 +226,8 @@
             {
                 result = [];
                 var tableName = "ESB-STAT-PER-MINUTE";
-
-                //TODO: change "componentId" to "componentName"
                 query = stringify({
-                                    "fieldName": "componentId",
+                                    "fieldName": "componentName",
                                     "query": "componentType : \"Proxy Service\""
                                   });
                 resp = connector.drillDownCategories(loggedInUser, tableName, query);
@@ -249,9 +247,9 @@
                 var proxyName = request.getParameter("id");
                 if (timeFrom && timeTo) {
                     timeUnit = timeRangeUtil.getSuitableTimeRangeUnit(timeFrom, timeTo);
-                    query = "componentType : \"Proxy Service\" AND componentId : " + proxyName + " AND startingTime : [" + timeFrom + " TO " + timeTo + "]";
+                    query = "componentType : \"Proxy Service\" AND _componentName : \"" + proxyName + "\" AND startingTime : [" + timeFrom + " TO " + timeTo + "]";
                 } else {
-                    query = "componentType : \"Proxy Service\" AND componentId : " + proxyName;
+                    query = "componentType : \"Proxy Service\" AND _componentName : \"" + proxyName + "\"";
                 }
                 var tableName = "ESB-STAT-PER-" + timeUnit;
                 query = stringify({
@@ -273,6 +271,7 @@
                     aggregateLevel: 0,
                     parentPath: []
                 });
+    
                 resp = connector.searchWithAggregates(loggedInUser, tableName, query);
                 var dataPoints = JSON.parse(resp.getMessage());
                 for (var i = 0; i < dataPoints.length; i++) {
@@ -295,7 +294,7 @@
                 var proxyName = request.getParameter("id");
                 query = stringify({
                     tableName: tableName,
-                    query: "startingTime : [" + timeFrom + " TO " + timeTo + "] AND componentType:\"Proxy Service\" AND componentId : " + proxyName,
+                    query: "startingTime : [" + timeFrom + " TO " + timeTo + "] AND componentType:\"Proxy Service\" AND _componentName : \"" + proxyName + "\"",
                     start: 0,
                     count: 60
                 });
@@ -324,10 +323,8 @@
                 var timeTo = request.getParameter("timeTo");
                 var proxyName = request.getParameter("id");
                 var tableName = "ESB-EVENT";
-
-                //TODO: change "componentId" to "componentName"
                 query = stringify({
-                                      "query": "componentType : \"Proxy Service\" AND componentId : " + proxyName + " AND startTime : [" + timeFrom + " TO " + timeTo + "]",
+                                      "query": "componentType : \"Proxy Service\" AND _componentName : \"" + proxyName + "\" AND startTime : [" + timeFrom + " TO " + timeTo + "]",
                                       "start": 0,
                                       "count": 100
                                   });
@@ -353,10 +350,8 @@
             {
                 result = [];
                 var tableName = "ESB-STAT-PER-MINUTE";
-
-                //TODO: change "componentId" to "componentName"
                 query = stringify({
-                                    "fieldName": "componentId",
+                                    "fieldName": "componentName",
                                     "query": "componentType : API"
                                   });
                 resp = connector.drillDownCategories(loggedInUser, tableName, query);
@@ -376,9 +371,9 @@
                 var apiName = request.getParameter("id");
                 if (timeFrom && timeTo) {
                     timeUnit = timeRangeUtil.getSuitableTimeRangeUnit(timeFrom, timeTo);
-                    query = "componentType : API AND componentId : " + apiName + " AND startingTime : [" + timeFrom + " TO " + timeTo + "]";
+                    query = "componentType : API AND _componentName : \"" + apiName + "\" AND startingTime : [" + timeFrom + " TO " + timeTo + "]";
                 } else {
-                    query = "componentType : API AND componentId : " + apiName;
+                    query = "componentType : API AND _componentName : \"" + apiName + "\"";
                 }
                 var tableName = "ESB-STAT-PER-" + timeUnit;
                 query = stringify({
@@ -422,7 +417,7 @@
                 var apiName = request.getParameter("id");
                 query = stringify({
                     tableName: tableName,
-                    query: "startingTime : [" + timeFrom + " TO " + timeTo + "] AND componentType: API AND componentId : " + apiName,
+                    query: "startingTime : [" + timeFrom + " TO " + timeTo + "] AND componentType: API AND _componentName : \"" + apiName + "\"",
                     start: 0,
                     count: 60
                 });
@@ -452,9 +447,8 @@
                 var apiName = request.getParameter("id");
                 var tableName = "ESB-EVENT";
 
-                //TODO: change "componentId" to "componentName"
                 query = stringify({
-                                      "query": "componentType : API AND componentId : " + apiName + " AND startTime : [" + timeFrom + " TO " + timeTo + "]",
+                                      "query": "componentType : API AND _componentName : \"" + apiName + "\" AND startTime : [" + timeFrom + " TO " + timeTo + "]",
                                       "start": 0,
                                       "count": 100
                                   });
@@ -520,7 +514,7 @@
                 var componentId = request.getParameter("id");
                 var tableName = "ESB-EVENT"; 
                 query = stringify({
-                                      "query": "(componentType : Mediator OR  componentType : Sequence) AND componentId : " + componentId + " AND startTime : [" + timeFrom + " TO " + timeTo + "]",
+                                      "query": "(componentType : Mediator OR  componentType : Sequence) AND _componentId : \"" + componentId + "\" AND startTime : [" + timeFrom + " TO " + timeTo + "]",
                                       "start": 0,
                                       "count": 100
                                   });
