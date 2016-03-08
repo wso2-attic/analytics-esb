@@ -1,14 +1,16 @@
 var TOPIC = "subscriber";
+var timeFrom;
+var timeTo;
 var page = gadgetUtil.getCurrentPage();
+var qs = gadgetUtil.getQueryString();
 
 $(function() {
-    var qs = gadgetUtil.getQueryString();
     if (qs[PARAM_ID] == null) {
         $("#canvas").html(gadgetUtil.getDefaultText());
         return;
     }
-    var timeFrom = gadgetUtil.timeFrom();
-    var timeTo = gadgetUtil.timeTo();
+    timeFrom = gadgetUtil.timeFrom();
+    timeTo = gadgetUtil.timeTo();
     console.log("MESSAGE_TABLE[" + page.name + "]: TimeFrom: " + timeFrom + " TimeTo: " + timeTo);
 
     gadgetUtil.fetchData(CONTEXT, {
@@ -26,7 +28,7 @@ $(function() {
             dataTable.$('tr.selected').removeClass('selected');
             $(this).addClass('selected');
         }
-        parent.window.location = MESSAGE_PAGE_URL + "?" + PARAM_ID + "=" + id;
+        parent.window.location = MESSAGE_PAGE_URL + "?" + PARAM_ID + "=" + id + "&timeFrom=" + timeFrom + "&timeTo=" + timeTo;
     });
 
 });
@@ -38,9 +40,11 @@ gadgets.HubSettings.onConnect = function() {
 };
 
 function onTimeRangeChanged(data) {
+    timeFrom = data.timeFrom;
+    timeTo = data.timeTo;
     gadgetUtil.fetchData(CONTEXT, {
         type: page.type,
-        id: page.id,
+        id: qs.id,
         timeFrom: timeFrom,
         timeTo: timeTo
     }, onData, onError);
@@ -49,12 +53,12 @@ function onTimeRangeChanged(data) {
 function onData(response) {
     try {
         var data = response.message;
+        console.log(data.length); 
         if (data.length == 0) {
             $("#canvas").html('<div align="center" style="margin-top:20px"><h4>No records found.</h4></div>');
             return;
         }
         $("#tblMessages tbody").empty();
-        
         var columns = page.columns;
         var thead = $("#tblMessages thead tr");
         columns.forEach(function(column) {

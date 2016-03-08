@@ -1,8 +1,8 @@
 var TOPIC = "subscriber";
 var page = gadgetUtil.getCurrentPage();
+var qs = gadgetUtil.getQueryString();
 
 $(function() {
-    var qs = gadgetUtil.getQueryString();
     if (qs[PARAM_ID] == null) {
         $("#canvas").html(gadgetUtil.getDefaultText());
         return;
@@ -28,9 +28,9 @@ gadgets.HubSettings.onConnect = function() {
 function onTimeRangeChanged(data) {
     gadgetUtil.fetchData(CONTEXT, {
         type: page.type,
-        id: page.id,
-        timeFrom: timeFrom,
-        timeTo: timeTo
+        id: qs.id,
+        timeFrom: data.timeFrom,
+        timeTo: data.timeTo
     }, onData, onError);
 };
 
@@ -39,6 +39,7 @@ function onData(response) {
         var data = response.message;
         if (data.length == 0) {
             $("#canvas").html(gadgetUtil.getEmptyRecordsText());
+            return;
         }
         var columns = ["timestamp", "success", "faults"];
         var schema = [{
@@ -53,7 +54,6 @@ function onData(response) {
         data.sort(function(a, b) {
             return a.timestamp - b.timestamp;
         });
-
         data.forEach(function(row, i) {
             var timestamp = row['timestamp'];
             var success = row["success"];
