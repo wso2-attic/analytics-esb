@@ -2,6 +2,7 @@
 
     var timeFrom;
     var timeTo;
+    var timeUnit = null;
     var prefs = new gadgets.Prefs();
     var config = gadgetUtil.getGadgetConfig(prefs.getString(PARAM_TYPE));
     $(function() {
@@ -28,6 +29,7 @@
     function onTimeRangeChanged(data) {
         timeFrom = data.timeFrom;
         timeTo = data.timeTo;
+        timeUnit = data.timeUnit;
         gadgetUtil.fetchData(CONTEXT, {
            type: config.type,
            timeFrom: timeFrom,
@@ -66,7 +68,12 @@
                 if(item != null) {
                     id = item.datum.name;
                 }
-                var targetUrl = config.targetUrl + "?" + PARAM_ID + "=" + id + "&timeFrom=" + timeFrom + "&timeTo=" + timeTo;
+                var targetUrl = config.targetUrl + "?" + PARAM_ID + "=" + id + "&timeFrom=" 
+                + timeFrom + "&timeTo=" + timeTo;
+
+                if(timeUnit != null) {
+                    targetUrl +=  "&timeUnit=" + timeUnit;
+                }
                 parent.window.location = targetUrl;
             };
             var chart = new vizg(schema, chartConfig);

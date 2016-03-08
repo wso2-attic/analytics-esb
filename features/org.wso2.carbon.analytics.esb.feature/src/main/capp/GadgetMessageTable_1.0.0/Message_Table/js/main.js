@@ -1,6 +1,7 @@
 var TOPIC = "subscriber";
 var timeFrom;
 var timeTo;
+var timeUnit = null;
 var page = gadgetUtil.getCurrentPage();
 var qs = gadgetUtil.getQueryString();
 
@@ -28,7 +29,11 @@ $(function() {
             dataTable.$('tr.selected').removeClass('selected');
             $(this).addClass('selected');
         }
-        parent.window.location = MESSAGE_PAGE_URL + "?" + PARAM_ID + "=" + id + "&timeFrom=" + timeFrom + "&timeTo=" + timeTo;
+        if( timeUnit == null) {
+            timeUnit = qs.timeUnit;
+        }
+        var targetUrl = MESSAGE_PAGE_URL + "?" + PARAM_ID + "=" + id + "&timeFrom=" + timeFrom + "&timeTo=" + timeTo + "&timeUnit=" + timeUnit;;
+        parent.window.location = targetUrl;
     });
 
 });
@@ -42,6 +47,7 @@ gadgets.HubSettings.onConnect = function() {
 function onTimeRangeChanged(data) {
     timeFrom = data.timeFrom;
     timeTo = data.timeTo;
+    timeUnit = data.timeUnit;
     gadgetUtil.fetchData(CONTEXT, {
         type: page.type,
         id: qs.id,

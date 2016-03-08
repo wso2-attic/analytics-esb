@@ -15,6 +15,14 @@ $(function() {
     var count = 0;
     console.log("TimeFrom: " + timeFrom + " TimeTo: " + timeTo);
 
+    //make the selected time range highlighted
+    var timeUnit = qs.timeUnit;
+    if(timeUnit != null) {
+        $("#btnLast" + timeUnit).addClass("active");
+    } else {
+        $("#btnLastMonth").addClass("active");
+    }
+
     cb(moment().subtract(29, 'days'), moment());
 
     function cb(start, end) {
@@ -22,14 +30,13 @@ $(function() {
         if (count != 0) {
             var message = {
                 timeFrom: new Date(start).getTime(),
-                timeTo: new Date(end).getTime()
+                timeTo: new Date(end).getTime(),
+                timeUnit: "Custom"
             };
             gadgets.Hub.publish(TOPIC, message);
         }
         count++;
         // parent.window.location.hash = "some";
-
-        $("#btnLastMonth").addClass("active");
     }
 
     $('#reportrange').daterangepicker({
@@ -45,7 +52,8 @@ $(function() {
         var timeTo = new Date(moment()).getTime();
         var message = {
             timeFrom: timeFrom,
-            timeTo: timeTo
+            timeTo: timeTo,
+            timeUnit: "Hour"
         };
         gadgets.Hub.publish(TOPIC, message);
     });
@@ -55,7 +63,8 @@ $(function() {
         $(this).addClass("active");
         var message = {
             timeFrom: new Date(moment().subtract(1, 'day')).getTime(),
-            timeTo: new Date(moment()).getTime()
+            timeTo: new Date(moment()).getTime(),
+            timeUnit: "Day"
         };
         gadgets.Hub.publish(TOPIC, message);
     });
@@ -65,7 +74,8 @@ $(function() {
         $(this).addClass("active");
         var message = {
             timeFrom: new Date(moment().subtract(29, 'days')).getTime(),
-            timeTo: new Date(moment()).getTime()
+            timeTo: new Date(moment()).getTime(),
+            timeUnit: "Month"
         };
         gadgets.Hub.publish(TOPIC, message);
     });
@@ -75,7 +85,8 @@ $(function() {
         $(this).addClass("active");
         var message = {
             timeFrom: new Date(moment().subtract(1, 'year')).getTime(),
-            timeTo: new Date(moment()).getTime()
+            timeTo: new Date(moment()).getTime(),
+            timeUnit: "Year"
         };
         gadgets.Hub.publish(TOPIC, message);
     });
