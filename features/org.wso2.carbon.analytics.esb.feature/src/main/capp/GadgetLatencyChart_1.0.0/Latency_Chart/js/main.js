@@ -1,14 +1,12 @@
 var TOPIC = "subscriber";
+var page = gadgetUtil.getCurrentPage();
 
 $(function() {
-    var page = gadgetUtil.getCurrentPage();
     var qs = gadgetUtil.getQueryString();
     if (qs[PARAM_ID] == null) {
         $("#canvas").html(gadgetUtil.getDefaultText());
         return;
     }
-    //if there are url elemements present, use them. 
-    //Otherwis use DEFAULT_END_TIME defined in the gadget-utils.js
     var timeFrom = gadgetUtil.timeFrom();
     var timeTo = gadgetUtil.timeTo();
     console.log("LATENCY_CHART[" + page.name + "]: TimeFrom: " + timeFrom + " TimeTo: " + timeTo);
@@ -42,11 +40,11 @@ function onData(response) {
         if (data.length == 0) {
             $("#canvas").html(gadgetUtil.getEmptyRecordsText());
         }
-        var columns = ["timestamp", "value"];
+        var columns = ["timestamp", "min", "avg", "max"];
         var schema = [{
             "metadata": {
-                "names": ["Time", "Value"],
-                "types": ["time", "linear"]
+                "names": ["Time", "Type", "Value"],
+                "types": ["time", "ordinal","linear"]
             },
             "data": []
         }];
@@ -57,23 +55,25 @@ function onData(response) {
         });
 
         data.forEach(function(row, i) {
-            var record = [];
-            columns.forEach(function(column) {
-                var value = row[column];
-                record.push(value);
-            });
-            schema[0].data.push(record);
+            var timestamp = row['timestamp'];
+            var min = row["min"];
+            var avg = row["avg"];
+            var max = row["max"];
+
+            schema[0].data.push([timestamp,"Minimum", min]);
+            schema[0].data.push([timestamp,"Average", avg]);
+            schema[0].data.push([timestamp,"Maximum", max]);
         });
+        // console.log(schema[0].data); 
         var width = ($('#canvas').width() - 20);
         var height = 200;
         // console.log("Width: " + $('#canvas').width() + " Height: " + height);
-
         var config = {
             x: "Time",
-            charts: [{ type: "line", y: "Value" }],
+            charts: [{ type: "line", y: "Value", color: "Type" }],
             width: width,
             height: height,
-            padding: { "top": 10, "left": 60, "bottom": 40, "right": 20 }
+            padding: page.padding
         };
         var chart = new vizg(schema, config);
         $("#canvas").empty();

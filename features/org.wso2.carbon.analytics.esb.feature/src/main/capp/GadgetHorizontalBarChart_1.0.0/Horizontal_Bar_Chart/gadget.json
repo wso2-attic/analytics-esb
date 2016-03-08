@@ -1,14 +1,14 @@
 {
-    "id": "All_APIs_Table",
-    "title": "All APIs",
+    "id": "Horizontal_Bar_Chart",
+    "title": "Top Five",
     "type": "gadget",
     "thumbnail": "store://gadget/usa-business-revenue/index.png",
     "data": {
-        "url": "store://gadget/All_APIs_Table/index.xml"
+        "url": "store://gadget/Horizontal_Bar_Chart/index.xml"
     },
     "listen": {
-        "city-list": {
-            "type": "state",
+        "subscriber": {
+            "type": "date-range",
             "description": "Used to listen to Any message of type state"
         }
     }

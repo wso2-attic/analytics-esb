@@ -1,7 +1,7 @@
 var TOPIC = "subscriber";
+var page = gadgetUtil.getCurrentPage();
 
 $(function() {
-    var page = gadgetUtil.getCurrentPage();
     var qs = gadgetUtil.getQueryString();
     if (qs[PARAM_ID] == null) {
         $("#canvas").html(gadgetUtil.getDefaultText());
@@ -74,7 +74,7 @@ function onData(response) {
             charts: [{ type: "line", y: "Count",color: "Status"}],
             width: width,
             height: height,
-            padding: { "top": 10, "left": 100, "bottom": 40, "right": 100 }
+            padding: page.padding
         };
         var chart = new vizg(schema, config);
         $("#canvas").empty();
