@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<artifact name="AnalyticsConfigEventSink" version="1.0.0" type="analytics/eventstore" serverRole="DataAnalyticsServer">
+    <file>esb-config-entry-stream.xml</file>
+</artifact>
