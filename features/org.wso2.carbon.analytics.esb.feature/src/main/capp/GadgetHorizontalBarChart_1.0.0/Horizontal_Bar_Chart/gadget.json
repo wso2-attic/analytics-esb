@@ -1,10 +1,10 @@
 {
-    "id": "Overall TPS",
-    "title": "Overall TPS",
+    "id": "Horizontal_Bar_Chart",
+    "title": "Top Five",
     "type": "gadget",
     "thumbnail": "store://gadget/usa-business-revenue/index.png",
     "data": {
-        "url": "store://gadget/Overall_TPS/index.xml"
+        "url": "store://gadget/Horizontal_Bar_Chart/index.xml"
     },
     "listen": {
         "subscriber": {

@@ -8,15 +8,12 @@
 	<dependency artifact="GadgetDateRangePicker" version="1.0.0" include="true" serverRole="DataAnalyticsServer"/>
 	<dependency artifact="GadgetOverallTPS" version="1.0.0" include="true" serverRole="DataAnalyticsServer"/>
 	<dependency artifact="GadgetOverallMessageCount" version="1.0.0" include="true" serverRole="DataAnalyticsServer"/>
-	<dependency artifact="GadgetTopProxies" version="1.0.0" include="true" serverRole="DataAnalyticsServer"/>
-    <dependency artifact="GadgetTopAPIs" version="1.0.0" include="true" serverRole="DataAnalyticsServer"/>
+	<dependency artifact="GadgetHorizontalBarChart" version="1.0.0" include="true" serverRole="DataAnalyticsServer"/>
     <dependency artifact="GadgetRateChart" version="1.0.0" include="true" serverRole="DataAnalyticsServer"/>
     <dependency artifact="GadgetLatencyChart" version="1.0.0" include="true" serverRole="DataAnalyticsServer"/>
     <dependency artifact="GadgetSearchBox" version="1.0.0" include="true" serverRole="DataAnalyticsServer"/>
     <dependency artifact="GadgetMessageTable" version="1.0.0" include="true" serverRole="DataAnalyticsServer"/>
 	
-	<dependency artifact="GadgetAllAPIsTable" version="1.0.0" include="true" serverRole="DataAnalyticsServer"/>
-	<dependency artifact="GadgetAllProxiesTable" version="1.0.0" include="true" serverRole="DataAnalyticsServer"/>
 	<dependency artifact="Dashboard" version="1.0.0" include="true" serverRole="DataAnalyticsServer"/>
 	<dependency artifact="Sparkscripts" version="1.0.0" include="true" serverRole="DataAnalyticsServer"/>
     </artifact>
