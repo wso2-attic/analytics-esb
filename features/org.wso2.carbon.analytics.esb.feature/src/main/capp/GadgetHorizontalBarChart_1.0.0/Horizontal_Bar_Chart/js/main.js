@@ -2,9 +2,9 @@
 
     var timeFrom;
     var timeTo;
+    var timeUnit = null;
     var prefs = new gadgets.Prefs();
     var config = gadgetUtil.getGadgetConfig(prefs.getString(PARAM_TYPE));
-     
     $(function() {
         if(config == null) {
             $("#canvas").html(gadgetUtil.getErrorText("Initialise gadget type first."));
@@ -29,6 +29,7 @@
     function onTimeRangeChanged(data) {
         timeFrom = data.timeFrom;
         timeTo = data.timeTo;
+        timeUnit = data.timeUnit;
         gadgetUtil.fetchData(CONTEXT, {
            type: config.type,
            timeFrom: timeFrom,
@@ -42,7 +43,6 @@
                 $("#canvas").html('<div align="center" style="margin-top:20px"><h4>No records found.</h4></div>');
                 return;
             }
-            $("#canvas").empty();
             var schema = [{
                 "metadata": {
                     "names": ["name", "requests"],
@@ -50,8 +50,7 @@
                 },
                 "data": []
             }];
-
-            var config = {
+            var chartConfig = {
                 type: "bar",
                 x : "name",
                 charts : [{type: "bar",  y : "requests", orientation : "left"}],
@@ -65,14 +64,20 @@
             });
 
             var onChartClick = function(event, item) {
-                var proxyName = -1;
+                var id = -1;
                 if(item != null) {
-                    proxyName = item.datum.name;
+                    id = item.datum.name;
                 }
-                parent.window.location = PROXY_PAGE_URL + "?" + PARAM_ID + "=" + proxyName + "&timeFrom=" + timeFrom + "&timeTo=" + timeTo;
-            };
+                var targetUrl = config.targetUrl + "?" + PARAM_ID + "=" + id + "&timeFrom=" 
+                + timeFrom + "&timeTo=" + timeTo;
 
-            var chart = new vizg(schema, config);
+                if(timeUnit != null) {
+                    targetUrl +=  "&timeUnit=" + timeUnit;
+                }
+                parent.window.location = targetUrl;
+            };
+            var chart = new vizg(schema, chartConfig);
+            $("#canvas").empty();
             chart.draw("#canvas", [{ type: "click", callback: onChartClick }]);
         }
         catch(e) {

@@ -1,8 +1,8 @@
 var TOPIC = "subscriber";
 var page = gadgetUtil.getCurrentPage();
+var qs = gadgetUtil.getQueryString();
 
 $(function() {
-    var qs = gadgetUtil.getQueryString();
     if (qs[PARAM_ID] == null) {
         $("#canvas").html(gadgetUtil.getDefaultText());
         return;
@@ -28,9 +28,9 @@ gadgets.HubSettings.onConnect = function() {
 function onTimeRangeChanged(data) {
     gadgetUtil.fetchData(CONTEXT, {
         type: page.type,
-        id: page.id,
-        timeFrom: timeFrom,
-        timeTo: timeTo
+        id: qs.id,
+        timeFrom: data.timeFrom,
+        timeTo: data.timeTo
     }, onData, onError);
 };
 
@@ -39,6 +39,7 @@ function onData(response) {
         var data = response.message;
         if (data.length == 0) {
             $("#canvas").html(gadgetUtil.getEmptyRecordsText());
+            return;
         }
         var columns = ["timestamp", "min", "avg", "max"];
         var schema = [{
@@ -84,5 +85,5 @@ function onData(response) {
 };
 
 function onError(msg) {
-    $("#canvas").html(gadgetUtil.getErrorText());
+    $("#canvas").html(gadgetUtil.getErrorText(msg));
 };
