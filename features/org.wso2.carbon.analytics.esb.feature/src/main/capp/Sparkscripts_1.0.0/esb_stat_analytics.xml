@@ -21,7 +21,7 @@
         schema "year INT -i, month INT -i, day INT -i, hour INT -I, minute INT -i, second INT -i, componentId FACET
         -i, hashCode FACET -i, componentName FACET -i, componentType FACET -i, totalDuration LONG, minDuration INT, maxDuration INT, noOfInvocation LONG -sp,
         faultCount INT, startingTime LONG -i, facetStartTime FACET -i, entryPoint FACET -i",
-        primaryKeys "year, month, day, hour, minute, second, hashcode, componentId, componentType",
+        primaryKeys "year, month, day, hour, minute, second, hashCode, componentId, componentType",
         mergeSchema "false");
 
         INSERT INTO TABLE esbServiceStatPerSecond
@@ -47,7 +47,7 @@
         schema "year INT -i, month INT -i, day INT -i, hour INT -i, minute INT -i, componentId FACET -i, hashCode FACET
         -i, componentName FACET -i, componentType FACET -i, totalDuration LONG, minDuration INT, maxDuration INT,
         noOfInvocation LONG -sp, faultCount INT, startingTime LONG -i, facetStartTime FACET -i, entryPoint FACET -i",
-        primaryKeys "year, month, day, hour, minute, hashcode, componentId, componentType",
+        primaryKeys "year, month, day, hour, minute, hashCode, componentId, componentType",
         mergeSchema "false");
 
         INSERT INTO TABLE esbServiceStatPerMinute
@@ -63,7 +63,7 @@
         schema "year INT -i, month INT -i, day INT -i, hour INT -I, componentId FACET -i, hashCode FACET -i, componentName FACET -i, componentType FACET -i,
         totalDuration LONG, minDuration INT, maxDuration INT, noOfInvocation LONG -sp, faultCount INT, startingTime
         LONG -i, facetStartTime FACET -i, entryPoint FACET -i",
-        primaryKeys "year, month, day, hour, hashcode, componentId, componentType",
+        primaryKeys "year, month, day, hour, hashCode, componentId, componentType",
         mergeSchema "false");
 
         INSERT INTO TABLE esbServiceStatPerHour
@@ -80,7 +80,7 @@
         schema "year INT -i, month INT -i, day INT -i, componentId FACET -i, hashCode FACET -i, componentName FACET -i, componentType FACET -i, totalDuration
         LONG, minDuration INT, maxDuration INT, noOfInvocation LONG -sp, faultCount INT, startingTime LONG -i,
         facetStartTime FACET -i, entryPoint FACET -i",
-        primaryKeys "year, month, day, hashcode, componentId, componentType",
+        primaryKeys "year, month, day, hashCode, componentId, componentType",
         mergeSchema "false");
 
         INSERT INTO TABLE esbServiceStatPerDay
@@ -97,7 +97,7 @@
         schema "year INT -i, month INT -i, componentId FACET -i, hashCode FACET -i, componentName FACET -i, componentType FACET -i, totalDuration LONG,
         minDuration INT, maxDuration INT, noOfInvocation LONG -sp, faultCount INT, startingTime LONG -i,
         facetStartTime FACET -i, entryPoint FACET -i",
-        primaryKeys "year, month, hashcode, componentId, componentType",
+        primaryKeys "year, month, hashCode, componentId, componentType",
         mergeSchema "false");
 
         INSERT INTO TABLE esbServiceStatPerMonth
@@ -116,7 +116,7 @@
         schema "year INT -i, month INT -i, day INT -i, hour INT -I, minute INT -i, second INT -i, entryPoint FACET
         -i, componentIndex INT, componentId FACET -i, hashCode FACET -i, componentName FACET -i, componentType FACET -i, totalDuration LONG, minDuration INT,
         maxDuration INT, noOfInvocation LONG -sp, faultCount INT, startingTime LONG -i, facetStartTime FACET -i",
-	primaryKeys "year, month, day, hour, minute, second, hashcode, componentId, componentType",
+	primaryKeys "year, month, day, hour, minute, second, hashCode, componentId, componentType",
 	mergeSchema "false");
 
         INSERT INTO TABLE mediatorStatPerSecond
@@ -134,7 +134,7 @@
         schema "year INT -i, month INT -i, day INT -i, hour INT -I, minute INT -i, entryPoint FACET -i,
         componentIndex INT, componentId FACET -i, hashCode FACET -i, componentName FACET -i, componentType FACET -i, totalDuration LONG, minDuration INT,
         maxDuration INT, noOfInvocation LONG -sp, faultCount INT, startingTime LONG -i, facetStartTime FACET -i",
-	primaryKeys "year, month, day, hour, minute, hashcode, componentId, componentType",
+	primaryKeys "year, month, day, hour, minute, hashCode, componentId, componentType",
 	mergeSchema "false");
 
         INSERT INTO TABLE mediatorStatPerMinute
@@ -152,7 +152,7 @@
         schema "year INT -i, month INT -i, day INT -i, hour INT -I, entryPoint FACET -i, componentIndex INT,
         hashCode FACET -i, componentName FACET -i, componentId FACET -i, componentType FACET -i, totalDuration LONG, minDuration INT, maxDuration INT,
         noOfInvocation LONG -sp, faultCount INT, startingTime LONG -i, facetStartTime FACET -i",
-	primaryKeys "year, month, day, hour, hashcode, componentId, componentType",
+	primaryKeys "year, month, day, hour, hashCode, componentId, componentType",
 	mergeSchema "false");
 
         INSERT INTO TABLE mediatorStatPerHour
@@ -170,7 +170,7 @@
         schema "year INT -i, month INT -i, day INT -i, entryPoint FACET -i, componentIndex INT, componentId FACET -i,
         hashCode FACET -i, componentName FACET -i, componentType FACET -i, totalDuration LONG, minDuration INT, maxDuration INT, noOfInvocation LONG -sp,
         faultCount INT, startingTime LONG -i, facetStartTime FACET -i",
-	primaryKeys "year, month, day, hashcode, componentId, componentType",
+	primaryKeys "year, month, day, hashCode, componentId, componentType",
 	mergeSchema "false");
 
         INSERT INTO TABLE mediatorStatPerDay
@@ -187,7 +187,7 @@
         schema "year INT -i, month INT -i, entryPoint FACET -i, componentIndex INT, componentId FACET -i,
         hashCode FACET -i, componentName FACET -i, componentType FACET -i, totalDuration LONG, minDuration INT, maxDuration INT, noOfInvocation LONG -sp,
         faultCount INT, startingTime LONG -i, facetStartTime FACET -i",
-	primaryKeys "year, month, hashcode, componentId, componentType",
+	primaryKeys "year, month, hashCode, componentId, componentType",
 	mergeSchema "false");
 
         INSERT INTO TABLE mediatorStatPerMonth
