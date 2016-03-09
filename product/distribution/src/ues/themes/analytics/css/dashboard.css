@@ -204,6 +204,10 @@ body.dashboard {
     height: 0;
 }
 
+.widget .ues-component {
+   height: auto;
+}
+
 .widget.form-control-widget {
     height: 35px !important;
 }

@@ -27,12 +27,12 @@
             
             <div class="clearfix">
                 <div class="btn-group pull-right" id="date-select">
-                    <button id="btnLastHour" type="button" class="btn btn-default">Last Hour</button>
-                    <button id="btnLastDay"  type="button" class="btn btn-default">Yesterday</button>
-                    <button id="btnLastMonth" type="button" class="btn btn-default">Last 30 Days</button>
-                    <button id="btnLastYear" type="button" class="btn btn-default">Last Year</button>
                     <div id="reportrange" class="btn-group" role="group">
-                        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <button id="btnLastHour" type="button" class="btn btn-default">Last Hour</button>
+                        <button id="btnLastDay"  type="button" class="btn btn-default">Yesterday</button>
+                        <button id="btnLastMonth" type="button" class="btn btn-default">Last 30 Days</button>
+                        <button id="btnLastYear" type="button" class="btn btn-default">Last Year</button>
+                        <button id="btnCustomRange" type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                             <i class="glyphicon glyphicon-calendar fa fa-calendar"></i> <span></span>
                             <b class="caret"></b>
                         </button>

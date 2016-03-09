@@ -26,7 +26,7 @@ $(function() {
     cb(moment().subtract(29, 'days'), moment());
 
     function cb(start, end) {
-        $('#reportrange span').html(start.format('MMMM D, YYYY HH:mm') + ' - ' + end.format('MMMM D, YYYY HH:mm'));
+        $('#reportrange #btnCustomRange').html(start.format('MMMM D, YYYY HH:mm') + ' - ' + end.format('MMMM D, YYYY HH:mm'));
         if (count != 0) {
             var message = {
                 timeFrom: new Date(start).getTime(),
@@ -36,13 +36,18 @@ $(function() {
             gadgets.Hub.publish(TOPIC, message);
         }
         count++;
+        // if(qs.timeUnit == 'Custom'){
+        //     $("#date-select button").removeClass("active");
+        //     $("#reportrange #btnCustomRange").addClass("active");
+        // }
         // parent.window.location.hash = "some";
     }
 
-    $('#reportrange').daterangepicker({
+    $('#btnCustomRange').daterangepicker({
+        "timePicker" : true,
         "autoApply": true,
         "alwaysShowCalendars": true,
-        opens: "left"
+        "opens": "left"
     }, cb);
 
     $("#btnLastHour").click(function() {
