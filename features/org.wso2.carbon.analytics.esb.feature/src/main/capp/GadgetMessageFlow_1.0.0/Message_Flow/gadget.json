@@ -1,0 +1,20 @@
+{
+    "id": "Message_Flow",
+    "title": "Message Flow",
+    "type": "gadget",
+    "category": "Widgets",
+    "thumbnail": "store://gadget/Message_Flow/index.png",
+    "data": {
+        "url": "store://gadget/Message_Flow/index.xml"
+    },
+    "listen": {
+        "subscriber": {
+            "type": "date-range",
+            "description": "This notifies message generated in publisher"
+        }
+    },
+    "styles": {
+        "borders": false,
+        "title": false
+    },
+}
