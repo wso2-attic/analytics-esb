@@ -33,6 +33,24 @@ a, a:visited, a:focus, a:active {
 .cluster > g.label > g {
 /*            transform: translate(-33px,-112px);*/
 }
+
+.node .label foreignobject h2 {
+    font-size: 16px;
+    margin: 0 0 5px;
+}
+
+.node .label foreignobject h3 {
+    margin: 0;
+    font-size: 12px;
+    text-align: left;
+}
+
+.node .label foreignobject h3 span {
+    font-weight: normal;
+    margin-left: 3px;
+    color: #e4e4e4;
+}
+
 text {
     font-weight: 300;
     font-size: 14px;

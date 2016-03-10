@@ -313,7 +313,62 @@
             }
             case TYPE_PROXY_MESSAGE_FLOW:
             {
-                result = ["Damn it! this needs to be thought..."];   
+                result = [
+                     {   id : "a",
+                         label: "Log",
+                         children: ["b"],
+                         dataAttributes : [
+                            { name : "latency",value : "23ms"}
+                         ]
+                     },
+                     { 
+                         id : "b",
+                         label: "Clone",
+                         children: ["c","d"],
+                         dataAttributes : [
+                            { name : "latency",value : "13ms"}
+                         ],
+                         group : "group1"
+                     },
+                     {   id : "c",
+                         label: "XSLT",
+                         children: ["e"],
+                         group : "group1",
+                         dataAttributes : [
+                            { name : "latency",value : "32ms"}
+                         ]
+                     },
+                     { 
+                         id : "d",
+                         label: "XSLT",
+                         children: ["e"],
+                         group : "group1",
+                         dataAttributes : [
+                            { name : "latency",value : "34ms"}
+                         ]
+                     },
+                     { 
+                        id : "e",
+                         label: "XPath",
+                         children: ["f"],
+                         dataAttributes : [
+                            { name : "latency",value : "23ms"}
+                         ]
+                     },
+                     { 
+                         id : "f",
+                         label: "Log",
+                         children: [],
+                         dataAttributes : [
+                            { name : "latency",value : "24ms"}
+                         ]
+                     },
+                     { 
+                         id : "group1",
+                         type: "group",
+                         label: "Mediator"
+                     }
+                 ];    
                 break;
             }
             case TYPE_PROXY_MESSAGES:
