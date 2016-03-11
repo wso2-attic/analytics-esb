@@ -39,6 +39,9 @@
     var TYPE_MEDIATOR_LATENCY = 18;
     var TYPE_MEDIATOR_MESSAGES = 19;
 
+    var TYPE_OVERALL_SUCCESS_MESSAGE_COUNT = 20;
+    var TYPE_OVERALL_FAULT_MESSAGE_COUNT = 21;
+
     if (configs.cacheTimeoutSeconds) {
         cacheTimeoutSeconds = parseInt(configs.cacheTimeoutSeconds);
     }
@@ -589,6 +592,14 @@
                     temp["timestamp"] = dataPoints[i]["timestamp"];
                     result.push(temp);
                 }
+                break;
+            }
+            case TYPE_OVERALL_SUCCESS_MESSAGE_COUNT:
+            {
+                result = {
+                    "total" : 1234,
+                    "percentage" : 78
+                };
                 break;
             }
             default:
