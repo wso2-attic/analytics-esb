@@ -429,18 +429,28 @@
                                   });
                 resp = connector.search(loggedInUser, tableName, query);
                 var dataPoints = JSON.parse(resp.getMessage());
-                var columns = ["messageFlowId", "transportPropertyMap", "contextPropertyMap","beforePayload","timestamp","host"];
+                var columns = ["messageFlowId", "transportPropertyMap","faultCount","startTime","host"];
                 for (i = 0 ; i < dataPoints.length ; i++) {
                     var temp = {};
                     for (j = 0 ; j < columns.length ; j++) {
                         var column = columns[j];
+                        var value = dataPoints[i]["values"][column];
                         if (column == "transportPropertyMap" || column == "contextPropertyMap") {
-                            temp[column] = stringify(dataPoints[i]["values"][column]["map"]);
+                            temp[column] = stringify(value["map"]);
+                        } else if (column == "faultCount") {
+                            // Add message status
+                            if (value > 0) {
+                                temp["status"] = "Failed";
+                            } else {
+                                temp["status"] = "Success";
+                            }   
+                        }  else if (column == "startTime") {
+                            var date = new Date(value);
+                            temp[column] = date.toLocaleString();
                         } else {
-                            temp[column] = dataPoints[i]["values"][column];
+                            temp[column] = value;
                         }
                     }
-                    temp["timestamp"] = dataPoints[i]["timestamp"];
                     result.push(temp);
                 }
                 break;
@@ -553,18 +563,28 @@
                                   });
                 resp = connector.search(loggedInUser, tableName, query);
                 var dataPoints = JSON.parse(resp.getMessage());
-                var columns = ["messageFlowId", "transportPropertyMap", "contextPropertyMap","beforePayload","timestamp","host"];
+                var columns = ["messageFlowId", "transportPropertyMap","faultCount","startTime","host"];
                 for (i = 0 ; i < dataPoints.length ; i++) {
                     var temp = {};
                     for (j = 0 ; j < columns.length ; j++) {
                         var column = columns[j];
+                        var value = dataPoints[i]["values"][column];
                         if (column == "transportPropertyMap" || column == "contextPropertyMap") {
-                            temp[column] = stringify(dataPoints[i]["values"][column]["map"]);
+                            temp[column] = stringify(value["map"]);
+                        } else if (column == "faultCount") {
+                            // Add message status
+                            if (value > 0) {
+                                temp["status"] = "Failed";
+                            } else {
+                                temp["status"] = "Success";
+                            }   
+                        }  else if (column == "startTime") {
+                            var date = new Date(value);
+                            temp[column] = date.toLocaleString();
                         } else {
-                            temp[column] = dataPoints[i]["values"][column];
+                            temp[column] = value;
                         }
                     }
-                    temp["timestamp"] = dataPoints[i]["timestamp"];
                     result.push(temp);
                 }
                 break;
@@ -619,18 +639,28 @@
                                   });
                 resp = connector.search(loggedInUser, tableName, query);
                 var dataPoints = JSON.parse(resp.getMessage());
-                var columns = ["messageFlowId", "transportPropertyMap", "contextPropertyMap","beforePayload","timestamp"];
+                var columns = ["messageFlowId", "transportPropertyMap","faultCount","startTime","host"];
                 for (i = 0 ; i < dataPoints.length ; i++) {
                     var temp = {};
                     for (j = 0 ; j < columns.length ; j++) {
                         var column = columns[j];
+                        var value = dataPoints[i]["values"][column];
                         if (column == "transportPropertyMap" || column == "contextPropertyMap") {
-                            temp[column] = stringify(dataPoints[i]["values"][column]["map"]);
+                            temp[column] = stringify(value["map"]);
+                        } else if (column == "faultCount") {
+                            // Add message status
+                            if (value > 0) {
+                                temp["status"] = "Failed";
+                            } else {
+                                temp["status"] = "Success";
+                            }   
+                        }  else if (column == "startTime") {
+                            var date = new Date(value);
+                            temp[column] = date.toLocaleString();
                         } else {
-                            temp[column] = dataPoints[i]["values"][column];
+                            temp[column] = value;
                         }
                     }
-                    temp["timestamp"] = dataPoints[i]["timestamp"];
                     result.push(temp);
                 }
                 break;
