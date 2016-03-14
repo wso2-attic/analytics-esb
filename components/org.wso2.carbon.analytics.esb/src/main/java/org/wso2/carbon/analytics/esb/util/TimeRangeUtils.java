@@ -18,8 +18,11 @@
 
 package org.wso2.carbon.analytics.esb.util;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeConstants;
+import org.joda.time.DateTimeFieldType;
 import org.joda.time.Days;
 import org.joda.time.Hours;
 import org.joda.time.Minutes;
@@ -27,12 +30,16 @@ import org.joda.time.Months;
 import org.joda.time.MutableDateTime;
 import org.wso2.carbon.analytics.esb.bean.TimeRange;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class TimeRangeUtils {
 
     private static final int INTERVAL = 10;
+    private static final Log log = LogFactory.getLog(TimeRangeUtils.class);
+    private static final SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH.mm.ss");
 
     private TimeRangeUtils() {
     }
@@ -67,16 +74,22 @@ public class TimeRangeUtils {
     public static List<TimeRange> getDateTimeRanges(long from, long to) {
         List<TimeRange> ranges = new ArrayList<>(10);
         MutableDateTime fromDate = new MutableDateTime(from);
+        fromDate.set(DateTimeFieldType.millisOfSecond(), 0);
         MutableDateTime toDate = new MutableDateTime(to);
+        toDate.set(DateTimeFieldType.millisOfSecond(), 0);
         MutableDateTime tempFromTime = fromDate.copy();
         MutableDateTime tempToTime = toDate.copy();
 
+        if (log.isDebugEnabled()) {
+            log.debug("Time range: " + formatter.format(fromDate.toDate()) + "->" + formatter.format(toDate.toDate()));
+        }
+
         if (toDate.getMillis() - fromDate.getMillis() < DateTimeConstants.MILLIS_PER_MINUTE) {
-            ranges.add(new TimeRange(RangeUnit.SECOND, new long[]{fromDate.getMillis(), toDate.getMillis()}));
+            ranges.add(new TimeRange(RangeUnit.SECOND.name(), new long[]{fromDate.getMillis(), toDate.getMillis()}));
         }
         if (tempFromTime.getSecondOfMinute() != 0 && (toDate.getMillis() - fromDate.getMillis() > DateTimeConstants.MILLIS_PER_MINUTE)) {
             tempFromTime = tempFromTime.minuteOfHour().roundCeiling();
-            ranges.add(new TimeRange(RangeUnit.SECOND, new long[]{fromDate.getMillis(), tempFromTime.getMillis()}));
+            ranges.add(new TimeRange(RangeUnit.SECOND.name(), new long[]{fromDate.getMillis(), tempFromTime.getMillis()}));
         }
         if (tempFromTime.getMinuteOfHour() != 0 &&
             ((toDate.getMillis() - tempFromTime.getMillis()) >= DateTimeConstants.MILLIS_PER_MINUTE)) {
@@ -86,7 +99,7 @@ public class TimeRangeUtils {
             } else {
                 tempFromTime = tempFromTime.hourOfDay().roundCeiling();
             }
-            ranges.add(new TimeRange(RangeUnit.MINUTE, new long[]{fromDate.getMillis(), tempFromTime.getMillis()}));
+            ranges.add(new TimeRange(RangeUnit.MINUTE.name(), new long[]{fromDate.getMillis(), tempFromTime.getMillis()}));
         }
         if (tempFromTime.getHourOfDay() != 0 &&
             ((toDate.getMillis() - tempFromTime.getMillis()) >= DateTimeConstants.MILLIS_PER_HOUR)) {
@@ -97,7 +110,7 @@ public class TimeRangeUtils {
             } else {
                 tempFromTime = tempFromTime.dayOfMonth().roundCeiling();
             }
-            ranges.add(new TimeRange(RangeUnit.HOUR, new long[]{fromDate.getMillis(), tempFromTime.getMillis()}));
+            ranges.add(new TimeRange(RangeUnit.HOUR.name(), new long[]{fromDate.getMillis(), tempFromTime.getMillis()}));
         }
         if (tempFromTime.getDayOfMonth() != 1 &&
             ((toDate.getMillis() - tempFromTime.getMillis()) >= DateTimeConstants.MILLIS_PER_DAY)) {
@@ -109,7 +122,7 @@ public class TimeRangeUtils {
             } else {
                 tempFromTime = tempFromTime.monthOfYear().roundCeiling();
             }
-            ranges.add(new TimeRange(RangeUnit.DAY, new long[]{fromDate.getMillis(), tempFromTime.getMillis()}));
+            ranges.add(new TimeRange(RangeUnit.DAY.name(), new long[]{fromDate.getMillis(), tempFromTime.getMillis()}));
         }
         if (tempToTime.getSecondOfMinute() != 0 &&
             (tempToTime.getMillis() - tempFromTime.getMillis()) >= DateTimeConstants.MILLIS_PER_SECOND) {
@@ -122,7 +135,7 @@ public class TimeRangeUtils {
             } else {
                 tempToTime = tempToTime.secondOfMinute().roundFloor();
             }
-            ranges.add(new TimeRange(RangeUnit.SECOND, new long[]{tempToTime.getMillis(), toDate.getMillis()}));
+            ranges.add(new TimeRange(RangeUnit.SECOND.name(), new long[]{tempToTime.getMillis(), toDate.getMillis()}));
         }
         if (tempToTime.getMinuteOfHour() != 0 &&
             ((tempToTime.getMillis() - tempFromTime.getMillis()) >= DateTimeConstants.MILLIS_PER_MINUTE)) {
@@ -134,7 +147,7 @@ public class TimeRangeUtils {
             } else {
                 tempToTime = tempToTime.hourOfDay().roundFloor();
             }
-            ranges.add(new TimeRange(RangeUnit.MINUTE, new long[]{tempToTime.getMillis(), toDate.getMillis()}));
+            ranges.add(new TimeRange(RangeUnit.MINUTE.name(), new long[]{tempToTime.getMillis(), toDate.getMillis()}));
         }
         if (tempToTime.getHourOfDay() != 0 &&
             ((tempToTime.getMillis() - tempFromTime.getMillis()) >= DateTimeConstants.MILLIS_PER_HOUR)) {
@@ -146,16 +159,23 @@ public class TimeRangeUtils {
             } else {
                 tempToTime = tempToTime.dayOfMonth().roundFloor();
             }
-            ranges.add(new TimeRange(RangeUnit.HOUR, new long[]{tempToTime.getMillis(), toDate.getMillis()}));
+            ranges.add(new TimeRange(RangeUnit.HOUR.name(), new long[]{tempToTime.getMillis(), toDate.getMillis()}));
         }
         if (tempToTime.getDayOfMonth() != 1 &&
             ((tempToTime.getMillis() - tempFromTime.getMillis()) >= DateTimeConstants.MILLIS_PER_DAY)) {
             toDate = tempToTime.copy();
             tempToTime = tempToTime.monthOfYear().roundFloor();
-            ranges.add(new TimeRange(RangeUnit.DAY, new long[]{tempToTime.getMillis(), toDate.getMillis()}));
+            ranges.add(new TimeRange(RangeUnit.DAY.name(), new long[]{tempToTime.getMillis(), toDate.getMillis()}));
         }
         if (tempToTime.isAfter(tempFromTime)) {
-            ranges.add(new TimeRange(RangeUnit.MONTH, new long[]{tempFromTime.getMillis(), tempToTime.getMillis()}));
+            ranges.add(new TimeRange(RangeUnit.MONTH.name(), new long[]{tempFromTime.getMillis(), tempToTime.getMillis()}));
+        }
+
+        if (log.isDebugEnabled()) {
+            for (TimeRange timeRange : ranges) {
+                log.debug("Unit: " + timeRange.getUnit() + " Range: " + formatter.format(new Date(timeRange.getRange
+                        ()[0])) + "->" + formatter.format(new Date(timeRange.getRange()[1])));
+            }
         }
         return ranges;
     }

@@ -18,18 +18,16 @@
 
 package org.wso2.carbon.analytics.esb.bean;
 
-import org.wso2.carbon.analytics.esb.util.RangeUnit;
-
 public class TimeRange {
 
-    private RangeUnit unit;
+    private String unit;
     private long[] range;
 
-    public RangeUnit getUnit() {
+    public String getUnit() {
         return unit;
     }
 
-    public void setUnit(RangeUnit unit) {
+    public void setUnit(String unit) {
         this.unit = unit;
     }
 
@@ -44,7 +42,7 @@ public class TimeRange {
     public TimeRange() {
     }
 
-    public TimeRange(RangeUnit unit, long[] range) {
+    public TimeRange(String unit, long[] range) {
         this.unit = unit;
         this.range = range;
     }

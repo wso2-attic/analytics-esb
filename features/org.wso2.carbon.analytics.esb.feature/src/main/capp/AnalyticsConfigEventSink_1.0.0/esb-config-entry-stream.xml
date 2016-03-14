@@ -1,1 +1,31 @@
-<?xml version="1.0" encoding="UTF-8" standalone="yes"?><EventStoreConfiguration><TableSchema><ColumnDefinition><Name>hashcode</Name><EnableIndexing>false</EnableIndexing><IsPrimaryKey>true</IsPrimaryKey><EnableScoreParam>false</EnableScoreParam><Type>STRING</Type></ColumnDefinition><ColumnDefinition><Name>entryName</Name><EnableIndexing>false</EnableIndexing><IsPrimaryKey>true</IsPrimaryKey><EnableScoreParam>false</EnableScoreParam><Type>STRING</Type></ColumnDefinition><ColumnDefinition><Name>configData</Name><EnableIndexing>false</EnableIndexing><IsPrimaryKey>false</IsPrimaryKey><EnableScoreParam>false</EnableScoreParam><Type>STRING</Type></ColumnDefinition></TableSchema><Source><StreamId>esb-config-entry-stream:1.0.0</StreamId></Source><MergeSchema>false</MergeSchema><RecordStoreName>EVENT_STORE</RecordStoreName></EventStoreConfiguration>
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<EventStoreConfiguration>
+    <TableSchema>
+        <ColumnDefinition>
+            <Name>hashcode</Name>
+            <EnableIndexing>false</EnableIndexing>
+            <IsPrimaryKey>true</IsPrimaryKey>
+            <EnableScoreParam>false</EnableScoreParam>
+            <Type>STRING</Type>
+        </ColumnDefinition>
+        <ColumnDefinition>
+            <Name>entryName</Name>
+            <EnableIndexing>true</EnableIndexing>
+            <IsPrimaryKey>true</IsPrimaryKey>
+            <EnableScoreParam>false</EnableScoreParam>
+            <Type>FACET</Type>
+        </ColumnDefinition>
+        <ColumnDefinition>
+            <Name>configData</Name>
+            <EnableIndexing>false</EnableIndexing>
+            <IsPrimaryKey>false</IsPrimaryKey>
+            <EnableScoreParam>false</EnableScoreParam>
+            <Type>STRING</Type>
+        </ColumnDefinition>
+    </TableSchema>
+    <Source>
+        <StreamId>esb-config-entry-stream:1.0.0</StreamId>
+    </Source>
+    <MergeSchema>false</MergeSchema>
+    <RecordStoreName>EVENT_STORE</RecordStoreName>
+</EventStoreConfiguration>

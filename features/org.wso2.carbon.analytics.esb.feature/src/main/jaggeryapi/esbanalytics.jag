@@ -17,6 +17,7 @@
     var cacheTimeoutSeconds = 5;
     var loggedInUser = null;
     var timeRangeUtil = Packages.org.wso2.carbon.analytics.esb.util.TimeRangeUtils;
+    var timeRange = Packages.org.wso2.carbon.analytics.esb.bean.TimeRange;
 
     //operation types
     var TYPE_OVERALL_TPS = 1;
@@ -102,6 +103,46 @@
         switch (type) {
             case TYPE_OVERALL_TPS:
             {
+
+                var timeFrom = request.getParameter("timeFrom");
+                var timeTo = request.getParameter("timeTo");
+                var timeRanges = timeRangeUtil.getDateTimeRanges(timeFrom, timeTo);
+                var searchParams = [];
+                var totalDurationSum = {
+                    fields: ["totalDuration"],
+                    aggregate: "SUM",
+                    alias: "sum_total_duration"
+                }
+                var noOfInvocationSum = {
+                    fields: ["noOfInvocation"],
+                    aggregate: "SUM",
+                    alias: "sum_no_of_invocation"
+                }
+                var faultCountSum = {
+                    fields: ["faultCount"],
+                    aggregate: "SUM",
+                    alias: "sum_fault_count"
+                }
+                var aggregateFields = [];
+                aggregateFields.push(totalDurationSum);
+                aggregateFields.push(noOfInvocationSum);
+                aggregateFields.push(faultCountSum);
+                for (var i = 0; i < timeRanges.size(); i++) {
+                    timeRange = timeRanges.get(i);
+                    var searchParam = {
+                        tableName: "ESB-STAT-PER-" + timeRange.unit,
+                        //"groupByField": "group by",
+                        query: "startingTime : [" + timeRange.range[0] + " TO " + timeRange.range[1] + "]",
+                        aggregateLevel: 0,
+                        parentPath: [],
+                        noOfRecords : 10000
+                    }
+                    searchParam.aggregateFields = aggregateFields;
+                    searchParams.push(searchParam);
+                }
+                resp = connector.searchMultiTablesWithAggregates(loggedInUser, JSON.stringify(searchParams));
+                log.info(JSON.parse(resp.getMessage()));
+
                 result = [];
                 var timeFrom = request.getParameter("timeFrom");
                 var timeTo = request.getParameter("timeTo");
