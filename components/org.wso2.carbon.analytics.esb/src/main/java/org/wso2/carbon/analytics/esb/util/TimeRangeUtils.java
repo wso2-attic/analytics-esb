@@ -173,8 +173,9 @@ public class TimeRangeUtils {
 
         if (log.isDebugEnabled()) {
             for (TimeRange timeRange : ranges) {
-                log.debug("Unit: " + timeRange.getUnit() + " Range: " + formatter.format(new Date(timeRange.getRange
-                        ()[0])) + "->" + formatter.format(new Date(timeRange.getRange()[1])));
+                log.debug("Unit: " + timeRange.getUnit() + " Range: " + formatter.format(new Date(timeRange.getRange()[0]))
+                          + "(" + timeRange.getRange()[0] + ")->" +
+                          formatter.format(new Date(timeRange.getRange()[1])) + "(" + timeRange.getRange()[1] + ")");
             }
         }
         return ranges;

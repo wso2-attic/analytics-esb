@@ -132,7 +132,7 @@
                     var searchParam = {
                         tableName: "ESB-STAT-PER-" + timeRange.unit,
                         //"groupByField": "group by",
-                        query: "startingTime : [" + timeRange.range[0] + " TO " + timeRange.range[1] + "]",
+                        query: "startingTime : [" + timeRange.range[0] + " TO " + timeRange.range[1] + "}",
                         aggregateLevel: 0,
                         parentPath: [],
                         noOfRecords : 10000
