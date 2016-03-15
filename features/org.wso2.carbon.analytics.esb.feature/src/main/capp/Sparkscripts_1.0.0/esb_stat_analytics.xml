@@ -116,7 +116,7 @@
         schema "year INT -i, month INT -i, day INT -i, hour INT -I, minute INT -i, second INT -i, entryPoint FACET
         -i, entryPointHashcode FACET -i, componentIndex INT, componentId FACET -i, hashCode FACET -i, componentName FACET -i, componentType FACET -i, totalDuration LONG, minDuration INT,
         maxDuration INT, noOfInvocation LONG -sp, faultCount INT, startingTime LONG -i, facetStartTime FACET -i",
-	primaryKeys "year, month, day, hour, minute, second, hashCode, componentId, componentType",
+	primaryKeys "year, month, day, hour, minute, second, entryPointHashcode, hashCode, componentId, componentType",
 	mergeSchema "false");
 
         INSERT INTO TABLE mediatorStatPerSecond
@@ -133,7 +133,7 @@
         schema "year INT -i, month INT -i, day INT -i, hour INT -I, minute INT -i, entryPoint FACET -i, entryPointHashcode FACET -i, 
         componentIndex INT, componentId FACET -i, hashCode FACET -i, componentName FACET -i, componentType FACET -i, totalDuration LONG, minDuration INT,
         maxDuration INT, noOfInvocation LONG -sp, faultCount INT, startingTime LONG -i, facetStartTime FACET -i",
-	primaryKeys "year, month, day, hour, minute, hashCode, componentId, componentType",
+	primaryKeys "year, month, day, hour, minute, entryPointHashcode, hashCode, componentId, componentType",
 	mergeSchema "false");
 
         INSERT INTO TABLE mediatorStatPerMinute
@@ -147,10 +147,10 @@
 
 	CREATE TEMPORARY TABLE mediatorStatPerHour USING CarbonAnalytics
         OPTIONS (tableName "mediator-stat-per-hour",
-        schema "year INT -i, month INT -i, day INT -i, hour INT -I, entryPoint FACET -i, entryPointHashcode FACET -i, componentIndex INT,
-        hashCode FACET -i, componentName FACET -i, componentId FACET -i, componentType FACET -i, totalDuration LONG, minDuration INT, maxDuration INT,
+        schema "year INT -i, month INT -i, day INT -i, hour INT -I, entryPoint FACET -i, entryPointHashcode FACET -i, componentIndex INT, componentId FACET -i, 
+        hashCode FACET -i, componentName FACET -i, componentType FACET -i, totalDuration LONG, minDuration INT, maxDuration INT,
         noOfInvocation LONG -sp, faultCount INT, startingTime LONG -i, facetStartTime FACET -i",
-	primaryKeys "year, month, day, hour, hashCode, componentId, componentType",
+	primaryKeys "year, month, day, hour, entryPointHashcode, hashCode, componentId, componentType",
 	mergeSchema "false");
 
         INSERT INTO TABLE mediatorStatPerHour
@@ -167,7 +167,7 @@
         schema "year INT -i, month INT -i, day INT -i, entryPoint FACET -i, entryPointHashcode FACET -i, componentIndex INT, componentId FACET -i,
         hashCode FACET -i, componentName FACET -i, componentType FACET -i, totalDuration LONG, minDuration INT, maxDuration INT, noOfInvocation LONG -sp,
         faultCount INT, startingTime LONG -i, facetStartTime FACET -i",
-	primaryKeys "year, month, day, hashCode, componentId, componentType",
+	primaryKeys "year, month, day, entryPointHashcode, hashCode, componentId, componentType",
 	mergeSchema "false");
 
         INSERT INTO TABLE mediatorStatPerDay
@@ -183,7 +183,7 @@
         schema "year INT -i, month INT -i, entryPoint FACET -i, entryPointHashcode FACET -i, componentIndex INT, componentId FACET -i,
         hashCode FACET -i, componentName FACET -i, componentType FACET -i, totalDuration LONG, minDuration INT, maxDuration INT, noOfInvocation LONG -sp,
         faultCount INT, startingTime LONG -i, facetStartTime FACET -i",
-	primaryKeys "year, month, hashCode, componentId, componentType",
+	primaryKeys "year, month, entryPointHashcode, hashCode, componentId, componentType",
 	mergeSchema "false");
 
         INSERT INTO TABLE mediatorStatPerMonth
