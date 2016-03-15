@@ -21,6 +21,7 @@
 var CONTEXT = "/portal/apis/esbanalytics";
 var BASE_URL = "/portal/dashboards/esb-analytics/";
 
+var TYPE_LANDING = "landing";
 var TYPE_PROXY = "proxy";
 var TYPE_API = "api";
 var TYPE_SEQUENCE = "sequence";
@@ -55,7 +56,37 @@ function GadgetUtil() {
         return qsJsonObject;
     };
 
-    this.getGadgetConfig = function (typeName) {
+    this.getChart = function(chartType) {
+        var chart = null;
+        charts.forEach(function(item, i) {
+            if (item.name === chartType) {
+                chart = item;
+            }
+        });
+        return chart;
+    };
+
+    this.getRequestType = function(chart) {
+        var pageName,type = null;
+        var href = parent.window.location.href;
+        var lastSegment = href.substr(href.lastIndexOf('/') + 1);
+        if (lastSegment.indexOf('?') == -1) {
+            pageName = lastSegment;
+        } else {
+            pageName = lastSegment.substr(0, lastSegment.indexOf('?'));
+        }
+        if(type == null) {
+            return TYPE_LANDING;
+        }
+        chart.types.forEach(function(item, i) {
+            if (item.name === pageName) {
+                type = item.type;
+            }
+        });
+        return type;
+    };
+
+    this.getGadgetConfig = function(typeName) {
         var config = null;
         configs.forEach(function(item, i) {
             if (item.name === typeName) {
@@ -97,7 +128,7 @@ function GadgetUtil() {
 
     this.fetchData = function(context, params, callback, error) {
         var url = "?";
-        for(var param in params) {
+        for (var param in params) {
             url = url + param + "=" + params[param] + "&";
         }
         console.log("++ AJAX TO: " + context + url);
@@ -122,8 +153,7 @@ function GadgetUtil() {
     }
 
     this.getErrorText = function(msg) {
-        return '<div align="center" style="margin-top:20px"><h4>An error occured while attempting to display this gadget. Error message is: ' 
-        + msg + '</h4></div>';
+        return '<div align="center" style="margin-top:20px"><h4>An error occured while attempting to display this gadget. Error message is: ' + msg + '</h4></div>';
     }
 
 }

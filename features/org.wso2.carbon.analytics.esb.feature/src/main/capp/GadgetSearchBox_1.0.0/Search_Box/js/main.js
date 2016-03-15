@@ -3,6 +3,14 @@ $(function() {
     var page = gadgetUtil.getCurrentPage();
     var qs = gadgetUtil.getQueryString();
 
+    if(qs[PARAM_ID] != null) {
+        $("#txtSearch").val(qs[PARAM_ID]);
+    }
+
+    $("#txtSearch").click(function() {
+        $("#txtSearch").val("");
+    });
+
     gadgetUtil.fetchData(CONTEXT, {
         type: page.type,
     }, onData, onError);
