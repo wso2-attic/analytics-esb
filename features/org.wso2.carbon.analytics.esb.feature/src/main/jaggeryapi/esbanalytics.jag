@@ -488,7 +488,7 @@
                     
                     // Create hidden attributes
                     var hiddenAttributes = [
-                            { "name" : "entryPoint", "value": componentInfo["entryPoint"]},
+                            //{ "name" : "entryPoint", "value": componentInfo["entryPoint"]},
                             { "name" : "id", "value": componentId}
                          ];
 
@@ -736,9 +736,10 @@
                 var timeFrom = request.getParameter("timeFrom");
                 var timeTo = request.getParameter("timeTo");
                 var componentId = request.getParameter("id");
+                var entryPoint = request.getParameter("entryPoint");
                 var tableName = "ESB-EVENT"; 
                 query = stringify({
-                                      "query": "(componentType : Mediator OR  componentType : Sequence) AND _componentId : \"" + componentId + "\" AND startTime : [" + timeFrom + " TO " + timeTo + "]",
+                                      "query": "(componentType : Mediator OR  componentType : Sequence) AND _entryPoint : \"" + entryPoint + "\" AND _componentId : \"" + componentId + "\" AND startTime : [" + timeFrom + " TO " + timeTo + "]",
                                       "start": 0,
                                       "count": 100
                                   });
