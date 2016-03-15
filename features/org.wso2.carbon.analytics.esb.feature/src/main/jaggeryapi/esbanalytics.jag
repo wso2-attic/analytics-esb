@@ -39,9 +39,9 @@
     var TYPE_MEDIATOR_MESSAGE_RATE = 17;
     var TYPE_MEDIATOR_LATENCY = 18;
     var TYPE_MEDIATOR_MESSAGES = 19;
-
     var TYPE_OVERALL_SUCCESS_MESSAGE_COUNT = 20;
     var TYPE_OVERALL_FAULT_MESSAGE_COUNT = 21;
+    var TYPE_MESSAGE_FLOW = 22;
 
     if (configs.cacheTimeoutSeconds) {
         cacheTimeoutSeconds = parseInt(configs.cacheTimeoutSeconds);
@@ -781,6 +781,98 @@
                     "total" : 1234,
                     "percentage" : 78
                 };
+                break;
+            }
+            case TYPE_MESSAGE_FLOW:
+            {
+                var result = [];
+                var messageId = request.getParameter("id");
+
+                // Get Message details
+                var tableName = "ESB-EVENT";
+                var query = stringify({
+                    "tableName": tableName,
+                    "query": "messageFlowId : \"" + messageId + "\"",
+                    "start": 0,
+                    "count" : 10000
+                });
+                var resp = connector.search(loggedInUser, tableName, query);           
+                var components = JSON.parse(resp.getMessage());
+                var entryPointHashCode = components[0]["values"]["entryPointHashcode"];
+                var entryPoint = components[0]["values"]["entryPoint"];
+
+                // Get schema 
+                var tableName = "ESB-CONFIG-ENTRY-STREAM";
+                var query = stringify({
+                                      "query": "_hashcode : \"" + entryPointHashCode + "\"",
+                                      "start": 0,
+                                      "count": 1
+                                  });
+                var resp = connector.search(loggedInUser, tableName, query);
+                var config = JSON.parse(resp.getMessage())[0];
+                var schema = JSON.parse(config["values"]["configData"]);
+
+                // Prepare component map
+                var componentMap = {};
+                for (var i = 0; i < components.length; i++) {
+                    var component = components[i];
+                    var componentInfo = component["values"];
+                    var componentId = componentInfo["componentId"];
+                    componentMap[componentId] = componentInfo;
+                }
+
+                // Populate tabel data
+                var componentNameRegex = new RegExp("^.*@\\d*:(.*)");
+                var groups = [];
+                for (var i = 0; i < schema.length; i++) {
+                    var groupLabel;
+                    var groupId = schema[i]["group"];
+                    var componentId = schema[i]["id"];
+                    var componentInfo = componentMap[componentId];
+                    var dataAttributes = [];
+                    var hiddenAttributes = [];
+
+                    // Find unique groups
+                    if (schema[i]["group"] != null && groups.indexOf(schema[i]["group"]) == -1) {
+                        groups.push(schema[i]["group"]);
+                    }
+                    
+                    // Create data attributes
+                    if (componentInfo != null) {
+                        dataAttributes.push({ "name" : "Duration", "value" : componentInfo["duration"]});
+                        componentType = componentInfo["componentType"];
+                        hiddenAttributes.push({ "name" : "id", "value": componentInfo["componentId"]});
+                    } else {
+                        dataAttributes.push({ "name" : "Duration", "value" : "n/a"});
+                        componentType = "UNKNOWN";
+                    }
+                    hiddenAttributes.push({ "name" : "entryPoint", "value": entryPoint});
+
+                    var  componentLabel = componentNameRegex.exec(componentId)[1];
+                    // TODO : define parent
+                    if (schema[i]["parentId"] == schema[i]["group"]) {
+                        result.push({"id":componentId,
+                                    "label" : componentLabel,
+                                    "parents" : [],
+                                    "group" : schema[i]["group"],
+                                    "type": componentType,
+                                    "dataAttributes":dataAttributes,
+                                    "hiddenAttributes":hiddenAttributes
+                                    });
+                    } else {
+                        result.push({"id":componentId,
+                                    "label" : componentLabel,
+                                    "parents" : [/*schema[i]["parentId"]*/],
+                                    "group" : schema[i]["group"],
+                                    "type": componentType,
+                                    "dataAttributes":dataAttributes,
+                                    "hiddenAttributes":hiddenAttributes
+                                    });
+                    }
+                }
+                for (var i = 0 ; i < groups.length ; i++) {
+                    result.push({"id" : groups[i], "type": "group", "label": componentNameRegex.exec(groups[i])[1]});
+                }
                 break;
             }
             default:
