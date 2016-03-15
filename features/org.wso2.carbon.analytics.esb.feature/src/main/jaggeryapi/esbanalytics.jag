@@ -132,7 +132,7 @@
                     var searchParam = {
                         tableName: "ESB-STAT-PER-" + timeRange.unit,
                         //"groupByField": "group by",
-                        query: "startingTime : [" + timeRange.range[0] + " TO " + timeRange.range[1] + "}",
+                        query: "startingTime : [" + timeRange.range[0] + " TO " + timeRange.range[1] + "]",
                         aggregateLevel: 0,
                         parentPath: [],
                         noOfRecords : 10000
@@ -364,14 +364,14 @@
                 var query = stringify({
                                       "query": "_entryName : \"" + entryName + "\"",
                                       "start": 0,
-                                      "count": 100/*,
+                                      "count": 100,
                                       "sortBy" : [
                                             {
                                                 "field" : "_timestamp",
                                                 "sortType" : "DESC", // This can be ASC, DESC, INDEX_ORDER or RELEVANCE
                                                 "reversed" : "false"
                                             }
-                                        ]*/
+                                        ]
                                   });
                 var resp = connector.search(loggedInUser, tableName, query);
                 var config = JSON.parse(resp.getMessage())[0];
@@ -403,17 +403,29 @@
                     aggregate: "SUM",
                     alias: "Faults"
                 }
+                var firstEntryPoint = {
+                    fields: ["entryPoint"],
+                    aggregate: "FIRST",
+                    alias: "entryPoint"
+                }
+                var firstComponentType = {
+                    fields: ["componentType"],
+                    aggregate: "FIRST",
+                    alias: "componentType"
+                }
                 var aggregateFields = [];
                 aggregateFields.push(totalDurationSum);
                 aggregateFields.push(maxDuration);
                 aggregateFields.push(noOfInvocationSum);
                 aggregateFields.push(faultCountSum);
+                aggregateFields.push(firstEntryPoint);
+                aggregateFields.push(firstComponentType);
                 for (var i = 0; i < timeRanges.size(); i++) {
                     timeRange = timeRanges.get(i);
                     var searchParam = {
                         tableName: "MEDIATOR-STAT-PER-" + timeRange.unit,
                         groupByField: "componentId",
-                        query: "entryPointHashcode : \"" + entryHashCode + "\" AND startingTime : [" + timeRange.range[0] + " TO " + timeRange.range[1] + "]",
+                        query: "entryPointHashcode : \"" + entryHashCode + "\" AND startingTime : [" + timeRange.range[0] + " TO " + timeRange.range[1] + "}",
                         aggregateLevel: 0,
                         parentPath: [],
                         noOfRecords : 10000
@@ -445,26 +457,27 @@
                     }
                 }
 
+                // Populate tabel data
                 var componentNameRegex = new RegExp("^.*@\\d*:(.*)");
                 var groups = [];
                 for (var i = 0; i < schema.length; i++) {
-                    // Find unique groups
                     var groupLabel;
                     var groupId = schema[i]["group"];
+                    var componentId = schema[i]["id"];
+                    var componentInfo = componentMap[componentId];
+                    var dataAttributes = [];
 
+                    // Find unique groups
                     if (schema[i]["group"] != null && groups.indexOf(schema[i]["group"]) == -1) {
                         groups.push(schema[i]["group"]);
                     }
-
-                    // Populate tabel data
-                    var componentId = schema[i]["id"];
-                    var dataAttributes = [];
+                    
+                    // Create data attributes
                     for (field in fields) {
                         var fieldName = fields[field];
-                        var componentInfo = componentMap[componentId];
                         if (componentInfo != null) {
                             if (fieldName == "TotalDuration") {
-                                dataAttributes.push({ name : "AvgDuration", value : componentInfo[fieldName]/componentInfo["Invocations"]});
+                                dataAttributes.push({ name : "AvgDuration", value : (componentInfo[fieldName]/componentInfo["Invocations"]).toFixed(2)});
                             } else {
                                 dataAttributes.push({ name : fieldName, value : componentInfo[fieldName]});
                             }
@@ -473,12 +486,31 @@
                         }  
                     }
 
+                    // Create hidden attributes
+                    var hiddenAttributes = [
+                            { name : "entryPoint", value: componentInfo["entryPoint"]},
+                         ];
+
                     var  componentLabel = componentNameRegex.exec(componentId)[1];
                     // TODO : define parent
                     if (schema[i]["parentId"] == schema[i]["group"]) {
-                        result.push({"id":componentId, "label" : componentLabel, "parents" : [], "group" : schema[i]["group"], "dataAttributes":dataAttributes});
+                        result.push({"id":componentId,
+                                    "label" : componentLabel,
+                                    "parents" : [],
+                                    "group" : schema[i]["group"],
+                                    "type": componentInfo["componentType"],
+                                    "dataAttributes":dataAttributes,
+                                    "hiddenAttributes":hiddenAttributes
+                                    });
                     } else {
-                        result.push({"id":componentId, "label" : componentLabel, "parents" : [/*schema[i]["parentId"]*/], "group" : schema[i]["group"], "dataAttributes":dataAttributes});
+                        result.push({"id":componentId,
+                                    "label" : componentLabel,
+                                    "parents" : [/*schema[i]["parentId"]*/],
+                                    "group" : schema[i]["group"],
+                                    "type": componentInfo["componentType"],
+                                    "dataAttributes":dataAttributes,
+                                    "hiddenAttributes":hiddenAttributes
+                                    });
                     }
                 }
                 for (var i = 0 ; i < groups.length ; i++) {
@@ -759,29 +791,6 @@
         }
     } else {
         print('{ "status": "Failed", "statusCode": "500", "message": "AnalyticsCachedWebServiceConnector is unavailable" }');
-    }
-
-
-    // Get the latest hashcode of a given entry
-    function getLatestEntryHash(entryName) {
-        var tableName = "ESB-CONFIG-ENTRY-STREAM";
-        var query = stringify({
-                              "query": "_entryName : \"" + entryName + "\"",
-                              "start": 0,
-                              "count": 100
-                              /*"sortBy" : [
-                                    {
-                                        "field" : "_timestamp",
-                                        "sortType" : "DESC", // This can be ASC, DESC, INDEX_ORDER or RELEVANCE
-                                        "reversed" : "false"
-                                    }
-                                ]
-                                */
-                          });
-        var resp = connector.search(loggedInUser, tableName, query);
-        var config = JSON.parse(resp.getMessage())[0];
-        var schema = JSON.parse(config["values"]["configData"]);
-        return config["values"]["hashcode"];
     }
 
 }());
