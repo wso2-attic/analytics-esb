@@ -18,7 +18,8 @@ $(function() {
         type: page.type,
         id: qs.id,
         timeFrom: timeFrom,
-        timeTo: timeTo
+        timeTo: timeTo,
+        entryPoint:qs.entryPoint
     }, onData, onError);
 
     $('#tblMessages tbody').on('click', 'tr', function() {
