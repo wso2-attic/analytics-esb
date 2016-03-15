@@ -42,6 +42,7 @@
 
     function onData(response) {
         var data = response.message;
+        console.log(data); 
         if (data.length == 0) {
             $("#canvas").html(gadgetUtil.getEmptyRecordsText());
             return;
@@ -88,7 +89,19 @@
     };
 
     function buildLabel(node) {
-        var targetUrl = MEDIATOR_PAGE_URL + PARAM_ID + "=" + node.targetUrl;
+        var pageUrl = MEDIATOR_PAGE_URL;
+        if(node.type === "Sequence") {
+            pageUrl = SEQUENCE_PAGE_URL;
+        } else if(node.type === "Endpoint") {
+            pageUrl = ENDPOINT_PAGE_URL;
+        }
+        var hiddenParams = "";
+        if(node.hiddenAttributes) {
+            node.hiddenAttributes.forEach(function(item,i) {
+                hiddenParams += "&" + item.name + "=" + item.value;
+            });   
+        }
+        var targetUrl = pageUrl + "?" + hiddenParams;
         var labelText = '<div><h4><a target="_blank" href="' + targetUrl + '">' + node.label + "</a></h4>";;
         if (node.dataAttributes) {
             node.dataAttributes.forEach(function(item, i) {
