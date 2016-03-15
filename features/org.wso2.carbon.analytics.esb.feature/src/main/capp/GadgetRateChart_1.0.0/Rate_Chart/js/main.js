@@ -15,7 +15,8 @@ $(function() {
         type: page.type,
         id: qs.id,
         timeFrom: timeFrom,
-        timeTo: timeTo
+        timeTo: timeTo,
+        entryPoint:qs.entryPoint
     }, onData, onError);
 });
 
@@ -30,7 +31,8 @@ function onTimeRangeChanged(data) {
         type: page.type,
         id: qs.id,
         timeFrom: data.timeFrom,
-        timeTo: data.timeTo
+        timeTo: data.timeTo,
+        entryPoint:qs.entryPoint
     }, onData, onError);
 };
 

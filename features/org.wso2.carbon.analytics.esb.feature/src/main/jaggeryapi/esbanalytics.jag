@@ -40,8 +40,7 @@
     var TYPE_MEDIATOR_LATENCY = 18;
     var TYPE_MEDIATOR_MESSAGES = 19;
 
-    var TYPE_OVERALL_SUCCESS_MESSAGE_COUNT = 20;
-    var TYPE_OVERALL_FAULT_MESSAGE_COUNT = 21;
+    var TYPE_TOTAL_MESSAGE_COUNT = 20;
 
     if (configs.cacheTimeoutSeconds) {
         cacheTimeoutSeconds = parseInt(configs.cacheTimeoutSeconds);
@@ -103,46 +102,6 @@
         switch (type) {
             case TYPE_OVERALL_TPS:
             {
-
-                var timeFrom = request.getParameter("timeFrom");
-                var timeTo = request.getParameter("timeTo");
-                var timeRanges = timeRangeUtil.getDateTimeRanges(timeFrom, timeTo);
-                var searchParams = [];
-                var totalDurationSum = {
-                    fields: ["totalDuration"],
-                    aggregate: "SUM",
-                    alias: "sum_total_duration"
-                }
-                var noOfInvocationSum = {
-                    fields: ["noOfInvocation"],
-                    aggregate: "SUM",
-                    alias: "sum_no_of_invocation"
-                }
-                var faultCountSum = {
-                    fields: ["faultCount"],
-                    aggregate: "SUM",
-                    alias: "sum_fault_count"
-                }
-                var aggregateFields = [];
-                aggregateFields.push(totalDurationSum);
-                aggregateFields.push(noOfInvocationSum);
-                aggregateFields.push(faultCountSum);
-                for (var i = 0; i < timeRanges.size(); i++) {
-                    timeRange = timeRanges.get(i);
-                    var searchParam = {
-                        tableName: "ESB-STAT-PER-" + timeRange.unit,
-                        //"groupByField": "group by",
-                        query: "startingTime : [" + timeRange.range[0] + " TO " + timeRange.range[1] + "]",
-                        aggregateLevel: 0,
-                        parentPath: [],
-                        noOfRecords : 10000
-                    }
-                    searchParam.aggregateFields = aggregateFields;
-                    searchParams.push(searchParam);
-                }
-                resp = connector.searchMultiTablesWithAggregates(loggedInUser, JSON.stringify(searchParams));
-                log.info(JSON.parse(resp.getMessage()));
-
                 result = [];
                 var timeFrom = request.getParameter("timeFrom");
                 var timeTo = request.getParameter("timeTo");
@@ -347,7 +306,7 @@
                 for (var i = 0; i < dataPoints.length; i++) {
                     var obj = dataPoints[i];
                     result.push({
-                        "timestamp": obj.values.facetStartTime[0],
+                        "timestamp": obj.values.facetStartTime,
                         "min": obj.values.minDuration,
                         "max": obj.values.maxDuration,
                         "avg": obj.values.totalDuration / obj.values.noOfInvocation
@@ -645,7 +604,7 @@
                 for (var i = 0; i < dataPoints.length; i++) {
                     var obj = dataPoints[i];
                     result.push({
-                        "timestamp": obj.values.facetStartTime[0],
+                        "timestamp": obj.values.facetStartTime,
                         "min": obj.values.minDuration,
                         "max": obj.values.maxDuration,
                         "avg": obj.values.totalDuration / obj.values.noOfInvocation
@@ -706,33 +665,78 @@
             }
             case TYPE_MEDIATOR_MESSAGE_RATE:
             {
-                var result = [
-                    {"timestamp":1388514600000,"success":3456,"faults": 2},
-                    {"timestamp":1420050600000,"success":1345,"faults": 65},
-                    {"timestamp":1451586600000,"success":3890,"faults": 2},
-                    {"timestamp":1398882600000,"success":4563,"faults": 6},
-                    {"timestamp":1430422200000,"success":3421,"faults": 67},
-                    {"timestamp":1451590200000,"success":4567,"faults": 456},
-                    {"timestamp":1440790200000,"success":567,"faults": 234},
-                    {"timestamp":1440703800000,"success":5,"faults":4},
-                    {"timestamp":1440709440000,"success":234,"faults": 1}
-                ];
+                result = [];
+                var timeUnit = 'MINUTE';
+                var timeFrom = request.getParameter("timeFrom");
+                var timeTo = request.getParameter("timeTo");
+                var componentId = request.getParameter("id");
+                var entryPoint = request.getParameter("entryPoint");
+                if (timeFrom && timeTo) {
+                    timeUnit = timeRangeUtil.getSuitableTimeRangeUnit(timeFrom, timeTo);
+                    query = "entryPoint : " + entryPoint + " AND _componentId : \"" + componentId + "\" AND startingTime : [" + timeFrom + " TO " + timeTo + "]";
+                } else {
+                    query = "entryPoint : " + entryPoint + " AND _componentId : \"" + componentId + "\"";
+                }
+                var tableName = "MEDIATOR-STAT-PER-" + timeUnit;
+                query = stringify({
+                    tableName: tableName,
+                    groupByField: "facetStartTime",
+                    query: query,
+                    aggregateFields: [
+                        {
+                            fields: ["noOfInvocation"],
+                            aggregate: "SUM",
+                            alias: "total_invocation_sum"
+                        },
+                        {
+                            fields: ["faultCount"],
+                            aggregate: "SUM",
+                            alias: "total_fault_count"
+                        }
+                    ],
+                    aggregateLevel: 0,
+                    parentPath: []
+                });
+                resp = connector.searchWithAggregates(loggedInUser, tableName, query);
+                var dataPoints = JSON.parse(resp.getMessage());
+                for (var i = 0; i < dataPoints.length; i++) {
+                    var obj = dataPoints[i];
+                    result.push({
+                        "timestamp": obj.values.facetStartTime[0],
+                        "success": obj.values.total_invocation_sum,
+                        "faults": obj.values.total_fault_count
+                    });
+                }
                 break;
             }
             case TYPE_MEDIATOR_LATENCY:
             {
-                result = [
-                    {"timestamp":1388514600000,"value":8982},
-                    {"timestamp":1420050600000,"value":6344},
-                    {"timestamp":1451586600000,"value":6797},
-                    {"timestamp":1398882600000,"value":3906},
-                    {"timestamp":1430422200000,"value":5598},
-                    {"timestamp":1451590200000,"value":7995},
-                    {"timestamp":1440790200000,"value":7932},
-                    {"timestamp":1440703800000,"value":3821},
-                    {"timestamp":1440709440000,"value":5781},
-                    {"timestamp":1440709560000,"value":8601}
-                ];
+                result = [];
+                var timeFrom = request.getParameter("timeFrom");
+                var timeTo = request.getParameter("timeTo");
+                var timeUnit = timeRangeUtil.getSuitableTimeRangeUnit(timeFrom, timeTo);
+                var tableName = "MEDIATOR-STAT-PER-" + timeUnit;
+                var componentId = request.getParameter("id");
+                var entryPoint = request.getParameter("entryPoint");
+                query = stringify({
+                    tableName: tableName,
+                    query: "entryPoint : " + entryPoint + " AND _componentId : \"" + componentId + "\" AND startingTime : [" + timeFrom + " TO " + timeTo + "]",
+                    start: 0,
+                    count: 60
+                });
+                resp = connector.search(loggedInUser, tableName, query);
+                var dataPoints = JSON.parse(resp.getMessage());
+                for (var i = 0; i < dataPoints.length; i++) {
+                    var obj = dataPoints[i];
+                    log.info(obj.values);
+                    log.info(obj.values.facetStartTime);
+                    result.push({
+                        "timestamp": obj.values.facetStartTime,
+                        "min": obj.values.minDuration,
+                        "max": obj.values.maxDuration,
+                        "avg": obj.values.totalDuration / obj.values.noOfInvocation
+                    });
+                }
                 break;
             }
             case TYPE_MEDIATOR_MESSAGES:
@@ -775,11 +779,42 @@
                 }
                 break;
             }
-            case TYPE_OVERALL_SUCCESS_MESSAGE_COUNT:
+            case TYPE_TOTAL_MESSAGE_COUNT:
             {
+                var timeFrom = request.getParameter("timeFrom");
+                var timeTo = request.getParameter("timeTo");
+                var timeRanges = timeRangeUtil.getDateTimeRanges(timeFrom, timeTo);
+                var searchParams = [];
+                var noOfInvocationSum = {
+                    fields: ["noOfInvocation"],
+                    aggregate: "SUM",
+                    alias: "sum_no_of_invocation"
+                }
+                var faultCountSum = {
+                    fields: ["faultCount"],
+                    aggregate: "SUM",
+                    alias: "sum_fault_count"
+                }
+                var aggregateFields = [];
+                aggregateFields.push(noOfInvocationSum);
+                aggregateFields.push(faultCountSum);
+                for (var i = 0; i < timeRanges.size(); i++) {
+                    timeRange = timeRanges.get(i);
+                    var searchParam = {
+                        tableName: "ESB-STAT-PER-" + timeRange.unit,
+                        query: "startingTime : [" + timeRange.range[0] + " TO " + timeRange.range[1] + "}",
+                        aggregateLevel: 0,
+                        parentPath: [],
+                        noOfRecords: 1000
+                    }
+                    searchParam.aggregateFields = aggregateFields;
+                    searchParams.push(searchParam);
+                }
+                resp = connector.searchMultiTablesWithAggregates(loggedInUser, JSON.stringify(searchParams));
+                log.info(JSON.parse(resp.getMessage()));
                 result = {
                     "total" : 1234,
-                    "percentage" : 78
+                    "fault": 78
                 };
                 break;
             }
