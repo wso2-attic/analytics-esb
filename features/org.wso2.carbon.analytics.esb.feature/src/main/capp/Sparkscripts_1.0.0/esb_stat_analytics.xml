@@ -126,7 +126,6 @@
         getSecondStartingTime(temp.year, temp.month, temp.day, temp.hour, temp.minute, temp.second) as startingTime,
         cast(getSecondStartingTime(year, month, day, hour, minute, second) as STRING) as facetStartTime
 	FROM (SELECT getYear(startTime) as year, getMonth(startTime) as month, getDay(startTime) as day, getHour(startTime) as hour, getMinute(startTime) as minute, getSeconds(startTime) as second, duration as duration, entryPoint, entryPointHashcode, componentIndex, hashCode, componentName, componentType, componentId, (CASE WHEN faultCount > 0 then 1 ELSE 0 END) as faultCount FROM esbFlowEvent) temp 
-	WHERE temp.componentType = "Mediator" OR temp.componentType = "Sequence"
 	GROUP BY temp.year, temp.month, temp.day, temp.hour, temp.minute, temp.second, temp.entryPoint, temp.entryPointHashcode, temp.componentIndex, temp.componentId, temp.hashCode, temp.componentName, temp.componentType;   
 
 	CREATE TEMPORARY TABLE mediatorStatPerMinute USING CarbonAnalytics
@@ -144,7 +143,6 @@
         getMinuteStartingTime(temp.year, temp.month, temp.day, temp.hour, temp.minute) as startingTime,
         cast(getMinuteStartingTime(temp.year, temp.month, temp.day, temp.hour, temp.minute) as STRING) as facetStartTime
 	FROM (SELECT getYear(startTime) as year, getMonth(startTime) as month, getDay(startTime) as day, getHour(startTime) as hour, getMinute(startTime) as minute, duration as duration, entryPoint, entryPointHashcode, componentIndex, hashCode, componentName, componentType, componentId, (CASE WHEN faultCount > 0 then 1 ELSE 0 END) as faultCount FROM esbFlowEvent) temp
-	WHERE temp.componentType = "Mediator" OR temp.componentType = "Sequence"
 	GROUP BY temp.year, temp.month, temp.day, temp.hour, temp.minute, temp.entryPoint, temp.entryPointHashcode, temp.componentIndex, temp.componentId, temp.hashCode, temp.componentName, temp.componentType;
 
 	CREATE TEMPORARY TABLE mediatorStatPerHour USING CarbonAnalytics
@@ -162,7 +160,6 @@
         temp.hour) as startingTime, cast(getHourStartingTime(temp.year, temp.month, temp.day, temp.hour) as STRING) as
         facetStartTime
 	FROM (SELECT getYear(startTime) as year, getMonth(startTime) as month, getDay(startTime) as day, getHour(startTime) as hour, duration as duration, entryPoint, entryPointHashcode, componentIndex, hashCode, componentName, componentType, componentId, (CASE WHEN faultCount > 0 then 1 ELSE 0 END) as faultCount FROM esbFlowEvent) temp
-	WHERE temp.componentType = "Mediator" OR temp.componentType = "Sequence"
 	GROUP BY temp.year, temp.month, temp.day, temp.hour, temp.entryPoint, temp.entryPointHashcode, temp.componentIndex, temp.componentId, temp.hashCode, temp.componentName, temp.componentType;
 
 	CREATE TEMPORARY TABLE mediatorStatPerDay USING CarbonAnalytics
@@ -179,7 +176,6 @@
         count(*) as noOfInvocation, sum(faultCount) as totalFault, getDateStartingTime(temp.year, temp.month, temp.day)
         as startingTime, cast(getDateStartingTime(temp.year, temp.month, temp.day) as STRING) as facetStartTime
 	FROM (SELECT getYear(startTime) as year, getMonth(startTime) as month, getDay(startTime) as day, duration as duration, entryPoint, entryPointHashcode, componentIndex, hashCode, componentName, componentType, componentId, (CASE WHEN faultCount > 0 then 1 ELSE 0 END) as faultCount FROM esbFlowEvent) temp
-	WHERE temp.componentType = "Mediator" OR temp.componentType = "Sequence" 
 	GROUP BY temp.year, temp.month, temp.day, temp.entryPoint, temp.entryPointHashcode, temp.componentIndex, temp.componentId, temp.hashCode, temp.componentName, temp.componentType;
 
 	CREATE TEMPORARY TABLE mediatorStatPerMonth USING CarbonAnalytics
@@ -196,7 +192,6 @@
         noOfInvocation, sum(faultCount) as totalFault, getMonthStartingTime(temp.year, temp.month) as startingTime,
         cast(getMonthStartingTime(temp.year, temp.month) as STRING) as facetStartTime
 	FROM (SELECT getYear(startTime) as year, getMonth(startTime) as month, duration as duration, entryPoint, entryPointHashcode, componentIndex, hashCode, componentName, componentType, componentId, (CASE WHEN faultCount > 0 then 1 ELSE 0 END) as faultCount FROM esbFlowEvent) temp
-	WHERE temp.componentType = "Mediator" OR temp.componentType = "Sequence" 
 	GROUP BY temp.year, temp.month, temp.entryPoint, temp.entryPointHashcode, temp.componentIndex, temp.componentId, temp.hashCode, temp.componentName, temp.componentType;
     </Script>
     <CronExpression>0 * * * * ?</CronExpression>
