@@ -477,18 +477,19 @@
                         var fieldName = fields[field];
                         if (componentInfo != null) {
                             if (fieldName == "TotalDuration") {
-                                dataAttributes.push({ name : "AvgDuration", value : (componentInfo[fieldName]/componentInfo["Invocations"]).toFixed(2)});
+                                dataAttributes.push({ "name" : "AvgDuration", "value" : (componentInfo[fieldName]/componentInfo["Invocations"]).toFixed(2)});
                             } else {
-                                dataAttributes.push({ name : fieldName, value : componentInfo[fieldName]});
+                                dataAttributes.push({ "name" : fieldName, "value" : componentInfo[fieldName]});
                             }
                         } else {
-                            dataAttributes.push({ name : fieldName, value : 0});
+                            dataAttributes.push({ "name" : fieldName, "value" : 0});
                         }  
                     }
-
+                    
                     // Create hidden attributes
                     var hiddenAttributes = [
-                            { name : "entryPoint", value: componentInfo["entryPoint"]},
+                            { "name" : "entryPoint", "value": componentInfo["entryPoint"]},
+                            { "name" : "id", "value": componentId}
                          ];
 
                     var  componentLabel = componentNameRegex.exec(componentId)[1];
