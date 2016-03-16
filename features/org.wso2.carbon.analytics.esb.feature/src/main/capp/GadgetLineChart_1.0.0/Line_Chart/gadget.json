@@ -1,15 +1,15 @@
 {
-    "id": "Overall TPS",
-    "title": "Overall TPS",
+    "id": "Line_Chart",
+    "title": "Line Chart",
     "type": "gadget",
     "thumbnail": "store://gadget/usa-business-revenue/index.png",
     "data": {
-        "url": "store://gadget/Overall_TPS/index.xml"
+        "url": "store://gadget/Line_Chart/index.xml"
     },
     "listen": {
         "subscriber": {
             "type": "date-range",
-            "description": "Used to listen to Any message of type state"
+            "description": "This notifies message generated in publisher"
         }
     }
 }

@@ -19,7 +19,8 @@
  */
 
 var CONTEXT = "/portal/apis/esbanalytics";
-var BASE_URL = "/portal/dashboards/esb-analytics/";
+var DASHBOARD_NAME = "esb-analytics";
+var BASE_URL = "/portal/dashboards/" + DASHBOARD_NAME + "/";
 
 var TYPE_LANDING = "landing";
 var TYPE_PROXY = "proxy";
@@ -30,8 +31,13 @@ var TYPE_INBOUND_ENDPOINT = "inbound";
 var TYPE_MEDIATOR = "mediator";
 var TYPE_MESSAGE = "message";
 
+var ROLE_TPS = "tps";
+var ROLE_LATENCY = "latency";
+var ROLE_RATE = "rate";
+
 var PARAM_ID = "id";
 var PARAM_TYPE = "type";
+var PARAM_GADGET_ROLE = "role";
 
 var PROXY_PAGE_URL = BASE_URL + TYPE_PROXY;
 var API_PAGE_URL = BASE_URL + TYPE_API;
@@ -66,8 +72,8 @@ function GadgetUtil() {
         return chart;
     };
 
-    this.getRequestType = function(chart) {
-        var pageName,type = null;
+    this.getCurrentPageName = function() {
+        var pageName,type;
         var href = parent.window.location.href;
         var lastSegment = href.substr(href.lastIndexOf('/') + 1);
         if (lastSegment.indexOf('?') == -1) {
@@ -75,9 +81,13 @@ function GadgetUtil() {
         } else {
             pageName = lastSegment.substr(0, lastSegment.indexOf('?'));
         }
-        if(type == null) {
-            return TYPE_LANDING;
+        if(!pageName || pageName === DASHBOARD_NAME) {
+            pageName = TYPE_LANDING;
         }
+        return pageName;
+    };
+
+    this.getRequestType = function(pageName,chart) {
         chart.types.forEach(function(item, i) {
             if (item.name === pageName) {
                 type = item.type;
