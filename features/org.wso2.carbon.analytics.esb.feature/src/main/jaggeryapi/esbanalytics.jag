@@ -42,6 +42,12 @@
     var TYPE_TOTAL_MESSAGE_COUNT = 20;
     var TYPE_OVERALL_FAULT_MESSAGE_COUNT = 21;
     var TYPE_MESSAGE_FLOW = 22;
+    var TYPE_MESSAGE_LIST = 23;
+    var TYPE_ENDPOINT_NAMES = 24;
+    var TYPE_ENDPOINT_MESSAGE_RATE = 25;
+    var TYPE_ENDPOINT_LATENCY = 26;
+    var TYPE_ENDPOINT_MESSAGES = 27;
+
 
     if (configs.cacheTimeoutSeconds) {
         cacheTimeoutSeconds = parseInt(configs.cacheTimeoutSeconds);
@@ -419,18 +425,22 @@
                             }  
                         }
 
-                        // Create hidden attributes
-                        var hiddenAttributes = [
-                                { "name" : "entryPoint", "value": entryName},
-                                { "name" : "id", "value": componentId}
-                             ];
-
                         var  componentLabel = componentNameRegex.exec(componentId)[1];
                         if (componentInfo != null ) {
                             componentType = componentInfo["componentType"];
                         } else {
                             componentType = "UNKNOWN";
                         }
+
+                        // Create hidden attributes
+                        var hiddenAttributes = [];
+                        hiddenAttributes.push({"name" : "entryPoint", "value": entryName});
+                        if (componentType == "Endpoint") {
+                            hiddenAttributes.push({ "name" : "id", "value": componentLabel});
+                        } else {
+                            hiddenAttributes.push({ "name" : "id", "value": componentId});
+                        }
+
                         if (schema[i]["parentId"] == schema[i]["group"]) {
                             result.push({"id":componentId,
                                         "label" : componentLabel,
@@ -890,6 +900,83 @@
                         result.push({"id" : groups[i], "type": "group", "label": componentNameRegex.exec(groups[i])[1]});
                     }
                 }                
+                break;
+            }
+            case TYPE_ENDPOINT_NAMES:
+            {
+                var result = [];
+                var tableName = "ESB-STAT-PER-MINUTE";
+                var query = stringify({
+                                    "fieldName": "componentName",
+                                    "query": "componentType : \"Endpoint\""
+                                  });
+                var resp = connector.drillDownCategories(loggedInUser, tableName, query);
+                var proxyNames = JSON.parse(resp.getMessage());
+
+                for (var name in proxyNames["categories"]) {
+                    result.push(name);
+                }
+                break;
+            }
+            case TYPE_ENDPOINT_MESSAGE_RATE:
+            {
+                var result = [];
+                break;
+            }
+            case TYPE_ENDPOINT_LATENCY:
+            {
+                var result = [];
+                break;
+            }
+            case TYPE_ENDPOINT_MESSAGES:
+            {
+                var result = [];
+                var timeFrom = request.getParameter("timeFrom");
+                var timeTo = request.getParameter("timeTo");
+                var endpointId = request.getParameter("id");
+                var entryPoint = request.getParameter("entryPoint");
+                var tableName = "ESB-EVENT";
+
+                if (entryPoint != null && entryPoint != "undefined") {
+                    var query = stringify({
+                                      "query": "entryPoint : " + entryPoint + " AND componentType : \"Endpoint\" AND _componentName : \"" + endpointId + "\" AND startTime : [" + timeFrom + " TO " + timeTo + "]",
+                                      "start": 0,
+                                      "count": 100
+                                  });
+                } else {
+                    var query = stringify({
+                                      "query": "componentType : \"Endpoint\" AND _componentName : \"" + endpointId + "\" AND startTime : [" + timeFrom + " TO " + timeTo + "]",
+                                      "start": 0,
+                                      "count": 100
+                                  });
+                }
+                
+                var resp = connector.search(loggedInUser, tableName, query);
+                var dataPoints = JSON.parse(resp.getMessage());
+                var columns = ["messageFlowId", "faultCount","startTime","host"];
+                for (i = 0 ; i < dataPoints.length ; i++) {
+                    var temp = {};
+                    for (j = 0 ; j < columns.length ; j++) {
+                        var column = columns[j];
+                        var value = dataPoints[i]["values"][column];
+                        if (value != null && (column == "transportPropertyMap" || column == "contextPropertyMap")) {
+                            temp[column] = stringify(value["map"]);
+                        } else if (column == "faultCount") {
+                            // Add message status
+                            if (value > 0) {
+                                temp["status"] = "Failed";
+                            } else {
+                                temp["status"] = "Success";
+                            }   
+                        }  else if (column == "startTime") {
+                            var date = new Date(value);
+                            temp[column] = date.toLocaleString();
+                        } else {
+                            temp[column] = value;
+                        }
+                    }
+                    result.push(temp);
+                }
                 break;
             }
             default:
