@@ -186,44 +186,46 @@
             }
             case TYPE_TOP_INVOKED_PROXIES:
             {
-                result = [];
+                var result = [];
                 var timeFrom = request.getParameter("timeFrom");
                 var timeTo = request.getParameter("timeTo");
                 var tableName = "ESB-STAT-PER-MINUTE"
-                query = stringify({
+                var query = stringify({
                     "fieldName": "componentName",
                     "categoryPath": [],
                     "query": "startingTime : [" + timeFrom + " TO " + timeTo + "] AND componentType:\"Proxy Service\"",
                     "scoreFunction": "noOfInvocation"
                 });
-                resp = connector.drillDownCategories(loggedInUser, tableName, query);
+                var resp = connector.drillDownCategories(loggedInUser, tableName, query);
                 var drillDownResult = JSON.parse(resp.getMessage());
                 for (var key in drillDownResult["categories"]) {
                     if (drillDownResult["categories"].hasOwnProperty(key)) {
                         result.push({"name": key, "requests": drillDownResult["categories"][key]});
                     }
                 }
+                result = result.slice(0, 5);
                 break;
             }
             case TYPE_TOP_INVOKED_APIS:
             {
-                result = [];
+                var result = [];
                 var timeFrom = request.getParameter("timeFrom");
                 var timeTo = request.getParameter("timeTo");
                 var tableName = "ESB-STAT-PER-MINUTE"
-                query = stringify({
+                var query = stringify({
                     "fieldName": "componentName",
                     "categoryPath": [],
                     "query": "startingTime : [" + timeFrom + " TO " + timeTo + "] AND componentType:API",
                     "scoreFunction": "noOfInvocation"
                 });
-                resp = connector.drillDownCategories(loggedInUser, tableName, query);
+                var resp = connector.drillDownCategories(loggedInUser, tableName, query);
                 var drillDownResult = JSON.parse(resp.getMessage());
                 for (var key in drillDownResult["categories"]) {
                     if (drillDownResult["categories"].hasOwnProperty(key)) {
                         result.push({"name": key, "requests": drillDownResult["categories"][key]});
                     }
                 }
+                result = result.slice(0, 5);
                 break;
             }
             case TYPE_PROXY_NAMES:
@@ -319,168 +321,142 @@
             {
                 var result = [];
                 var entryName = request.getParameter("id");
+                var timeFrom = request.getParameter("timeFrom");
+                var timeTo = request.getParameter("timeTo");
                 // get schema 
                 var tableName = "ESB-CONFIG-ENTRY-STREAM";
                 var query = stringify({
-                                      "query": "_entryName : \"" + entryName + "\"",
+                                      "query": "_entryName : \"" + entryName + "\" AND _timestamp : [0000000000 TO " + timeTo + "] ",
                                       "start": 0,
                                       "count": 100,
                                       "sortBy" : [
                                             {
                                                 "field" : "_timestamp",
-                                                "sortType" : "DESC", // This can be ASC, DESC, INDEX_ORDER or RELEVANCE
+                                                "sortType" : "DESC",
                                                 "reversed" : "false"
                                             }
                                         ]
                                   });
                 var resp = connector.search(loggedInUser, tableName, query);
                 var config = JSON.parse(resp.getMessage())[0];
-                var schema = JSON.parse(config["values"]["configData"]);
-                var entryHashCode = config["values"]["hashcode"];
+                if (config != null) {
+                    var schema = JSON.parse(config["values"]["configData"]);
+                    var entryHashCode = config["values"]["hashcode"];
 
-                // get components info from different tables
-                var timeFrom = request.getParameter("timeFrom");
-                var timeTo = request.getParameter("timeTo");
-                var timeRanges = timeRangeUtil.getDateTimeRanges(timeFrom, timeTo);
-                var searchParams = [];
-                var maxDuration = {
-                    fields: ["totalDuration"],
-                    aggregate: "MAX",
-                    alias: "MaxDuration"
-                }
-                var totalDurationSum = {
-                    fields: ["totalDuration"],
-                    aggregate: "SUM",
-                    alias: "TotalDuration"
-                }
-                var noOfInvocationSum = {
-                    fields: ["noOfInvocation"],
-                    aggregate: "SUM",
-                    alias: "Invocations"
-                }
-                var faultCountSum = {
-                    fields: ["faultCount"],
-                    aggregate: "SUM",
-                    alias: "Faults"
-                }
-                var firstEntryPoint = {
-                    fields: ["entryPoint"],
-                    aggregate: "FIRST",
-                    alias: "entryPoint"
-                }
-                var firstComponentType = {
-                    fields: ["componentType"],
-                    aggregate: "FIRST",
-                    alias: "componentType"
-                }
-                var aggregateFields = [];
-                aggregateFields.push(totalDurationSum);
-                aggregateFields.push(maxDuration);
-                aggregateFields.push(noOfInvocationSum);
-                aggregateFields.push(faultCountSum);
-                aggregateFields.push(firstEntryPoint);
-                aggregateFields.push(firstComponentType);
-                for (var i = 0; i < timeRanges.size(); i++) {
-                    timeRange = timeRanges.get(i);
-                    var searchParam = {
-                        tableName: "MEDIATOR-STAT-PER-" + timeRange.unit,
-                        groupByField: "componentId",
-                        query: "entryPointHashcode : \"" + entryHashCode + "\" AND startingTime : [" + timeRange.range[0] + " TO " + timeRange.range[1] + "}",
-                        aggregateLevel: 0,
-                        parentPath: [],
-                        noOfRecords : 10000
+                    // get components info from different tables
+                    var timeRanges = timeRangeUtil.getDateTimeRanges(timeFrom, timeTo);
+                    var searchParams = [];
+                    var aggregateFields = [];
+                    aggregateFields.push({fields: ["totalDuration"], aggregate: "SUM", alias: "TotalDuration"});
+                    aggregateFields.push({fields: ["totalDuration"], aggregate: "MAX", alias: "MaxDuration"});
+                    aggregateFields.push({fields: ["noOfInvocation"], aggregate: "SUM", alias: "Invocations"});
+                    aggregateFields.push({fields: ["faultCount"], aggregate: "SUM", alias: "Faults"});
+                    aggregateFields.push({fields: ["entryPoint"], aggregate: "FIRST", alias: "entryPoint"});
+                    aggregateFields.push({fields: ["componentType"], aggregate: "FIRST", alias: "componentType"});
+                    for (var i = 0; i < timeRanges.size(); i++) {
+                        timeRange = timeRanges.get(i);
+                        var searchParam = {
+                            tableName: "MEDIATOR-STAT-PER-" + timeRange.unit,
+                            groupByField: "componentId",
+                            query: "entryPointHashcode : \"" + entryHashCode + "\" AND startingTime : [" + timeRange.range[0] + " TO " + timeRange.range[1] + "}",
+                            aggregateLevel: 0,
+                            parentPath: [],
+                            noOfRecords : 10000
+                        }
+                        searchParam.aggregateFields = aggregateFields;
+                        searchParams.push(searchParam);
                     }
-                    searchParam.aggregateFields = aggregateFields;
-                    searchParams.push(searchParam);
-                }
-                var resp = connector.searchMultiTablesWithAggregates(loggedInUser, JSON.stringify(searchParams));           
-                var allTables = JSON.parse(resp.getMessage());
+                    var resp = connector.searchMultiTablesWithAggregates(loggedInUser, JSON.stringify(searchParams));           
+                    var allTables = JSON.parse(resp.getMessage());
 
-                // Aggregate all tables and prepare component map
-                var componentMap = {};
-                var fields = ["Invocations", "TotalDuration", "MaxDuration", "Faults"];
-                for (var i = 0; i < allTables.length; i++) {
-                    var table = allTables[i];
-                    if (table != null && table.length != 0) {
-                        for (var j = 0; j < table.length; j++) {
-                            var componentInfo = table[j]["values"];
-                            var componentId = componentInfo["componentId"][0];
-                            if (componentMap[componentId] == null) {
-                                componentMap[componentId] = componentInfo;
-                            } else {
-                                for (field in fields) {
-                                    fieldName = fields[field];
-                                    componentMap[componentId][fieldName] = componentMap[componentId][fieldName] + componentInfo[fieldName];
-                                }
-                            } 
+                    // Aggregate all tables and prepare component map
+                    var componentMap = {};
+                    var fields = ["Invocations", "TotalDuration", "MaxDuration", "Faults"];
+                    for (var i = 0; i < allTables.length; i++) {
+                        var table = allTables[i];
+                        if (table != null && table.length != 0) {
+                            for (var j = 0; j < table.length; j++) {
+                                var componentInfo = table[j]["values"];
+                                var componentId = componentInfo["componentId"][0];
+                                if (componentMap[componentId] == null) {
+                                    componentMap[componentId] = componentInfo;
+                                } else {
+                                    for (field in fields) {
+                                        fieldName = fields[field];
+                                        componentMap[componentId][fieldName] = componentMap[componentId][fieldName] + componentInfo[fieldName];
+                                    }
+                                } 
+                            }
                         }
                     }
-                }
 
-                // Populate tabel data
-                var componentNameRegex = new RegExp("^.*@\\d*:(.*)");
-                var groups = [];
-                for (var i = 0; i < schema.length; i++) {
-                    var groupLabel;
-                    var groupId = schema[i]["group"];
-                    var componentId = schema[i]["id"];
-                    var componentInfo = componentMap[componentId];
-                    var dataAttributes = [];
+                    // Populate tabel data
+                    var componentNameRegex = new RegExp("^.*@\\d*:(.*)");
+                    var groups = [];
+                    for (var i = 0; i < schema.length; i++) {
+                        var groupLabel;
+                        var groupId = schema[i]["group"];
+                        var componentId = schema[i]["id"];
+                        var componentInfo = componentMap[componentId];
+                        var dataAttributes = [];
 
-                    // Find unique groups
-                    if (schema[i]["group"] != null && groups.indexOf(schema[i]["group"]) == -1) {
-                        groups.push(schema[i]["group"]);
-                    }
-                    
-                    // Create data attributes
-                    for (field in fields) {
-                        var fieldName = fields[field];
-                        if (componentInfo != null) {
-                            if (fieldName == "TotalDuration") {
-                                dataAttributes.push({ "name" : "AvgDuration", "value" : (componentInfo[fieldName]/componentInfo["Invocations"]).toFixed(2)});
+                        // Find unique groups
+                        if (schema[i]["group"] != null && groups.indexOf(schema[i]["group"]) == -1) {
+                            groups.push(schema[i]["group"]);
+                        }
+                        
+                        // Create data attributes
+                        for (field in fields) {
+                            var fieldName = fields[field];
+                            if (componentInfo != null) {
+                                if (fieldName == "TotalDuration") {
+                                    dataAttributes.push({ "name" : "AvgDuration", "value" : (componentInfo[fieldName]/componentInfo["Invocations"]).toFixed(2)});
+                                } else {
+                                    dataAttributes.push({ "name" : fieldName, "value" : componentInfo[fieldName]});
+                                }
                             } else {
-                                dataAttributes.push({ "name" : fieldName, "value" : componentInfo[fieldName]});
-                            }
+                                dataAttributes.push({ "name" : fieldName, "value" : 0});
+                            }  
+                        }
+
+                        // Create hidden attributes
+                        var hiddenAttributes = [
+                                { "name" : "entryPoint", "value": entryName},
+                                { "name" : "id", "value": componentId}
+                             ];
+
+                        var  componentLabel = componentNameRegex.exec(componentId)[1];
+                        if (componentInfo != null ) {
+                            componentType = componentInfo["componentType"];
                         } else {
-                            dataAttributes.push({ "name" : fieldName, "value" : 0});
-                        }  
+                            componentType = "UNKNOWN";
+                        }
+                        if (schema[i]["parentId"] == schema[i]["group"]) {
+                            result.push({"id":componentId,
+                                        "label" : componentLabel,
+                                        "parents" : [],
+                                        "group" : schema[i]["group"],
+                                        "type": componentType,
+                                        "dataAttributes":dataAttributes,
+                                        "hiddenAttributes":hiddenAttributes
+                                        });
+                        } else {
+                            result.push({"id":componentId,
+                                        "label" : componentLabel,
+                                        "parents" : [schema[i]["parentId"]],
+                                        "group" : schema[i]["group"],
+                                        "type": componentType,
+                                        "dataAttributes":dataAttributes,
+                                        "hiddenAttributes":hiddenAttributes
+                                        });
+                        }
                     }
-
-                    // Create hidden attributes
-                    var hiddenAttributes = [
-                            { "name" : "entryPoint", "value": entryName},
-                            { "name" : "id", "value": componentId}
-                         ];
-
-                    var  componentLabel = componentNameRegex.exec(componentId)[1];
-                    if (componentInfo != null ) {
-                        componentType = componentInfo["componentType"];
-                    } else {
-                        componentType = "UNKNOWN";
+                    // Defining groups
+                    for (var j = 0 ; j < result.length ; j++) {
+                        if(groups.indexOf(result[j]["id"]) >= 0) {
+                            result[j]["type"] = "group";
+                        }
                     }
-                    // TODO : define parent
-                    if (schema[i]["parentId"] == schema[i]["group"]) {
-                        result.push({"id":componentId,
-                                    "label" : componentLabel,
-                                    "parents" : [],
-                                    "group" : schema[i]["group"],
-                                    "type": componentType,
-                                    "dataAttributes":dataAttributes,
-                                    "hiddenAttributes":hiddenAttributes
-                                    });
-                    } else {
-                        result.push({"id":componentId,
-                                    "label" : componentLabel,
-                                    "parents" : [/*schema[i]["parentId"]*/],
-                                    "group" : schema[i]["group"],
-                                    "type": componentType,
-                                    "dataAttributes":dataAttributes,
-                                    "hiddenAttributes":hiddenAttributes
-                                    });
-                    }
-                }
-                for (var i = 0 ; i < groups.length ; i++) {
-                    result.push({"id" : groups[i], "type": "group", "label": componentNameRegex.exec(groups[i])[1]});
                 }
                 break;
             }
@@ -742,18 +718,18 @@
             }
             case TYPE_MEDIATOR_MESSAGES:
             {
-                result = [];
+                var result = [];
                 var timeFrom = request.getParameter("timeFrom");
                 var timeTo = request.getParameter("timeTo");
                 var componentId = request.getParameter("id");
                 var entryPoint = request.getParameter("entryPoint");
                 var tableName = "ESB-EVENT"; 
-                query = stringify({
+                var query = stringify({
                                       "query": "(componentType : Mediator OR  componentType : Sequence) AND _entryPoint : \"" + entryPoint + "\" AND _componentId : \"" + componentId + "\" AND startTime : [" + timeFrom + " TO " + timeTo + "]",
                                       "start": 0,
                                       "count": 100
                                   });
-                resp = connector.search(loggedInUser, tableName, query);
+                var resp = connector.search(loggedInUser, tableName, query);
                 var dataPoints = JSON.parse(resp.getMessage());
                 var columns = ["messageFlowId", "transportPropertyMap","faultCount","startTime","host"];
                 for (i = 0 ; i < dataPoints.length ; i++) {
@@ -823,9 +799,8 @@
             {
                 var result = [];
                 var messageId = request.getParameter("id");
-
-                // Get Message details
                 var tableName = "ESB-EVENT";
+                // Get Message details
                 var query = stringify({
                     "tableName": tableName,
                     "query": "messageFlowId : \"" + messageId + "\"",
@@ -846,69 +821,75 @@
                                   });
                 var resp = connector.search(loggedInUser, tableName, query);
                 var config = JSON.parse(resp.getMessage())[0];
-                var schema = JSON.parse(config["values"]["configData"]);
-
-                // Prepare component map
-                var componentMap = {};
-                for (var i = 0; i < components.length; i++) {
-                    var component = components[i];
-                    var componentInfo = component["values"];
-                    var componentId = componentInfo["componentId"];
-                    componentMap[componentId] = componentInfo;
-                }
-
-                // Populate tabel data
-                var componentNameRegex = new RegExp("^.*@\\d*:(.*)");
-                var groups = [];
-                for (var i = 0; i < schema.length; i++) {
-                    var groupLabel;
-                    var groupId = schema[i]["group"];
-                    var componentId = schema[i]["id"];
-                    var componentInfo = componentMap[componentId];
-                    var dataAttributes = [];
-                    var hiddenAttributes = [];
-
-                    // Find unique groups
-                    if (schema[i]["group"] != null && groups.indexOf(schema[i]["group"]) == -1) {
-                        groups.push(schema[i]["group"]);
+                if (config != null) {
+                    var schema = JSON.parse(config["values"]["configData"]);
+                    // Prepare component map
+                    var componentMap = {};
+                    for (var i = 0; i < components.length; i++) {
+                        var component = components[i];
+                        var componentInfo = component["values"];
+                        var componentId = componentInfo["componentId"];
+                        componentMap[componentId] = componentInfo;
                     }
-                    
-                    // Create data attributes
-                    if (componentInfo != null) {
-                        dataAttributes.push({ "name" : "Duration", "value" : componentInfo["duration"]});
-                        componentType = componentInfo["componentType"];
-                        hiddenAttributes.push({ "name" : "id", "value": componentInfo["componentId"]});
-                    } else {
-                        dataAttributes.push({ "name" : "Duration", "value" : "n/a"});
-                        componentType = "UNKNOWN";
-                    }
-                    hiddenAttributes.push({ "name" : "entryPoint", "value": entryPoint});
 
-                    var  componentLabel = componentNameRegex.exec(componentId)[1];
-                    // TODO : define parent
-                    if (schema[i]["parentId"] == schema[i]["group"]) {
-                        result.push({"id":componentId,
-                                    "label" : componentLabel,
-                                    "parents" : [],
-                                    "group" : schema[i]["group"],
-                                    "type": componentType,
-                                    "dataAttributes":dataAttributes,
-                                    "hiddenAttributes":hiddenAttributes
-                                    });
-                    } else {
-                        result.push({"id":componentId,
-                                    "label" : componentLabel,
-                                    "parents" : [/*schema[i]["parentId"]*/],
-                                    "group" : schema[i]["group"],
-                                    "type": componentType,
-                                    "dataAttributes":dataAttributes,
-                                    "hiddenAttributes":hiddenAttributes
-                                    });
+                    // Populate tabel data
+                    var componentNameRegex = new RegExp("^.*@\\d*:(.*)");
+                    var groups = [];
+                    for (var i = 0; i < schema.length; i++) {
+                        var groupLabel;
+                        var groupId = schema[i]["group"];
+                        var componentId = schema[i]["id"];
+                        var componentInfo = componentMap[componentId];
+                        var dataAttributes = [];
+                        var hiddenAttributes = [];
+
+                        // Find unique groups
+                        if (schema[i]["group"] != null && groups.indexOf(schema[i]["group"]) == -1) {
+                            groups.push(schema[i]["group"]);
+                        }
+                        
+                        // Create data attributes
+                        if (componentInfo != null) {
+                            dataAttributes.push({ "name" : "Duration", "value" : componentInfo["duration"]});
+                            componentType = componentInfo["componentType"];
+                            hiddenAttributes.push({ "name" : "id", "value": componentInfo["componentId"]});
+                            if(componentInfo["faultCount"] == 0) {
+                                dataAttributes.push({ "name" : "Status", "value" : "Success"});
+                            } else {
+                                dataAttributes.push({ "name" : "Status", "value" : "Failed"});
+                            }
+                        } else {
+                            dataAttributes.push({ "name" : "Duration", "value" : "n/a"});
+                            dataAttributes.push({ "name" : "Status", "value" : "n/a"});
+                            componentType = "UNKNOWN";
+                        }
+                        hiddenAttributes.push({ "name" : "entryPoint", "value": entryPoint});
+
+                        var  componentLabel = componentNameRegex.exec(componentId)[1];
+                        if (schema[i]["parentId"] == schema[i]["group"]) {
+                            result.push({"id":componentId,
+                                        "label" : componentLabel,
+                                        "parents" : [],
+                                        "group" : schema[i]["group"],
+                                        "type": componentType,
+                                        "dataAttributes":dataAttributes,
+                                        "hiddenAttributes":hiddenAttributes
+                                        });
+                        } else {
+                            result.push({"id":componentId,
+                                        "label" : componentLabel,
+                                        "parents" : [schema[i]["parentId"]],
+                                        "group" : schema[i]["group"],
+                                        "type": componentType,
+                                        "dataAttributes":dataAttributes,
+                                        "hiddenAttributes":hiddenAttributes
+                                        });
+                        }
                     }
-                }
-                for (var i = 0 ; i < groups.length ; i++) {
-                    result.push({"id" : groups[i], "type": "group", "label": componentNameRegex.exec(groups[i])[1]});
-                }
+                    for (var i = 0 ; i < groups.length ; i++) {
+                        result.push({"id" : groups[i], "type": "group", "label": componentNameRegex.exec(groups[i])[1]});
+                    }
+                }                
                 break;
             }
             default:
