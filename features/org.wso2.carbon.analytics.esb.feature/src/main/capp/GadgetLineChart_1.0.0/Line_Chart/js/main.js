@@ -7,7 +7,6 @@ var chart = gadgetUtil.getChart(prefs.getString(PARAM_GADGET_ROLE));
 if(chart) {
     type = gadgetUtil.getRequestType(page, chart);
 }
-console.log("%%%%%%%%%%% page " + page); 
 
 $(function() {
     if (!chart) {
@@ -26,7 +25,8 @@ $(function() {
         type: type,
         id: qs.id,
         timeFrom: timeFrom,
-        timeTo: timeTo
+        timeTo: timeTo,
+        entryPoint: qs.entryPoint
     }, onData, onError);
 });
 
@@ -41,7 +41,8 @@ function onTimeRangeChanged(data) {
         type: type,
         id: qs.id,
         timeFrom: data.timeFrom,
-        timeTo: data.timeTo
+        timeTo: data.timeTo,
+        entryPoint: qs.entryPoint
     }, onData, onError);
 };
 
