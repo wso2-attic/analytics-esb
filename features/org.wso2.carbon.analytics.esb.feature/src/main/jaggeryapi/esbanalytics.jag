@@ -40,7 +40,6 @@
     var TYPE_MEDIATOR_LATENCY = 18;
     var TYPE_MEDIATOR_MESSAGES = 19;
     var TYPE_TOTAL_MESSAGE_COUNT = 20;
-    var TYPE_OVERALL_FAULT_MESSAGE_COUNT = 21;
     var TYPE_MESSAGE_FLOW = 22;
     var TYPE_MESSAGE_LIST = 23;
     var TYPE_ENDPOINT_NAMES = 24;
@@ -719,8 +718,6 @@
                 var dataPoints = JSON.parse(resp.getMessage());
                 for (var i = 0; i < dataPoints.length; i++) {
                     var obj = dataPoints[i];
-                    log.info(obj.values);
-                    log.info(obj.values.facetStartTime);
                     result.push({
                         "timestamp": obj.values.facetStartTime,
                         "min": obj.values.minDuration,
@@ -931,12 +928,81 @@
             }
             case TYPE_ENDPOINT_MESSAGE_RATE:
             {
-                var result = [];
+                result = [];
+                var timeUnit = 'MINUTE';
+                var timeFrom = request.getParameter("timeFrom");
+                var timeTo = request.getParameter("timeTo");
+                var componentName = request.getParameter("id");
+                var entryPoint = request.getParameter("entryPoint");
+                timeUnit = timeRangeUtil.getSuitableTimeRangeUnit(timeFrom, timeTo);
+                if (entryPoint == 'undefined') {
+                    query = "_componentName : \"" + componentName + "\" AND startingTime : [" + timeFrom + " TO " + timeTo + "]";
+                } else {
+                    query = "entryPoint : " + entryPoint + " AND _componentName : \"" + componentName + "\" AND startingTime : [" + timeFrom + " TO " + timeTo + "]";
+                }
+                var tableName = "MEDIATOR-STAT-PER-" + timeUnit;
+                query = stringify({
+                                      tableName: tableName,
+                                      groupByField: "facetStartTime",
+                                      query: query,
+                                      aggregateFields: [
+                                          {
+                                              fields: ["noOfInvocation"],
+                                              aggregate: "SUM",
+                                              alias: "total_invocation_sum"
+                                          },
+                                          {
+                                              fields: ["faultCount"],
+                                              aggregate: "SUM",
+                                              alias: "total_fault_count"
+                                          }
+                                      ],
+                                      aggregateLevel: 0,
+                                      parentPath: []
+                                  });
+                resp = connector.searchWithAggregates(loggedInUser, tableName, query);
+                var dataPoints = JSON.parse(resp.getMessage());
+                for (var i = 0; i < dataPoints.length; i++) {
+                    var obj = dataPoints[i];
+                    result.push({
+                                    "timestamp": obj.values.facetStartTime[0],
+                                    "success": obj.values.total_invocation_sum,
+                                    "faults": obj.values.total_fault_count
+                                });
+                }
                 break;
             }
             case TYPE_ENDPOINT_LATENCY:
             {
-                var result = [];
+                result = [];
+                var timeFrom = request.getParameter("timeFrom");
+                var timeTo = request.getParameter("timeTo");
+                var timeUnit = timeRangeUtil.getSuitableTimeRangeUnit(timeFrom, timeTo);
+                var tableName = "MEDIATOR-STAT-PER-" + timeUnit;
+                var componentName = request.getParameter("id");
+                var entryPoint = request.getParameter("entryPoint");
+                if (entryPoint == 'undefined') {
+                    query = "_componentName : \"" + componentName + "\" AND startingTime : [" + timeFrom + " TO " + timeTo + "]";
+                } else {
+                    query = "entryPoint : " + entryPoint + " AND _componentName : \"" + componentName + "\" AND startingTime : [" + timeFrom + " TO " + timeTo + "]";
+                }
+                query = stringify({
+                                      tableName: tableName,
+                                      query: query,
+                                      start: 0,
+                                      count: 60
+                                  });
+                resp = connector.search(loggedInUser, tableName, query);
+                var dataPoints = JSON.parse(resp.getMessage());
+                for (var i = 0; i < dataPoints.length; i++) {
+                    var obj = dataPoints[i];
+                    result.push({
+                                    "timestamp": obj.values.facetStartTime,
+                                    "min": obj.values.minDuration,
+                                    "max": obj.values.maxDuration,
+                                    "avg": obj.values.totalDuration / obj.values.noOfInvocation
+                                });
+                }
                 break;
             }
             case TYPE_ENDPOINT_MESSAGES:
@@ -1009,12 +1075,81 @@
             }
             case TYPE_SEQUENCE_MESSAGE_RATE:
             {
-                var result = [];
+                result = [];
+                var timeUnit = 'MINUTE';
+                var timeFrom = request.getParameter("timeFrom");
+                var timeTo = request.getParameter("timeTo");
+                var componentName = request.getParameter("id");
+                var entryPoint = request.getParameter("entryPoint");
+                timeUnit = timeRangeUtil.getSuitableTimeRangeUnit(timeFrom, timeTo);
+                if (entryPoint == 'undefined') {
+                    query = "_componentName : \"" + componentName + "\" AND startingTime : [" + timeFrom + " TO " + timeTo + "]";
+                } else {
+                    query = "entryPoint : " + entryPoint + " AND _componentName : \"" + componentName + "\" AND startingTime : [" + timeFrom + " TO " + timeTo + "]";
+                }
+                var tableName = "MEDIATOR-STAT-PER-" + timeUnit;
+                query = stringify({
+                                      tableName: tableName,
+                                      groupByField: "facetStartTime",
+                                      query: query,
+                                      aggregateFields: [
+                                          {
+                                              fields: ["noOfInvocation"],
+                                              aggregate: "SUM",
+                                              alias: "total_invocation_sum"
+                                          },
+                                          {
+                                              fields: ["faultCount"],
+                                              aggregate: "SUM",
+                                              alias: "total_fault_count"
+                                          }
+                                      ],
+                                      aggregateLevel: 0,
+                                      parentPath: []
+                                  });
+                resp = connector.searchWithAggregates(loggedInUser, tableName, query);
+                var dataPoints = JSON.parse(resp.getMessage());
+                for (var i = 0; i < dataPoints.length; i++) {
+                    var obj = dataPoints[i];
+                    result.push({
+                                    "timestamp": obj.values.facetStartTime[0],
+                                    "success": obj.values.total_invocation_sum,
+                                    "faults": obj.values.total_fault_count
+                                });
+                }
                 break;
             }
             case TYPE_SEQUENCE_LATENCY:
             {
-                var result = [];
+                result = [];
+                var timeFrom = request.getParameter("timeFrom");
+                var timeTo = request.getParameter("timeTo");
+                var timeUnit = timeRangeUtil.getSuitableTimeRangeUnit(timeFrom, timeTo);
+                var tableName = "MEDIATOR-STAT-PER-" + timeUnit;
+                var componentName = request.getParameter("id");
+                var entryPoint = request.getParameter("entryPoint");
+                if (entryPoint == 'undefined') {
+                    query = "_componentName : \"" + componentName + "\" AND startingTime : [" + timeFrom + " TO " + timeTo + "]";
+                } else {
+                    query = "entryPoint : " + entryPoint + " AND _componentName : \"" + componentName + "\" AND startingTime : [" + timeFrom + " TO " + timeTo + "]";
+                }
+                query = stringify({
+                                      tableName: tableName,
+                                      query: query,
+                                      start: 0,
+                                      count: 60
+                                  });
+                resp = connector.search(loggedInUser, tableName, query);
+                var dataPoints = JSON.parse(resp.getMessage());
+                for (var i = 0; i < dataPoints.length; i++) {
+                    var obj = dataPoints[i];
+                    result.push({
+                                    "timestamp": obj.values.facetStartTime,
+                                    "min": obj.values.minDuration,
+                                    "max": obj.values.maxDuration,
+                                    "avg": obj.values.totalDuration / obj.values.noOfInvocation
+                                });
+                }
                 break;
             }
             case TYPE_SEQUENCE_MESSAGES:
