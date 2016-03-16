@@ -53,7 +53,8 @@ function onTimeRangeChanged(data) {
         type: page.type,
         id: qs.id,
         timeFrom: timeFrom,
-        timeTo: timeTo
+        timeTo: timeTo,
+        entryPoint:qs.entryPoint
     }, onData, onError);
 };
 
@@ -65,6 +66,7 @@ function onData(response) {
             $("#canvas").html('<div align="center" style="margin-top:20px"><h4>No records found.</h4></div>');
             return;
         }
+        $("#tblMessages thead tr").empty();
         $("#tblMessages tbody").empty();
         var columns = page.columns;
         var thead = $("#tblMessages thead tr");
