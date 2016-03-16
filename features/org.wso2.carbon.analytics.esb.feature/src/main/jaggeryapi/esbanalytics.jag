@@ -47,6 +47,10 @@
     var TYPE_ENDPOINT_MESSAGE_RATE = 25;
     var TYPE_ENDPOINT_LATENCY = 26;
     var TYPE_ENDPOINT_MESSAGES = 27;
+    var TYPE_SEQUENCE_NAMES = 28;
+    var TYPE_SEQUENCE_MESSAGE_RATE = 29;
+    var TYPE_SEQUENCE_LATENCY = 30;
+    var TYPE_SEQUENCE_MESSAGES = 31;
 
 
     if (configs.cacheTimeoutSeconds) {
@@ -435,7 +439,8 @@
                         // Create hidden attributes
                         var hiddenAttributes = [];
                         hiddenAttributes.push({"name" : "entryPoint", "value": entryName});
-                        if (componentType == "Endpoint") {
+                        // for Sequences and Endpoints, id should be the name of the component, since name is used for drill down searches
+                        if (componentType == "Endpoint" || componentType == "Sequence") {
                             hiddenAttributes.push({ "name" : "id", "value": componentLabel});
                         } else {
                             hiddenAttributes.push({ "name" : "id", "value": componentId});
@@ -852,21 +857,27 @@
                         var componentInfo = componentMap[componentId];
                         var dataAttributes = [];
                         var hiddenAttributes = [];
+                        var componentLabel = componentNameRegex.exec(componentId)[1];
 
                         // Find unique groups
                         if (schema[i]["group"] != null && groups.indexOf(schema[i]["group"]) == -1) {
                             groups.push(schema[i]["group"]);
                         }
                         
-                        // Create data attributes
+                        // Create data/hidden attributes
                         if (componentInfo != null) {
                             dataAttributes.push({ "name" : "Duration", "value" : componentInfo["duration"]});
-                            componentType = componentInfo["componentType"];
-                            hiddenAttributes.push({ "name" : "id", "value": componentInfo["componentId"]});
                             if(componentInfo["faultCount"] == 0) {
                                 dataAttributes.push({ "name" : "Status", "value" : "Success"});
                             } else {
                                 dataAttributes.push({ "name" : "Status", "value" : "Failed"});
+                            }
+                            componentType = componentInfo["componentType"];
+                            // for Sequences and Endpoints, id should be the name of the component, since name is used for drill down searches
+                            if (componentType == "Endpoint" || componentType == "Sequence") {
+                                hiddenAttributes.push({ "name" : "id", "value": componentLabel});
+                            } else {
+                                hiddenAttributes.push({ "name" : "id", "value": componentId});
                             }
                         } else {
                             dataAttributes.push({ "name" : "Duration", "value" : "n/a"});
@@ -875,7 +886,6 @@
                         }
                         hiddenAttributes.push({ "name" : "entryPoint", "value": entryPoint});
 
-                        var  componentLabel = componentNameRegex.exec(componentId)[1];
                         if (schema[i]["parentId"] == schema[i]["group"]) {
                             result.push({"id":componentId,
                                         "label" : componentLabel,
@@ -905,7 +915,7 @@
             case TYPE_ENDPOINT_NAMES:
             {
                 var result = [];
-                var tableName = "ESB-STAT-PER-MINUTE";
+                var tableName = "MEDIATOR-STAT-PER-MINUTE";
                 var query = stringify({
                                     "fieldName": "componentName",
                                     "query": "componentType : \"Endpoint\""
@@ -933,19 +943,94 @@
                 var result = [];
                 var timeFrom = request.getParameter("timeFrom");
                 var timeTo = request.getParameter("timeTo");
-                var endpointId = request.getParameter("id");
+                var endpointName = request.getParameter("id");
                 var entryPoint = request.getParameter("entryPoint");
                 var tableName = "ESB-EVENT";
-
                 if (entryPoint != null && entryPoint != "undefined") {
                     var query = stringify({
-                                      "query": "entryPoint : " + entryPoint + " AND componentType : \"Endpoint\" AND _componentName : \"" + endpointId + "\" AND startTime : [" + timeFrom + " TO " + timeTo + "]",
+                                      "query": "entryPoint : " + entryPoint + " AND componentType : \"Endpoint\" AND _componentName : \"" + endpointName + "\" AND startTime : [" + timeFrom + " TO " + timeTo + "]",
                                       "start": 0,
                                       "count": 100
                                   });
                 } else {
                     var query = stringify({
-                                      "query": "componentType : \"Endpoint\" AND _componentName : \"" + endpointId + "\" AND startTime : [" + timeFrom + " TO " + timeTo + "]",
+                                      "query": "componentType : \"Endpoint\" AND _componentName : \"" + endpointName + "\" AND startTime : [" + timeFrom + " TO " + timeTo + "]",
+                                      "start": 0,
+                                      "count": 100
+                                  });
+                }
+                
+                var resp = connector.search(loggedInUser, tableName, query);
+                var dataPoints = JSON.parse(resp.getMessage());
+                var columns = ["messageFlowId", "faultCount","startTime","host"];
+                for (i = 0 ; i < dataPoints.length ; i++) {
+                    var temp = {};
+                    for (j = 0 ; j < columns.length ; j++) {
+                        var column = columns[j];
+                        var value = dataPoints[i]["values"][column];
+                        if (value != null && (column == "transportPropertyMap" || column == "contextPropertyMap")) {
+                            temp[column] = stringify(value["map"]);
+                        } else if (column == "faultCount") {
+                            // Add message status
+                            if (value > 0) {
+                                temp["status"] = "Failed";
+                            } else {
+                                temp["status"] = "Success";
+                            }   
+                        }  else if (column == "startTime") {
+                            var date = new Date(value);
+                            temp[column] = date.toLocaleString();
+                        } else {
+                            temp[column] = value;
+                        }
+                    }
+                    result.push(temp);
+                }
+                break;
+            }
+            case TYPE_SEQUENCE_NAMES:
+            {
+                var result = [];
+                var tableName = "MEDIATOR-STAT-PER-MINUTE";
+                var query = stringify({
+                                    "fieldName": "componentName",
+                                    "query": "componentType : \"Sequence\""
+                                  });
+                var resp = connector.drillDownCategories(loggedInUser, tableName, query);
+                var proxyNames = JSON.parse(resp.getMessage());
+
+                for (var name in proxyNames["categories"]) {
+                    result.push(name);
+                }
+                break;
+            }
+            case TYPE_SEQUENCE_MESSAGE_RATE:
+            {
+                var result = [];
+                break;
+            }
+            case TYPE_SEQUENCE_LATENCY:
+            {
+                var result = [];
+                break;
+            }
+            case TYPE_SEQUENCE_MESSAGES:
+            {
+                var result = [];
+                var timeFrom = request.getParameter("timeFrom");
+                var timeTo = request.getParameter("timeTo");
+                var sequenceName = request.getParameter("id");
+                var entryPoint = request.getParameter("entryPoint");
+                var tableName = "ESB-EVENT";
+                if (entryPoint != null && entryPoint != "undefined") {
+                    var query = stringify({
+                                      "query": "entryPoint : " + entryPoint + " AND componentType : \"Sequence\" AND _componentName : \"" + sequenceName + "\" AND startTime : [" + timeFrom + " TO " + timeTo + "]",
+                                      "start": 0,
+                                      "count": 100
+                                  });
+                } else {
+                    var query = stringify({
+                                      "query": "componentType : \"Sequence\" AND _componentName : \"" + sequenceName + "\" AND startTime : [" + timeFrom + " TO " + timeTo + "]",
                                       "start": 0,
                                       "count": 100
                                   });
@@ -980,7 +1065,9 @@
                 break;
             }
             default:
+            {
                 result = '{ "status": "Failed", "message": "Unidentified operation" }';
+            }
         }
         if (result != null) {
             if (log.isDebugEnabled()) {

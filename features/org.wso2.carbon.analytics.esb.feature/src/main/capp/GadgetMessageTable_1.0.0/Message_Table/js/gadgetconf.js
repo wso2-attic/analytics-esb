@@ -34,5 +34,14 @@ var configs = [{
             { name: "startTime", label: "Timestamp", type: "ordinal" },
             { name: "status", label: "Message Status", type: "ordinal" }
         ]
+    },{
+        name: TYPE_SEQUENCE,
+        type: 31,
+        columns: [
+            { name: "messageFlowId", label: "Message ID", type: "ordinal" },
+            { name: "host", label: "Host", type: "ordinal" },
+            { name: "startTime", label: "Timestamp", type: "ordinal" },
+            { name: "status", label: "Message Status", type: "ordinal" }
+        ]
     }
 ];
