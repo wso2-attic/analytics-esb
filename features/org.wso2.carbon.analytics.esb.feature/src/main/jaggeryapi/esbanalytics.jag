@@ -439,7 +439,6 @@
                         // Create hidden attributes
                         var hiddenAttributes = [];
                         hiddenAttributes.push({"name" : "entryPoint", "value": entryName});
-                        // for Sequences and Endpoints, id should be the name of the component, since name is used for drill down searches
                         if (componentType == "Endpoint" || componentType == "Sequence") {
                             hiddenAttributes.push({ "name" : "id", "value": componentLabel});
                         } else {
@@ -864,7 +863,7 @@
                             groups.push(schema[i]["group"]);
                         }
                         
-                        // Create data/hidden attributes
+                        // Create data attributes
                         if (componentInfo != null) {
                             dataAttributes.push({ "name" : "Duration", "value" : componentInfo["duration"]});
                             if(componentInfo["faultCount"] == 0) {
@@ -873,18 +872,20 @@
                                 dataAttributes.push({ "name" : "Status", "value" : "Failed"});
                             }
                             componentType = componentInfo["componentType"];
-                            // for Sequences and Endpoints, id should be the name of the component, since name is used for drill down searches
-                            if (componentType == "Endpoint" || componentType == "Sequence") {
-                                hiddenAttributes.push({ "name" : "id", "value": componentLabel});
-                            } else {
-                                hiddenAttributes.push({ "name" : "id", "value": componentId});
-                            }
                         } else {
                             dataAttributes.push({ "name" : "Duration", "value" : "n/a"});
                             dataAttributes.push({ "name" : "Status", "value" : "n/a"});
                             componentType = "UNKNOWN";
                         }
+
+                        // Create hidden attributes
                         hiddenAttributes.push({ "name" : "entryPoint", "value": entryPoint});
+                        // for Sequences and Endpoints, id should be the "name", since name is used for drill down searches
+                        if (componentType == "Endpoint" || componentType == "Sequence") {
+                            hiddenAttributes.push({ "name" : "id", "value": componentLabel});
+                        } else {
+                            hiddenAttributes.push({ "name" : "id", "value": componentId});
+                        }
 
                         if (schema[i]["parentId"] == schema[i]["group"]) {
                             result.push({"id":componentId,
@@ -946,6 +947,7 @@
                 var endpointName = request.getParameter("id");
                 var entryPoint = request.getParameter("entryPoint");
                 var tableName = "ESB-EVENT";
+
                 if (entryPoint != null && entryPoint != "undefined") {
                     var query = stringify({
                                       "query": "entryPoint : " + entryPoint + " AND componentType : \"Endpoint\" AND _componentName : \"" + endpointName + "\" AND startTime : [" + timeFrom + " TO " + timeTo + "]",
@@ -1002,6 +1004,7 @@
                 for (var name in proxyNames["categories"]) {
                     result.push(name);
                 }
+                log.info(result);
                 break;
             }
             case TYPE_SEQUENCE_MESSAGE_RATE:
