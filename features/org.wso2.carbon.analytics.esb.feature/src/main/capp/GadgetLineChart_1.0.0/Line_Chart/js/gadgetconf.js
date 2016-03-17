@@ -17,6 +17,7 @@ var charts = [{
         { name: TYPE_LANDING, type: 1 }
     ],
     processData: function(data) {
+        var result = [];
         var schema = this.schema;
         var columns = this.columns;
         data.forEach(function(row, i) {
@@ -25,8 +26,10 @@ var charts = [{
                 var value = row[column];
                 record.push(value);
             });
-            schema[0].data.push(record);
+            // schema[0].data.push(record);
+            result.push(record);
         });
+        return result;
     }
 }, {
     name: ROLE_RATE,
@@ -50,15 +53,17 @@ var charts = [{
         { name: TYPE_ENDPOINT, type: 25 }
     ],
     processData: function(data) {
-        var schema = this.schema;
+        var result = [];
         data.forEach(function(row, i) {
             var timestamp = row['timestamp'];
             var success = row["success"];
             var fault = row["faults"];
-            schema[0].data.push([timestamp, "SUCCESS", success]);
-            schema[0].data.push([timestamp, "FAULT", fault]);
-            schema[0].data.push([timestamp, "TOTAL", success + fault]);
+
+            result.push([timestamp, "SUCCESS", success]);
+            result.push([timestamp, "FAULT", fault]);
+            result.push([timestamp, "TOTAL", success + fault]);
         });
+        return result;
     }
 }, {
     name: ROLE_LATENCY,
@@ -80,16 +85,17 @@ var charts = [{
         { name: TYPE_ENDPOINT, type: 26 }
     ],
     processData: function(data) {
-        var schema = this.schema;
+        var result = [];
         data.forEach(function(row, i) {
             var timestamp = row['timestamp'];
             var min = row["min"];
             var avg = row["avg"];
             var max = row["max"];
 
-            schema[0].data.push([timestamp, "Minimum", min]);
-            schema[0].data.push([timestamp, "Average", avg]);
-            schema[0].data.push([timestamp, "Maximum", max]);
+            result.push([timestamp, "Minimum", min]);
+            result.push([timestamp, "Average", avg]);
+            result.push([timestamp, "Maximum", max]);
         });
+        return result;
     }
 }];

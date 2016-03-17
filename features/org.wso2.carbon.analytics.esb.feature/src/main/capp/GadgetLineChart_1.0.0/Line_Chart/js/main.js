@@ -58,7 +58,7 @@ function onData(response) {
             return a.timestamp - b.timestamp;
         });
         //perform necessary transformation on input data
-        chart.processData(data);
+        chart.schema[0].data = chart.processData(data);
         //finally draw the chart on the given canvas
         chart.chartConfig.width = ($('#canvas').width() - 20);
         chart.chartConfig.height = 200;
