@@ -904,8 +904,11 @@
                                         });
                         }
                     }
-                    for (var i = 0 ; i < groups.length ; i++) {
-                        result.push({"id" : groups[i], "type": "group", "label": componentNameRegex.exec(groups[i])[1]});
+                    // Defining groups
+                    for (var j = 0 ; j < result.length ; j++) {
+                        if(groups.indexOf(result[j]["id"]) >= 0) {
+                            result[j]["type"] = "group";
+                        }
                     }
                 }                
                 break;
@@ -1070,7 +1073,6 @@
                 for (var name in proxyNames["categories"]) {
                     result.push(name);
                 }
-                log.info(result);
                 break;
             }
             case TYPE_SEQUENCE_MESSAGE_RATE:
