@@ -922,7 +922,7 @@
             case TYPE_ENDPOINT_NAMES:
             {
                 var result = [];
-                var tableName = "MEDIATOR-STAT-PER-MINUTE";
+                var tableName = "ESB-STAT-PER-MINUTE";
                 var query = stringify({
                                     "fieldName": "componentName",
                                     "query": "componentType : \"Endpoint\""
@@ -1368,7 +1368,7 @@
             case TYPE_INBOUND_ENDPOINT_NAMES:
             {
                 var result = [];
-                var tableName = "MEDIATOR-STAT-PER-MINUTE";
+                var tableName = "ESB-STAT-PER-MINUTE";
                 var query = stringify({
                                     "fieldName": "componentName",
                                     "query": "componentType : \"Inbound EndPoint\""
