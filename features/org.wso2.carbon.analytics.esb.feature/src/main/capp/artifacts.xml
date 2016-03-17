@@ -12,8 +12,7 @@
     <dependency artifact="GadgetSearchBox" version="1.0.0" include="true" serverRole="DataAnalyticsServer"/>
     <dependency artifact="GadgetLineChart" version="1.0.0" include="true" serverRole="DataAnalyticsServer"/>
     <dependency artifact="GadgetHorizontalBarChart" version="1.0.0" include="true" serverRole="DataAnalyticsServer"/>
-        <dependency artifact="GadgetRateChart" version="1.0.0" include="true" serverRole="DataAnalyticsServer"/>
-        <dependency artifact="GadgetLatencyChart" version="1.0.0" include="true" serverRole="DataAnalyticsServer"/>
+        <dependency artifact="GadgetStatsChart" version="1.0.0" include="true" serverRole="DataAnalyticsServer"/>
         <dependency artifact="GadgetMessageTable" version="1.0.0" include="true" serverRole="DataAnalyticsServer"/>
         <dependency artifact="GadgetMessageFlow" version="1.0.0" include="true" serverRole="DataAnalyticsServer"/>
 	<dependency artifact="Dashboard" version="1.0.0" include="true" serverRole="DataAnalyticsServer"/>

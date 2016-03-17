@@ -56,6 +56,13 @@
     var TYPE_INBOUND_ENDPOINT_LATENCY = 35;
     var TYPE_INBOUND_ENDPOINT_MESSAGES = 36;
     var TYPE_INBOUND_ENDPOINT_MESSAGE_FLOW = 37;
+    var TYPE_OVERALL_STATS = 38;
+    var TYPE_PROXY_STATS = 39;
+    var TYPE_API_STATS = 40;
+    var TYPE_SEQUENCE_STATS = 41;
+    var TYPE_MEDIATOR_STATS = 42;
+    var TYPE_ENDPOINT_STATS = 43;
+    var TYPE_INBOUND_ENDPOINT_STATS = 44;
 
 
     if (configs.cacheTimeoutSeconds) {
@@ -1443,6 +1450,36 @@
             case TYPE_INBOUND_ENDPOINT_MESSAGE_FLOW:
             {
                 var result = [];
+                break;
+            }
+            case TYPE_OVERALL_STATS:
+            {
+                var result = { total: 12345, failed: 134};
+                break;
+            }
+            case TYPE_PROXY_STATS:
+            {
+                var result = { total: 12345, failed: 134};
+                break;
+            }case TYPE_API_STATS:
+            {
+                var result = { total: 12345, failed: 134};
+                break;
+            }case TYPE_SEQUENCE_STATS:
+            {
+                var result = { total: 12345, failed: 134};
+                break;
+            }case TYPE_ENDPOINT_STATS:
+            {
+                var result = { total: 12345, failed: 134};
+                break;
+            }case TYPE_INBOUND_ENDPOINT_STATS:
+            {
+                var result = { total: 12345, failed: 134};
+                break;
+            }case TYPE_MEDIATOR_STATS:
+            {
+                var result = { total: 12345, failed: 134};
                 break;
             }
             default:

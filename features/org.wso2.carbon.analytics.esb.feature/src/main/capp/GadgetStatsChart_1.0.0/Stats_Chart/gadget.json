@@ -1,0 +1,14 @@
+{
+  "id": "Stats_Chart",
+  "title": "Stats Chart",
+  "type": "gadget",
+  "category": "Gadget",
+  "thumbnail": "store://gadget/Stats_Chart/index.png",
+  "data": {
+    "url": "store://gadget/Stats_Chart/index.xml"
+  },
+  "styles": {
+    "borders": true,
+    "title": true
+  },
+}
