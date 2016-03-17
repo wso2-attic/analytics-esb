@@ -1,0 +1,157 @@
+body {
+    background: #1E2531;
+    color: #fff;
+}
+
+body.widget {
+    background: transparent;
+}
+
+.col-1,
+.col-2,
+.col-3,
+.col-4,
+.col-5,
+.col-6,
+.col-7,
+.col-8,
+.col-9,
+.col-10,
+.col-11,
+.col-12 {
+    float: left;
+}
+
+.col-1 {
+    width: 8.33333333%;
+}
+
+.col-2 {
+    width: 16.66666667%;
+}
+
+.col-3 {
+    width: 25%;
+}
+
+.col-4 {
+    width: 33.33333333%;
+}
+
+.col-5 {
+    width: 41.66666667%;
+}
+
+.col-6 {
+    width: 50%;
+}
+
+.col-7 {
+    width: 58.33333333%;
+}
+
+.col-8 {
+    width: 66.66666667%;
+}
+
+.col-9 {
+    width: 75%;
+}
+
+.col-10 {
+    width: 83.33333333%;
+}
+
+.col-11 {
+    width: 91.66666667%;
+}
+
+.col-12 {
+    width: 100%;
+}
+
+.status-message {
+    display: block;
+    height: 100%;
+    width: 100%;
+}
+
+.status-message > .message-info,
+.status-message > .message-warning,
+.status-message > .message-danger,
+.status-message > .message-success {
+    position: fixed;
+    z-index: 2;
+    width: 100%;
+    height: 100%;
+    top: 50%;
+    left: 50%;
+    margin: 0;
+    -webkit-transform: translate(-50%, -50%);
+    -moz-transform: translate(-50%, -50%);
+    -ms-transform: translate(-50%, -50%);
+    -o-transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%);
+}
+
+/* Dark Theme Styles */
+svg.marks .mark-group .background {
+    fill: #121822 !important;
+}
+
+svg.marks .mark-group .mark-text text {
+    fill: #7D8596 !important;
+}
+
+svg.marks .mark-group .mark-rule line {
+    stroke: #fff !important;
+}
+
+.tt-hint {
+    background: transparent !important;
+}
+
+ .tt-input {
+    border: 1px solid #6B7992  !important;
+    color: #fff;
+ }
+
+.form-control-btn {
+    color: #fff;
+}
+
+#date-select .btn-default {
+    background: #E3E5E6;
+}
+
+#date-select .btn-default:hover {
+    background: #f1f1f1;
+}
+
+#date-select .btn-default.active, #date-select .btn-default.active:hover {
+    background: #438CAD;
+    border-color: #438CAD;
+}
+
+.stats {
+    color: #fff !important;
+}
+
+.message {
+    background: #1E2531;
+    color: #fff !important;
+}
+
+.breadcrumb {
+    background: #1E2531;
+}
+
+.breadcrumb a:visited {
+    color: #fff;
+}
+
+/* DataTables issue fixing */
+
+.dataTables_filter, .dataTables_toolbar, .dataTables_length, .dataTables_info {
+    float: none;
+}

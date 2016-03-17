@@ -7,22 +7,21 @@
     <Content type="html">
         <![CDATA[
         <head>
-          <script src="../commons/js/jquery-1.10.2.js"></script> 
-
+            
+          <!-- Theme -->
           <link rel="stylesheet" type="text/css" href="/portal/libs/bootstrap_3.3.5/css/bootstrap.min.css" />
+          <link rel="stylesheet" type="text/css" href="/portal/libs/font-wso2_1.0.0/css/font-wso2.min.css" />
           <link rel="stylesheet" type="text/css" href="/portal/libs/theme-wso2_1.0/css/theme-wso2.css" />
-           
-          <link rel="stylesheet" type="text/css" href="../commons/css/font-awesome.min.css" />
-          <link rel="stylesheet" type="text/css" href="../commons/css/autocomplete.css" />
-
+          <link rel="stylesheet" type="text/css" href="/portal/extensions/themes/analytics/css/gadget.css" />
+          
+          <!-- jQuery -->
+          <script src="../commons/js/jquery-1.10.2.js"></script>
           <script src="../commons/js/moment.min.js"></script>
           <script src="../commons/js/gadget-utils.js"></script>
 
-          <!-- Typeahead JS -->
-          <script src="../commons/js/typeahead.bundle.js"></script>
-
-          
-          <!-- Custom JS -->
+          <!-- Custom -->
+          <link rel="stylesheet" type="text/css" href="css/autocomplete.css" />
+          <script src="js/typeahead.bundle.js"></script>
           <script src="js/gadgetconf.js"></script>
           <script src="js/main.js"></script>
 

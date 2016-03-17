@@ -5,9 +5,7 @@ html, body {
 }
 body {
     font-family: 'Roboto';
-    background: #333D49;
     min-height: 100%;
-    color: #fff;
 }
 .page-content-wrapper {
     width: 100%;

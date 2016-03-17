@@ -161,20 +161,51 @@
         });
 
 
+  // Create the renderer
+  var render = new dagreD3.render();
+
+  var svg = d3.select("svg"),
+  svgGroup = svg.append("g");
+  inner = svg.select("g"),
+  zoom = d3.behavior.zoom().on("zoom", function() {
+    inner.attr("transform", "translate(" + d3.event.translate + ")" +
+                                "scale(" + d3.event.scale + ")");
+  });
+  svg.call(zoom);
+        
+    var nanoScrollerSelector = $(".nano");
+    nanoScrollerSelector.nanoScroller();
+
+
+
+    inner.call(render, g);
+
+    // Zoom and scale to fit
+    var graphWidth = g.graph().width + 80;
+    var graphHeight = g.graph().height + 40;
+    var width = parseInt(svg.style("width").replace(/px/, ""));
+    var height = parseInt(svg.style("height").replace(/px/, ""));
+    var zoomScale = Math.min(width / graphWidth, height / graphHeight);
+    var translate = [(width/2) - ((graphWidth*zoomScale)/2), (height/2) - ((graphHeight*zoomScale)/2)];
+    
+   zoom.translate(translate);
+   zoom.scale(zoomScale);
+   zoom.event(isUpdate ? svg.transition().duration(500) : d3.select("svg"));
+
         // Create the renderer
-        var render = new dagreD3.render();
+        // var render = new dagreD3.render();
 
-        // Set up an SVG group so that we can translate the final graph.
-        var svg = d3.select("svg"),
-            svgGroup = svg.append("g");
+        // // Set up an SVG group so that we can translate the final graph.
+        // var svg = d3.select("svg"),
+        //     svgGroup = svg.append("g");
 
-        // Run the renderer. This is what draws the final graph.
-        render(d3.select("svg g"), g);
+        // // Run the renderer. This is what draws the final graph.
+        // render(d3.select("svg g"), g);
 
-        // Center the graph
-        var xCenterOffset = (svg.attr("width") - g.graph().width) / 2;
-        svgGroup.attr("transform", "translate(" + xCenterOffset + ", 20)");
-        svg.attr("height", g.graph().height + 140);
+        // // Center the graph
+        // var xCenterOffset = (svg.attr("width") - g.graph().width) / 2;
+        // svgGroup.attr("transform", "translate(" + xCenterOffset + ", 20)");
+        // svg.attr("height", g.graph().height + 140);
     };
 
     function buildLabel(node) {

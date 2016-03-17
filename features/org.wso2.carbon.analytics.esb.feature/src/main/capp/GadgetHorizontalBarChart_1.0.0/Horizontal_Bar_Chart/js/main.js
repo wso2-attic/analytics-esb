@@ -22,14 +22,14 @@
 
     gadgets.HubSettings.onConnect = function() {
         gadgets.Hub.subscribe(TOPIC, function(topic, data, subscriberData) {
-            onTimeRangeChanged(data);
+            timeFrom = data.timeFrom;
+            timeTo = data.timeTo;
+            timeUnit = data.timeUnit;
+            drawChart();
         });
     };
 
-    function onTimeRangeChanged(data) {
-        timeFrom = data.timeFrom;
-        timeTo = data.timeTo;
-        timeUnit = data.timeUnit;
+    function drawChart() {
         gadgetUtil.fetchData(CONTEXT, {
            type: config.type,
            timeFrom: timeFrom,
@@ -37,10 +37,14 @@
        }, onData, onError);
     }
 
+    $(window).resize(function() {
+        drawChart();
+    });
+
     function onData(data) {
         try {
             if (data.message.length == 0) {
-                $("#canvas").html('<div align="center" style="margin-top:20px"><h4>No records found.</h4></div>');
+                $("#canvas").html(gadgetUtil.getEmptyRecordsText());
                 return;
             }
             var schema = [{
@@ -54,8 +58,8 @@
                 type: "bar",
                 x : "name",
                 charts : [{type: "bar",  y : "requests", orientation : "left"}],
-                width: 500,
-                height: 200,
+                width: $('body').width(),
+                height: $('body').height(),
                 padding: { "top": 10, "left": 140, "bottom": 40, "right": 50 }
             };
 
