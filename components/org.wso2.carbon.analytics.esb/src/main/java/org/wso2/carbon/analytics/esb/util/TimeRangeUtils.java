@@ -48,16 +48,13 @@ public class TimeRangeUtils {
         DateTime fromTime = new DateTime(from);
         DateTime toTime = new DateTime(to);
         RangeUnit range;
-        if (Months.monthsBetween(fromTime.withTimeAtStartOfDay(), toTime.withTimeAtStartOfDay()).getMonths() >= INTERVAL) {
+        if (Months.monthsBetween(fromTime, toTime).getMonths() >= INTERVAL) {
             range = RangeUnit.MONTH;
-        } else if (Days.daysBetween(fromTime.withTimeAtStartOfDay(), toTime.withTimeAtStartOfDay()).getDays() >=
-                   INTERVAL) {
+        } else if (Days.daysBetween(fromTime, toTime).getDays() >= INTERVAL) {
             range = RangeUnit.DAY;
-        } else if (Hours.hoursBetween(fromTime.withTimeAtStartOfDay(), toTime.withTimeAtStartOfDay()).getHours() >=
-                   INTERVAL) {
+        } else if (Hours.hoursBetween(fromTime, toTime).getHours() >= INTERVAL) {
             range = RangeUnit.HOUR;
-        } else if (Minutes.minutesBetween(fromTime.withTimeAtStartOfDay(), toTime.withTimeAtStartOfDay()).getMinutes() >=
-                   INTERVAL) {
+        } else if (Minutes.minutesBetween(fromTime, toTime).getMinutes() >= INTERVAL) {
             range = RangeUnit.MINUTE;
         } else {
             range = RangeUnit.SECOND;
