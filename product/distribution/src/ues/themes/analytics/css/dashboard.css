@@ -108,7 +108,7 @@ body.dashboard.dark {
 
 .dashboard.dark .gadget .gadget-heading {
     background: #29313E;
-    color: #fff;
+    color: #E3E5E6;
 }
 
 .gadget .gadget-heading > .gadget-title {
@@ -122,7 +122,7 @@ body.dashboard.dark {
 
 .dashboard.dark .gadget .gadget-heading > .gadget-actions button {
     background: transparent;
-    color: #fff;
+    color: #E3E5E6;
 }
 
 .sidebar-wrapper hr {

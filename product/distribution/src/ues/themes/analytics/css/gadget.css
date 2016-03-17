@@ -1,4 +1,9 @@
-body {
+body body {
+    background: #fff;
+    color: #444;
+}
+
+body.dark {
     background: #1E2531;
     color: #fff;
 }
@@ -95,51 +100,51 @@ body.widget {
 }
 
 /* Dark Theme Styles */
-svg.marks .mark-group .background {
+body.dark svg.marks .mark-group .background {
     fill: #121822 !important;
 }
 
-svg.marks .mark-group .mark-text text {
+body.dark svg.marks .mark-group .mark-text text {
     fill: #7D8596 !important;
 }
 
-svg.marks .mark-group .mark-rule line {
-    stroke: #fff !important;
+body.dark svg.marks .mark-group .mark-rule line {
+    stroke: #E3E5E6 !important;
 }
 
-.tt-hint {
+body.dark .tt-hint {
     background: transparent !important;
 }
 
- .tt-input {
+body.dark .tt-input {
     border: 1px solid #6B7992  !important;
-    color: #fff;
- }
-
-.form-control-btn {
-    color: #fff;
+    color: #E3E5E6;
 }
 
-#date-select .btn-default {
+body.dark .form-control-btn {
+    color: #E3E5E6;
+}
+
+body.dark #date-select .btn-default {
     background: #E3E5E6;
 }
 
-#date-select .btn-default:hover {
+body.dark #date-select .btn-default:hover {
     background: #f1f1f1;
 }
 
-#date-select .btn-default.active, #date-select .btn-default.active:hover {
+body.dark #date-select .btn-default.active, #date-select .btn-default.active:hover {
     background: #438CAD;
     border-color: #438CAD;
 }
 
-.stats {
-    color: #fff !important;
+body.dark .stats {
+    color: #E3E5E6 !important;
 }
 
-.message {
+body.dark .message {
     background: #1E2531;
-    color: #fff !important;
+    color: #E3E5E6 !important;
 }
 
 .breadcrumb {
@@ -147,7 +152,7 @@ svg.marks .mark-group .mark-rule line {
 }
 
 .breadcrumb a:visited {
-    color: #fff;
+    color: #E3E5E6;
 }
 
 /* DataTables issue fixing */
