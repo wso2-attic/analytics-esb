@@ -1,96 +1,94 @@
-    var TOPIC = "subscriber";
+var TOPIC = "subscriber";
+var timeFrom;
+var timeTo;
+var timeUnit = null;
+var prefs = new gadgets.Prefs();
+var config = gadgetUtil.getGadgetConfig(prefs.getString(PARAM_TYPE));
 
-    var timeFrom;
-    var timeTo;
-    var timeUnit = null;
-    var prefs = new gadgets.Prefs();
-    var config = gadgetUtil.getGadgetConfig(prefs.getString(PARAM_TYPE));
-    $(function() {
-        if(config == null) {
-            $("#canvas").html(gadgetUtil.getErrorText("Initialise gadget type first."));
+$(function() {
+    if (config == null) {
+        $("#canvas").html(gadgetUtil.getErrorText("Initialise gadget type first."));
+        return;
+    }
+    timeFrom = gadgetUtil.timeFrom();
+    timeTo = gadgetUtil.timeTo();
+    console.log("TOP_FIVE[" + config.name + "]: TimeFrom: " + timeFrom + " TimeTo: " + timeTo);
+    gadgetUtil.fetchData(CONTEXT, {
+        type: config.type,
+        timeFrom: timeFrom,
+        timeTo: timeTo
+    }, onData, onError);
+});
+
+gadgets.HubSettings.onConnect = function() {
+    gadgets.Hub.subscribe(TOPIC, function(topic, data, subscriberData) {
+        onTimeRangeChanged(data);
+    });
+};
+
+function onTimeRangeChanged(data) {
+    timeFrom = data.timeFrom;
+    timeTo = data.timeTo;
+    timeUnit = data.timeUnit;
+    gadgetUtil.fetchData(CONTEXT, {
+        type: config.type,
+        timeFrom: timeFrom,
+        timeTo: timeTo
+    }, onData, onError);
+}
+
+function onData(data) {
+    try {
+        if (data.message.length == 0) {
+            $("#canvas").html(gadgetUtil.getEmptyRecordsText());
             return;
         }
-        timeFrom = gadgetUtil.timeFrom();
-        timeTo = gadgetUtil.timeTo();
-        console.log("TOP_FIVE[" + config.name + "]: TimeFrom: " + timeFrom + " TimeTo: " + timeTo);
-        gadgetUtil.fetchData(CONTEXT, {
-            type: config.type,
-            timeFrom: timeFrom,
-            timeTo: timeTo
-        }, onData, onError);
-    });
+        var schema = [{
+            "metadata": {
+                "names": ["name", "requests"],
+                "types": ["ordinal", "linear"]
+            },
+            "data": []
+        }];
+        var chartConfig = {
+            type: "bar",
+            x: "name",
+            charts: [{ type: "bar", y: "requests", orientation: "left" }],
+            width: $('body').width(),
+            height: $('body').height(),
+            padding: { "top": 10, "left": 140, "bottom": 40, "right": 50 }
+        };
 
-    gadgets.HubSettings.onConnect = function() {
-        gadgets.Hub.subscribe(TOPIC, function(topic, data, subscriberData) {
-            timeFrom = data.timeFrom;
-            timeTo = data.timeTo;
-            timeUnit = data.timeUnit;
-            drawChart();
+        data.message.forEach(function(row, i) {
+            schema[0].data.push([row.name, row.requests]);
         });
-    };
 
-    function drawChart() {
-        gadgetUtil.fetchData(CONTEXT, {
-           type: config.type,
-           timeFrom: timeFrom,
-           timeTo: timeTo
-       }, onData, onError);
-    }
-
-    $(window).resize(function() {
-        drawChart();
-    });
-
-    function onData(data) {
-        try {
-            if (data.message.length == 0) {
-                $("#canvas").html(gadgetUtil.getEmptyRecordsText());
-                return;
+        var onChartClick = function(event, item) {
+            var id = -1;
+            if (item != null) {
+                id = item.datum.name;
             }
-            var schema = [{
-                "metadata": {
-                    "names": ["name", "requests"],
-                    "types": ["ordinal", "linear"]
-                },
-                "data": []
-            }];
-            var chartConfig = {
-                type: "bar",
-                x : "name",
-                charts : [{type: "bar",  y : "requests", orientation : "left"}],
-                width: $('body').width(),
-                height: $('body').height(),
-                padding: { "top": 10, "left": 140, "bottom": 40, "right": 50 }
-            };
+            var targetUrl = config.targetUrl + "?" + PARAM_ID + "=" + id + "&timeFrom=" + timeFrom + "&timeTo=" + timeTo;
 
-            data.message.forEach(function(row,i) {
-                schema[0].data.push([row.name,row.requests]);
-            });
+            if (timeUnit != null) {
+                targetUrl += "&timeUnit=" + timeUnit;
+            }
+            parent.window.location = targetUrl;
+        };
+        var chart = new vizg(schema, chartConfig);
+        $("#canvas").empty();
+        chart.draw("#canvas", [{ type: "click", callback: onChartClick }]);
+    } catch (e) {
+        $("#canvas").html(gadgetUtil.getErrorText(e));
+    }
+};
 
-            var onChartClick = function(event, item) {
-                var id = -1;
-                if(item != null) {
-                    id = item.datum.name;
-                }
-                var targetUrl = config.targetUrl + "?" + PARAM_ID + "=" + id + "&timeFrom=" 
-                + timeFrom + "&timeTo=" + timeTo;
+function onError(msg) {
+    $("#canvas").html(gadgetUtil.getErrorText(msg));
+};
 
-                if(timeUnit != null) {
-                    targetUrl +=  "&timeUnit=" + timeUnit;
-                }
-                parent.window.location = targetUrl;
-            };
-            var chart = new vizg(schema, chartConfig);
-            $("#canvas").empty();
-            chart.draw("#canvas", [{ type: "click", callback: onChartClick }]);
-        }
-        catch(e) {
-            $("#canvas").html(gadgetUtil.getErrorText(e));
-        }
-    };
-
-    function onError(msg) {
-        $("#canvas").html(gadgetUtil.getErrorText(msg));
-    };
-
-    
+// $(window).resize(function() {
+//     if (page != TYPE_LANDING && qs[PARAM_ID]) {
+//         drawChart();
+//     }
+// });

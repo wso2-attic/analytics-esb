@@ -4,10 +4,8 @@ var qs = gadgetUtil.getQueryString();
 var prefs = new gadgets.Prefs();
 var type;
 var chart = gadgetUtil.getChart(prefs.getString(PARAM_GADGET_ROLE));
-var timeFrom = gadgetUtil.timeFrom(),
-    timeTo = gadgetUtil.timeTo();
 
-if(chart) {
+if (chart) {
     type = gadgetUtil.getRequestType(page, chart);
 }
 
@@ -16,12 +14,13 @@ $(function() {
         $("#canvas").html(gadgetUtil.getErrorText("Gadget initialization failed. Gadget role must be provided."));
         return;
     }
-    if (page != TYPE_LANDING && qs[PARAM_ID]) {
+    if (page != TYPE_LANDING && qs[PARAM_ID] == null) {
         $("#canvas").html(gadgetUtil.getDefaultText());
         return;
     }
+    var timeFrom = gadgetUtil.timeFrom();
+    var timeTo = gadgetUtil.timeTo();
     console.log("LINE_CHART[" + page + "]: TimeFrom: " + timeFrom + " TimeTo: " + timeTo);
-
     gadgetUtil.fetchData(CONTEXT, {
         type: type,
         id: qs.id,
@@ -33,27 +32,20 @@ $(function() {
 
 gadgets.HubSettings.onConnect = function() {
     gadgets.Hub.subscribe(TOPIC, function(topic, data, subscriberData) {
-        timeFrom = data.timeFrom;
-        timeTo = data.timeTo;
-        drawChart();
+        onTimeRangeChanged(data);
     });
 };
 
-function drawChart() { 
+function onTimeRangeChanged(data) {
     gadgetUtil.fetchData(CONTEXT, {
         type: type,
         id: qs.id,
-        timeFrom: timeFrom,
-        timeTo: timeTo,
+        timeFrom: data.timeFrom,
+        timeTo: data.timeTo,
         entryPoint: qs.entryPoint
     }, onData, onError);
 };
 
-$(window).resize(function() {
-    if (page != TYPE_LANDING && qs[PARAM_ID]) {
-        drawChart();
-    }
-});
 
 function onData(response) {
     try {
@@ -68,15 +60,13 @@ function onData(response) {
         });
         //perform necessary transformation on input data
         chart.schema[0].data = chart.processData(data);
-        
         //finally draw the chart on the given canvas
         chart.chartConfig.width = $('body').width();
         chart.chartConfig.height = $('body').height();
 
         var vg = new vizg(chart.schema, chart.chartConfig);
-        
         $("#canvas").empty();
-        vg.draw("#canvas"); 
+        vg.draw("#canvas");
     } catch (e) {
         $('#canvas').html(gadgetUtil.getErrorText(e));
     }
@@ -85,3 +75,9 @@ function onData(response) {
 function onError(msg) {
     $("#canvas").html(gadgetUtil.getErrorText(msg));
 };
+
+// $(window).resize(function() {
+//     // if (page != TYPE_LANDING && qs[PARAM_ID]) {
+//         drawChart();
+//     // }
+// });
