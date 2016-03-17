@@ -63,7 +63,7 @@ function onData(response) {
         var data = response.message;
         console.log(data.length); 
         if (data.length == 0) {
-            $("#canvas").html('<div align="center" style="margin-top:20px"><h4>No records found.</h4></div>');
+            $("#canvas").html(gadgetUtil.getEmptyRecordsText());
             return;
         }
         $("#tblMessages thead tr").empty();

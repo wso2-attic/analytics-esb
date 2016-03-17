@@ -141,9 +141,9 @@
                     <% if (user) { %>
                         <% if (!isAnonView && (urlDomain == user.domain || (user.domain == superDomain && (!urlDomain || urlDomain == superDomain)))) { %>
                             <% if (user.isEditor) { %>
-                                <li><a href="<%=dbRoot%>?editor=true"><i class="icon fw fw-settings ues-copy" title="<%= i18n.localize("edit.button")%>"></i>Dashboard Settings</a></li>
+                                <li class="hidden"><a href="<%=dbRoot%>?editor=true"><i class="icon fw fw-settings ues-copy" title="<%= i18n.localize("edit.button")%>"></i>Dashboard Settings</a></li>
                             <% } else { %>
-                                <li><a href="<%=dbRoot%>?custom=true"><i class="icon fw fw-settings ues-copy" title="<%= i18n.localize("personalize")%>"></i>Customize Dashboard</a></li>
+                                <li class="hidden"><a href="<%=dbRoot%>?custom=true"><i class="icon fw fw-settings ues-copy" title="<%= i18n.localize("personalize")%>"></i>Customize Dashboard</a></li>
                             <% } %>
                         <% } %>
                             <li><a href="<%=urlPrefix%>logout?destination=<%=dest%>"><i class="icon fw fw-sign-out"></i><%= i18n.localize("logout.label")%></a></li>
@@ -179,7 +179,7 @@
                                 <h1 class="text-center-xs"><i class="icon fw fw-wso2-logo"></i><%=encodeHtml(dashboard.title)%></h1>
                             </div>
                             <div class="pull-right">
-                                <label>Dark</label>
+                                <label>Dark/Light</label>
                                 <label class="switch">
                                     <input type="checkbox" id="themeToggle">
                                     <span class="helper"></span>
@@ -449,13 +449,41 @@
                 }
             }
         }
+        
+        function getCookie(cname) {
+            var name = cname + "=";
+            var ca = document.cookie.split(';');
+            for(var i=0; i<ca.length; i++) {
+                var c = ca[i];
+                while (c.charAt(0)==' ') c = c.substring(1);
+                if (c.indexOf(name) == 0) return c.substring(name.length,c.length);
+            }
+            return "";
+        }
+        
+        $(window).load(function(){
+            if(getCookie('dashboardTheme') == 'Dark'){
+                $('body').addClass('dark');
+                $('iframe').contents().find('body').addClass('dark');
+                $('#themeToggle').prop('checked'. false);
+            }
+            else{
+                $('body').removeClass('dark');
+                $('iframe').contents().find('body').removeClass('dark');
+                $('#themeToggle').prop('checked'. true);
+            }
+        });
                 
         $('#themeToggle').change(function(){
             if($(this).prop('checked') == false){
                 $('body').addClass('dark');
+                $('iframe').contents().find('body').addClass('dark');
+                document.cookie = "dashboardTheme=Dark";
             }
             else{
                 $('body').removeClass('dark');
+                $('iframe').contents().find('body').removeClass('dark');
+                document.cookie = "dashboardTheme=Light";
             }
         });
     </script>
