@@ -1068,6 +1068,7 @@
             case TYPE_SEQUENCE_NAMES:
             {
                 var result = [];
+                var excludeSequences = ["PROXY_INSEQ", "PROXY_OUTSEQ", "PROXY_FAULTSEQ", "API_OUTSEQ", "API_INSEQ", "API_FAULTSEQ", "AnonymousSequence"];
                 var tableName = "MEDIATOR-STAT-PER-MINUTE";
                 var query = stringify({
                                     "fieldName": "componentName",
@@ -1078,6 +1079,13 @@
 
                 for (var name in proxyNames["categories"]) {
                     result.push(name);
+                }
+                // Remove well-known sequences
+                for(key in excludeSequences) {
+                    var sequence = excludeSequences[key];
+                    if (result.indexOf(sequence) != -1) {
+                        result.splice(result.indexOf(sequence), 1);
+                    }
                 }
                 break;
             }
@@ -1213,6 +1221,148 @@
             case TYPE_SEQUENCE_MESSAGE_FLOW:
             {
                 var result = [];
+                var entryName = request.getParameter("id");
+                var timeFrom = request.getParameter("timeFrom");
+                var timeTo = request.getParameter("timeTo");
+                // get schema 
+                var tableName = "ESB-CONFIG-ENTRY-STREAM";
+                var query = stringify({
+                                      "query": "_entryName : \"" + entryName + "\" AND _timestamp : [0000000000 TO " + timeTo + "] ",
+                                      "start": 0,
+                                      "count": 100,
+                                      "sortBy" : [
+                                            {
+                                                "field" : "_timestamp",
+                                                "sortType" : "DESC",
+                                                "reversed" : "false"
+                                            }
+                                        ]
+                                  });
+                var resp = connector.search(loggedInUser, tableName, query);
+                var config = JSON.parse(resp.getMessage())[0];
+                if (config != null) {
+                    var schema = JSON.parse(config["values"]["configData"]);
+                    var entryHashCode = config["values"]["hashcode"];
+
+                    // get components info from different tables
+                    var timeRanges = timeRangeUtil.getDateTimeRanges(timeFrom, timeTo);
+                    var searchParams = [];
+                    var aggregateFields = [];
+                    aggregateFields.push({fields: ["totalDuration"], aggregate: "SUM", alias: "TotalDuration"});
+                    aggregateFields.push({fields: ["totalDuration"], aggregate: "MAX", alias: "MaxDuration"});
+                    aggregateFields.push({fields: ["noOfInvocation"], aggregate: "SUM", alias: "Invocations"});
+                    aggregateFields.push({fields: ["faultCount"], aggregate: "SUM", alias: "Faults"});
+                    aggregateFields.push({fields: ["entryPoint"], aggregate: "FIRST", alias: "entryPoint"});
+                    aggregateFields.push({fields: ["componentType"], aggregate: "FIRST", alias: "componentType"});
+                    for (var i = 0; i < timeRanges.size(); i++) {
+                        timeRange = timeRanges.get(i);
+                        var searchParam = {
+                            tableName: "MEDIATOR-STAT-PER-" + timeRange.unit,
+                            groupByField: "componentId",
+                            query: "hashCode : \"" + entryHashCode + "\" AND startingTime : [" + timeRange.range[0] + " TO " + timeRange.range[1] + "}",
+                            aggregateLevel: 0,
+                            parentPath: [],
+                            noOfRecords : 10000
+                        }
+                        searchParam.aggregateFields = aggregateFields;
+                        searchParams.push(searchParam);
+                    }
+                    var resp = connector.searchMultiTablesWithAggregates(loggedInUser, JSON.stringify(searchParams));           
+                    var allTables = JSON.parse(resp.getMessage());
+
+                    // Aggregate all tables and prepare component map
+                    var componentMap = {};
+                    var fields = ["Invocations", "TotalDuration", "MaxDuration", "Faults"];
+                    for (var i = 0; i < allTables.length; i++) {
+                        var table = allTables[i];
+                        if (table != null && table.length != 0) {
+                            for (var j = 0; j < table.length; j++) {
+                                var componentInfo = table[j]["values"];
+                                var componentId = componentInfo["componentId"][0];
+                                if (componentMap[componentId] == null) {
+                                    componentMap[componentId] = componentInfo;
+                                } else {
+                                    for (field in fields) {
+                                        fieldName = fields[field];
+                                        componentMap[componentId][fieldName] = componentMap[componentId][fieldName] + componentInfo[fieldName];
+                                    }
+                                } 
+                            }
+                        }
+                    }
+
+                    // Populate tabel data
+                    var componentNameRegex = new RegExp("^.*@\\d*:(.*)");
+                    var groups = [];
+                    for (var i = 0; i < schema.length; i++) {
+                        var groupLabel;
+                        var groupId = schema[i]["group"];
+                        var componentId = schema[i]["id"];
+                        var componentInfo = componentMap[componentId];
+                        var dataAttributes = [];
+
+                        // Find unique groups
+                        if (schema[i]["group"] != null && groups.indexOf(schema[i]["group"]) == -1) {
+                            groups.push(schema[i]["group"]);
+                        }
+                        
+                        // Create data attributes
+                        for (field in fields) {
+                            var fieldName = fields[field];
+                            if (componentInfo != null) {
+                                if (fieldName == "TotalDuration") {
+                                    dataAttributes.push({ "name" : "AvgDuration", "value" : (componentInfo[fieldName]/componentInfo["Invocations"]).toFixed(2)});
+                                } else {
+                                    dataAttributes.push({ "name" : fieldName, "value" : componentInfo[fieldName]});
+                                }
+                            } else {
+                                dataAttributes.push({ "name" : fieldName, "value" : 0});
+                            }  
+                        }
+
+                        var  componentLabel = componentNameRegex.exec(componentId)[1];
+                        if (componentInfo != null ) {
+                            componentType = componentInfo["componentType"];
+                        } else {
+                            componentType = "UNKNOWN";
+                        }
+
+                        // Create hidden attributes
+                        var hiddenAttributes = [];
+                        hiddenAttributes.push({"name" : "entryPoint", "value": componentMap[componentId]["entryPoint"]});
+                        if (componentType == "Endpoint" || componentType == "Sequence") {
+                            hiddenAttributes.push({ "name" : "id", "value": componentLabel});
+                        } else {
+                            hiddenAttributes.push({ "name" : "id", "value": componentId});
+                        }
+
+                        if (schema[i]["parentId"] == schema[i]["group"]) {
+                            result.push({"id":componentId,
+                                        "label" : componentLabel,
+                                        "parents" : [],
+                                        "group" : schema[i]["group"],
+                                        "type": componentType,
+                                        "dataAttributes":dataAttributes,
+                                        "hiddenAttributes":hiddenAttributes
+                                        });
+                        } else {
+                            result.push({"id":componentId,
+                                        "label" : componentLabel,
+                                        "parents" : [schema[i]["parentId"]],
+                                        "group" : schema[i]["group"],
+                                        "type": componentType,
+                                        "dataAttributes":dataAttributes,
+                                        "hiddenAttributes":hiddenAttributes
+                                        });
+                        }
+                    }
+                    // Defining groups
+                    for (var j = 0 ; j < result.length ; j++) {
+                        if(groups.indexOf(result[j]["id"]) >= 0) {
+                            result[j]["type"] = "group";
+                        }
+                    }
+                }
                 break;
             }
             case TYPE_INBOUND_ENDPOINT_NAMES:
@@ -1225,7 +1375,6 @@
                                   });
                 var resp = connector.drillDownCategories(loggedInUser, tableName, query);
                 var proxyNames = JSON.parse(resp.getMessage());
-
                 for (var name in proxyNames["categories"]) {
                     result.push(name);
                 }
