@@ -1,3 +1,6 @@
+var href = parent.window.location.href,
+    hrefLastSegment = href.substr(href.lastIndexOf('/') + 1),
+    resolveURI = parent.ues.global.dashboard.id == hrefLastSegment ? '../' : '../../';
 
 $(function() {
     var page = gadgetUtil.getCurrentPage();
@@ -69,10 +72,11 @@ $(window).load(function() {
     var typeAhead = $('.tt-menu'),
         parentWindow = window.parent.document,
         thisParentWrapper = $('#' + gadgets.rpc.RPC_ID, parentWindow).closest('.gadget-body');
-
-    $('head', parentWindow).append('<link rel="stylesheet" type="text/css" href="../../store/carbon.super/gadget/auto-complete-search/css/autocomplete.css" />');
-    $('body', parentWindow).append('<script src="../../store/carbon.super/gadget/auto-complete-search/js/typeahead.bundle.js" type="text/javascript"></script>');
+    
+    $('head', parentWindow).append('<link rel="stylesheet" type="text/css" href="'+resolveURI+'store/carbon.super/gadget/Search_Box/css/autocomplete.css" />');
+    $('body', parentWindow).append('<script src="'+resolveURI+'store/carbon.super/gadget/Search_Box/js/typeahead.bundle.js" type="text/javascript"></script>');
+    //console.log(typeAhead);
     $(thisParentWrapper).append(typeAhead);
     $(thisParentWrapper).closest('.ues-component-box').addClass('widget form-control-widget');
-    //    nanoScrollerSelector[0].nanoscroller.reset();
+    $('body').addClass('widget');
 });

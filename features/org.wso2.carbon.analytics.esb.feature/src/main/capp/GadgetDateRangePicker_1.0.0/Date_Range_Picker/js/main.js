@@ -1,3 +1,7 @@
+var href = parent.window.location.href,
+    hrefLastSegment = href.substr(href.lastIndexOf('/') + 1),
+    resolveURI = parent.ues.global.dashboard.id == hrefLastSegment ? '../' : '../../';
+
 $(function() {
     var TOPIC = "range-selected";
 
@@ -107,8 +111,9 @@ $(window).load(function() {
         parentWindow = window.parent.document,
         thisParentWrapper = $('#' + gadgets.rpc.RPC_ID, parentWindow).closest('.gadget-body');
 
-    $('head', parentWindow).append('<link rel="stylesheet" type="text/css" href="../../store/carbon.super/gadget/Date_Range_Picker/css/daterangepicker.css" />');
-    $('body', parentWindow).append('<script src="../../store/carbon.super/gadget/Date_Range_Picker/js/daterangepicker.js" type="text/javascript"></script>');
+    $('head', parentWindow).append('<link rel="stylesheet" type="text/css" href="'+resolveURI+'store/carbon.super/gadget/Date_Range_Picker/css/daterangepicker.css" />');
+    $('body', parentWindow).append('<script src="'+resolveURI+'store/carbon.super/gadget/Date_Range_Picker/js/daterangepicker.js" type="text/javascript"></script>');
     $(thisParentWrapper).append(datePicker);
     $(thisParentWrapper).closest('.ues-component-box').addClass('widget form-control-widget');
+    $('body').addClass('widget');
 });

@@ -26,23 +26,37 @@
           <script src="js/main.js"></script>
 
         </head>
-        <body class="stats add-padding-5x">
+        <body>
 
-            <div class="row no-gutter add-margin-top-5x">
-                <div class="col-7 stats-total add-padding-top-1x">
-                    <h2><b>Total</b> requests</h2>
-                    <h1><div id="totalCount"></div></h1>
-                </div>
-                <div class="col-5 stats-breakdown text-right">
-                    <div class="icon-danger">
-                        <h1><div id="failedPercent"></div>%</h1>
-                        <h2><div id="failedCount"></div> Failed</h2>
+            <div class="row no-gutter">
+                <div class="col-12">
+                    <div class="stats add-padding-5x">
+                        <div class="row no-gutter add-margin-top-5x">
+                            <div class="col-7 stats-total add-padding-top-1x">
+                                <h2><b>Total</b> requests</h2>
+                                <h1 id="totalCount"></h1>
+                            </div>
+                            <div class="col-5 stats-breakdown text-right">
+                                <div class="icon-danger">
+                                    <h1><span id="failedPercent"></span>%</h1>
+                                    <h2><span id="failedCount"></span> Failed</h2>
+                                </div>
+                                <div class="icon-success">
+                                    <h1><span id="successPercent"></span>%</h1>
+                                    <h2><span id="successCount"></span> Success</h2>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    <div class="icon-success">
-                        <h1><div id="successPercent"></div>%</h1>
-                        <h2><div id="successCount"></div> Success</h2>
-                    </div>
                 </div>
+<!--
+                <div class="col-3">
+                    <div id="canvas"></div>
+                </div>
+                <div class="col-3">
+                    <div id="canvas2"></div>
+                </div>
+-->
             </div>
 
         </body>

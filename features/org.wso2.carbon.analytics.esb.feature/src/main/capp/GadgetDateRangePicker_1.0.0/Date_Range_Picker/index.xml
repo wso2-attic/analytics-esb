@@ -7,18 +7,24 @@
     <Content type="html">
         <![CDATA[
         <head>
-          <script src="js/jquery-1.10.2.js"></script> 
-          <script type="text/javascript" src="js/moment.min.js"></script>
 
+          <!-- Custom Theme -->
           <link rel="stylesheet" type="text/css" href="/portal/libs/bootstrap_3.3.5/css/bootstrap.min.css" />
+          <link rel="stylesheet" type="text/css" href="/portal/libs/font-wso2_1.0.0/css/font-wso2.min.css" />
           <link rel="stylesheet" type="text/css" href="/portal/libs/theme-wso2_1.0/css/theme-wso2.css" />
+          <link rel="stylesheet" type="text/css" href="/portal/extensions/themes/analytics/css/gadget.css" />
+          
+          <!-- jQuery -->
+          <script src="../commons/js/jquery-1.10.2.js"></script> 
            
           <!-- Include Date Range Picker -->
           <link rel="stylesheet" type="text/css" href="css/font-awesome.min.css" />
-          <script type="text/javascript" src="js/daterangepicker.js"></script>
           <link rel="stylesheet" type="text/css" href="css/daterangepicker.css" />
+          <script type="text/javascript" src="js/moment.min.js"></script>
+          <script type="text/javascript" src="js/daterangepicker.js"></script>
 
-          <!-- Custom JS -->
+          <!-- Custom -->
+          <link rel="stylesheet" type="text/css" href="css/custom.css" />
           <script src="../commons/js/gadget-utils.js"></script>
           <script src="js/main.js"></script>
 

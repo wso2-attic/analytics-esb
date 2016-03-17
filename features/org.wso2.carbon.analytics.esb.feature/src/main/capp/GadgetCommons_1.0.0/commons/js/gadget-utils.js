@@ -25,7 +25,7 @@ var BASE_URL = "/portal/dashboards/" + DASHBOARD_NAME + "/";
 var TYPE_LANDING = "landing";
 var TYPE_PROXY = "proxy";
 var TYPE_API = "api";
-var TYPE_SEQUENCE = "sequences";
+var TYPE_SEQUENCE = "sequence";
 var TYPE_ENDPOINT = "endpoint";
 var TYPE_INBOUND_ENDPOINT = "inbound";
 var TYPE_MEDIATOR = "mediator";
@@ -155,15 +155,31 @@ function GadgetUtil() {
     };
 
     this.getDefaultText = function() {
-        return '<div align="center" style="margin-top:20px"><h4>No content to display.</h4></div>';
+        return '<div class="status-message">'+
+                '<div class="message message-info">'+
+                    '<h4><i class="icon fw fw-info"></i>No content to display</h4>'+
+                    '<p>Please select a date range to view stats.</p>'+
+                '</div>'+
+            '</div>';
     };
 
     this.getEmptyRecordsText = function() {
-        return '<div align="center" style="margin-top:20px"><h4>No records found.</h4></div>';
+        return '<div class="status-message">'+
+                '<div class="message message-info">'+
+                    '<h4><i class="icon fw fw-info"></i>No records found</h4>'+
+                    '<p>Please select a date range to view stats.</p>'+
+                '</div>'+
+            '</div>';
     }
 
     this.getErrorText = function(msg) {
-        return '<div align="center" style="margin-top:20px"><h4>An error occured while attempting to display this gadget. Error message is: ' + msg + '</h4></div>';
+        console.log(msg);
+        return '<div class="status-message">'+
+                '<div class="message message-danger">'+
+                    '<h4><i class="icon fw fw-info"></i>Error</h4>'+
+                    '<p>An error occured while attempting to display this gadget. Error message is: ' + msg.status + ' - ' + msg.statusText + '</p>'+
+                '</div>'+
+            '</div>';
     }
 
 }

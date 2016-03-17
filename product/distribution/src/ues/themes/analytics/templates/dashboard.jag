@@ -94,7 +94,7 @@
     <link rel="stylesheet" href="<%=urlPrefix%><%=utils.dashboardStyles(dashboard.theme)%>">
 </head>
 
-<body class="dashboard lang_<%=request.getLocale()%>">
+<body class="dashboard lang_<%=request.getLocale()%> dark">
     
     <!-- .left-sidebar -->
     <div class="sidebar-wrapper sidebar-nav toggled hidden-xs" id="left-sidebar" data-side="left" data-width="260" style="width:260px">
@@ -178,6 +178,13 @@
                             <div class="page-title pull-left text-center-xs">
                                 <h1 class="text-center-xs"><i class="icon fw fw-wso2-logo"></i><%=encodeHtml(dashboard.title)%></h1>
                             </div>
+                            <div class="pull-right">
+                                <label>Dark</label>
+                                <label class="switch">
+                                    <input type="checkbox" id="themeToggle">
+                                    <span class="helper"></span>
+                                </label>    
+                            </div>
                             <div class="pull-right auth visible-xs">
                                 <span class="add-padding-left-3x"><%= user ? user.username : "anon" %></span>
                                 <span class="icon fw-stack fw-lg">
@@ -246,9 +253,9 @@
                                 <% if (user) { %>
                                     <% if (!isAnonView && (urlDomain == user.domain || (user.domain == superDomain && (!urlDomain || urlDomain == superDomain)))) { %>
                                         <% if (user.isEditor) { %>
-                                            <li><a href="<%=dbRoot%>?editor=true"><i class="icon fw fw-settings ues-copy" title="<%= i18n.localize("edit.button")%>"></i>Dashboard Settings</a></li>
+                                            <li class="hidden"><a href="<%=dbRoot%>?editor=true"><i class="icon fw fw-settings ues-copy" title="<%= i18n.localize("edit.button")%>"></i>Dashboard Settings</a></li>
                                         <% } else { %>
-                                            <li><a href="<%=dbRoot%>?custom=true"><i class="icon fw fw-settings ues-copy" title="<%= i18n.localize("personalize")%>"></i>Customize Dashboard</a></li>
+                                            <li class="hidden"><a href="<%=dbRoot%>?custom=true"><i class="icon fw fw-settings ues-copy" title="<%= i18n.localize("personalize")%>"></i>Customize Dashboard</a></li>
                                         <% } %>
                                     <% } %>
                                         <li><a href="<%=urlPrefix%>logout?destination=<%=dest%>"><i class="icon fw fw-sign-out"></i><%= i18n.localize("logout.label")%></a></li>
@@ -442,6 +449,15 @@
                 }
             }
         }
+                
+        $('#themeToggle').change(function(){
+            if($(this).prop('checked') == false){
+                $('body').addClass('dark');
+            }
+            else{
+                $('body').removeClass('dark');
+            }
+        });
     </script>
 </body>
 </html>

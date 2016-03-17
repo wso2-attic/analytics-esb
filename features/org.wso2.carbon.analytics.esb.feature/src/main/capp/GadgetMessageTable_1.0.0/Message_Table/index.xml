@@ -7,32 +7,34 @@
     <Content type="html">
         <![CDATA[
         <head>
-          <link rel="stylesheet" type="text/css" href="../commons/css/jquery.dataTables.min.css"> 
 
-          <script src="../commons/js/jquery-1.10.2.js"></script> 
+          <!-- Theme -->
+          <link rel="stylesheet" type="text/css" href="/portal/libs/bootstrap_3.3.5/css/bootstrap.min.css" />
+          <link rel="stylesheet" type="text/css" href="/portal/libs/font-wso2_1.0.0/css/font-wso2.min.css" />
+          <link rel="stylesheet" type="text/css" href="/portal/libs/theme-wso2_1.0/css/theme-wso2.css" />
+          <link rel="stylesheet" type="text/css" href="/portal/extensions/themes/analytics/css/gadget.css" />
+          
+          <!-- jQuery -->
+          <script src="../commons/js/jquery-1.10.2.js"></script>
+          <script src="../commons/js/moment.min.js"></script>
+          <script src="../commons/js/gadget-utils.js"></script>
+
+          <!-- Custom -->
+          <link rel="stylesheet" type="text/css" href="../commons/css/dataTables.bootstrap.css">
           <script type="text/javascript" src="../commons/js/jquery.dataTables.min.js"></script>
-          <script type="text/javascript" src="../commons/js/moment.min.js"></script>
+          <script src="js/gadgetconf.js"></script>
+          <script src="js/main.js"></script>
 
-          <script type="text/javascript" src="../commons/js/gadget-utils.js"></script>
-
-          <!-- Custom JS -->
-          <script type="text/javascript" src="js/gadgetconf.js"></script>
-          <script type="text/javascript" src="js/main.js"></script>
         </head>
         <body>
               <div id="canvas" style="padding:10px;">
-
-               <table id="tblMessages" class="display" cellspacing="0" width="100%">
+                   <table id="tblMessages" class="table" cellspacing="0" width="100%">
                         <thead>
-                            <tr>
-                               
-                            </tr>
+                            <tr></tr>
                         </thead>
                         <tbody>
                         </tbody>
-                </table>
-                            
-
+                    </table>
                </div>
         </body>
         ]]>

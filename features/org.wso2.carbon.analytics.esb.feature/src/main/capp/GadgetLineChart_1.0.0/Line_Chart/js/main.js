@@ -4,6 +4,9 @@ var qs = gadgetUtil.getQueryString();
 var prefs = new gadgets.Prefs();
 var type;
 var chart = gadgetUtil.getChart(prefs.getString(PARAM_GADGET_ROLE));
+var timeFrom = gadgetUtil.timeFrom(),
+    timeTo = gadgetUtil.timeTo();
+
 if(chart) {
     type = gadgetUtil.getRequestType(page, chart);
 }
@@ -13,12 +16,10 @@ $(function() {
         $("#canvas").html(gadgetUtil.getErrorText("Gadget initialization failed. Gadget role must be provided."));
         return;
     }
-    if (page != TYPE_LANDING && qs[PARAM_ID] == null) {
+    if (page != TYPE_LANDING && qs[PARAM_ID]) {
         $("#canvas").html(gadgetUtil.getDefaultText());
         return;
     }
-    var timeFrom = gadgetUtil.timeFrom();
-    var timeTo = gadgetUtil.timeTo();
     console.log("LINE_CHART[" + page + "]: TimeFrom: " + timeFrom + " TimeTo: " + timeTo);
 
     gadgetUtil.fetchData(CONTEXT, {
@@ -32,25 +33,33 @@ $(function() {
 
 gadgets.HubSettings.onConnect = function() {
     gadgets.Hub.subscribe(TOPIC, function(topic, data, subscriberData) {
-        onTimeRangeChanged(data);
+        timeFrom = data.timeFrom;
+        timeTo = data.timeTo;
+        drawChart();
     });
 };
 
-function onTimeRangeChanged(data) {
+function drawChart() { 
     gadgetUtil.fetchData(CONTEXT, {
         type: type,
         id: qs.id,
-        timeFrom: data.timeFrom,
-        timeTo: data.timeTo,
+        timeFrom: timeFrom,
+        timeTo: timeTo,
         entryPoint: qs.entryPoint
     }, onData, onError);
 };
+
+$(window).resize(function() {
+    if (page != TYPE_LANDING && qs[PARAM_ID]) {
+        drawChart();
+    }
+});
 
 function onData(response) {
     try {
         var data = response.message;
         if (data.length == 0) {
-            $("#canvas").html(gadgetUtil.getEmptyRecordsText());
+            $('#canvas').html(gadgetUtil.getEmptyRecordsText());
             return;
         }
         //sort the timestamps
@@ -59,14 +68,17 @@ function onData(response) {
         });
         //perform necessary transformation on input data
         chart.schema[0].data = chart.processData(data);
+        
         //finally draw the chart on the given canvas
-        chart.chartConfig.width = ($('#canvas').width() - 20);
-        chart.chartConfig.height = 200;
+        chart.chartConfig.width = $('body').width();
+        chart.chartConfig.height = $('body').height();
+
         var vg = new vizg(chart.schema, chart.chartConfig);
+        
         $("#canvas").empty();
-        vg.draw("#canvas");
+        vg.draw("#canvas"); 
     } catch (e) {
-        $("#canvas").html(gadgetUtil.getErrorText(e));
+        $('#canvas').html(gadgetUtil.getErrorText(e));
     }
 };
 
