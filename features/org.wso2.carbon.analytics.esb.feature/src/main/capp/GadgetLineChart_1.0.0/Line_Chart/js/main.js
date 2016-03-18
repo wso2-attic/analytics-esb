@@ -9,6 +9,21 @@ if (chart) {
     type = gadgetUtil.getRequestType(page, chart);
 }
 
+var rangeStart;
+var rangeEnd;
+
+document.body.onmouseup = function() {
+    // crikey! isn't she a beauty?
+    var div = document.getElementById("dChart");
+    div.innerHTML = "<p> Start : " + rangeStart + "</p>" + "<p> End : " + rangeEnd + "</p>";
+}
+
+
+var callbackmethod = function(start, end) {
+    rangeStart = start;
+    rangeEnd = end;
+};
+
 $(function() {
     if (!chart) {
         $("#canvas").html(gadgetUtil.getErrorText("Gadget initialization failed. Gadget role must be provided."));
@@ -66,7 +81,7 @@ function onData(response) {
 
         var vg = new vizg(chart.schema, chart.chartConfig);
         $("#canvas").empty();
-        vg.draw("#canvas");
+        vg.draw("#canvas",[{type:"range", callback:callbackmethod}]);
     } catch (e) {
         $('#canvas').html(gadgetUtil.getErrorText(e));
     }

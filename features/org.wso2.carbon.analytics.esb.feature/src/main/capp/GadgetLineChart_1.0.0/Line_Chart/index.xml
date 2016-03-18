@@ -36,6 +36,7 @@
         <body>
               
             <div id="canvas"></div>
+            <div id="dChart"></div>
 
         </body>
         ]]>

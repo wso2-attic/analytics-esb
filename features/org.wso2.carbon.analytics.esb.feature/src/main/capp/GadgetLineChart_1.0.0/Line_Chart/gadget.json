@@ -11,5 +11,11 @@
             "type": "date-range",
             "description": "This notifies message generated in publisher"
         }
+    },
+    "notify": {
+        "chart-zoomed": {
+            "type": "date-range",
+            "description": "This notifies message generated in publisher"
+        }
     }
 }

@@ -16,5 +16,11 @@
       "type": "date-range",
       "description": "This notifies selected state"
     }
-  }
+  },
+  "listen": {
+        "chart-zoomed": {
+            "type": "date-range",
+            "description": "This notifies message generated in publisher"
+        }
+    },
 }
