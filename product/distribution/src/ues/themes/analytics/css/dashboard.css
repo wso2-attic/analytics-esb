@@ -185,7 +185,7 @@ body.dashboard.dark {
 }
 
 .dashboard .page-header .switch {
-    margin-top: 12px;
+    margin: 15px 4px 0 0;
 }
 
 .switch > input[type=checkbox] + .helper:after {
