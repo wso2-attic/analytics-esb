@@ -4,6 +4,10 @@ var qs = gadgetUtil.getQueryString();
 var type = 38;
 
 $(function() {
+    if (qs[PARAM_ID] == null) {
+        $("body").html(gadgetUtil.getDefaultText());
+        return;
+    }
     var timeFrom = gadgetUtil.timeFrom();
     var timeTo = gadgetUtil.timeTo();
     // console.log("STATS_CHART[" + page + "]: TimeFrom: " + timeFrom + " TimeTo: " + timeTo);
@@ -26,7 +30,13 @@ gadgets.HubSettings.onConnect = function() {
 };
 
 function onTimeRangeChanged(data) {
-    
+    gadgetUtil.fetchData(CONTEXT, {
+        type: type,
+        id: qs.id,
+        timeFrom: data.timeFrom,
+        timeTo: data.timeTo,
+        entryPoint: qs.entryPoint
+    }, onData, onError);
 };
 
 function onData(response) {

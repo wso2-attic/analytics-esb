@@ -16,10 +16,13 @@
           
           <!-- jQuery -->
           <script src="/portal/libs/jquery_1.11.0/jquery-1.11.3.min.js"></script> 
+          <script src="../commons/js/moment.min.js"></script>
+          <script src="../commons/js/gadget-utils.js"></script>
 
           <!-- Custom -->
           <link rel="stylesheet" type="text/css" href="css/custom.css" />
           <script src="js/custom.js"></script>
+          <script src="js/main.js"></script>
 
         </head>
         <body>
@@ -27,7 +30,6 @@
             <div class="breadcrumb-wrapper">
                 <ol class="breadcrumb">
                     <li><a href="../../"><i class="icon fw fw-home"></i> Overview</a></li>
-                    <li class="active dashboard-name truncate">Proxy</li>
                 </ol>
             </div>
 

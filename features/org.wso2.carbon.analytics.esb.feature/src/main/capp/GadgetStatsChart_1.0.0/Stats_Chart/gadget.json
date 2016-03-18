@@ -11,4 +11,10 @@
     "borders": true,
     "title": true
   },
+    "listen": {
+        "subscriber": {
+            "type": "date-range",
+            "description": "Used to listen to Any message of type state"
+        }
+    }
 }
