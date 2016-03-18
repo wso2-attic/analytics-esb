@@ -461,17 +461,19 @@
             return "";
         }
         
-        $(window).load(function(){
-            if(getCookie('dashboardTheme') == 'Dark'){
-                $('body').addClass('dark');
-                $('iframe').contents().find('body').addClass('dark');
-                $('#themeToggle').prop('checked'. false);
-            }
-            else{
-                $('body').removeClass('dark');
-                $('iframe').contents().find('body').removeClass('dark');
-                $('#themeToggle').prop('checked'. true);
-            }
+        $(function(){
+            $('iframe').contents().load(function() {
+                if(getCookie('dashboardTheme') == 'Dark'){
+                    $('body').addClass('dark');
+                    $('iframe').contents().find('body').addClass('dark');
+                    $('#themeToggle').removeAttr('checked');
+                }
+                else{
+                    $('body').removeClass('dark');
+                    $('iframe').contents().find('body').removeClass('dark');
+                    $('#themeToggle').attr('checked', 'checked');
+                }
+            });
         });
                 
         $('#themeToggle').change(function(){
