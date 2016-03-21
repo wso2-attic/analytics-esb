@@ -106,6 +106,24 @@ $(function() {
 
 });
 
+gadgets.HubSettings.onConnect = function() {
+    gadgets.Hub.subscribe("chart-zoomed", function(topic, data, subscriberData) {
+        onChartZoomed(data);
+    });
+};
+
+function onChartZoomed(data) {
+    console.log("#######################"); 
+    console.log(data); 
+    // gadgetUtil.fetchData(CONTEXT, {
+    //     type: type,
+    //     id: qs.id,
+    //     timeFrom: data.timeFrom,
+    //     timeTo: data.timeTo,
+    //     entryPoint: qs.entryPoint
+    // }, onData, onError);
+};
+
 $(window).load(function() {
     var datePicker = $('.daterangepicker'),
         parentWindow = window.parent.document,

@@ -13,15 +13,19 @@ var rangeStart;
 var rangeEnd;
 
 document.body.onmouseup = function() {
-    // crikey! isn't she a beauty?
     var div = document.getElementById("dChart");
     div.innerHTML = "<p> Start : " + rangeStart + "</p>" + "<p> End : " + rangeEnd + "</p>";
 }
 
-
 var callbackmethod = function(start, end) {
     rangeStart = start;
     rangeEnd = end;
+    var message = {
+        timeFrom: new Date(rangeStart).getTime(),
+        timeTo: new Date(rangeEnd).getTime(),
+        timeUnit: "Custom"
+    };
+    gadgets.Hub.publish("chart-zoomed", message);
 };
 
 $(function() {
