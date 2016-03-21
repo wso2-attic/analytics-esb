@@ -29,7 +29,7 @@
 
             <div class="breadcrumb-wrapper">
                 <ol class="breadcrumb">
-                    <li><a href="../../"><i class="icon fw fw-home"></i> Overview</a></li>
+                    <li><a id="homeLink" href=""><i class="icon fw fw-home"></i> Overview</a></li>
                 </ol>
             </div>
 
