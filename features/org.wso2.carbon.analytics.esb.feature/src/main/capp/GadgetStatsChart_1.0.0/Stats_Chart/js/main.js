@@ -4,13 +4,13 @@ var qs = gadgetUtil.getQueryString();
 var type = 38;
 
 $(function() {
-    if (qs[PARAM_ID] == null) {
+    if (page && qs[PARAM_ID] == null) {
         $("body").html(gadgetUtil.getDefaultText());
         return;
     }
     var timeFrom = gadgetUtil.timeFrom();
     var timeTo = gadgetUtil.timeTo();
-    // console.log("STATS_CHART[" + page + "]: TimeFrom: " + timeFrom + " TimeTo: " + timeTo);
+    console.log("STATS_CHART[" + page + "]: TimeFrom: " + timeFrom + " TimeTo: " + timeTo);
     if(page) {
         type = page.type;
     }
@@ -42,6 +42,7 @@ function onTimeRangeChanged(data) {
 function onData(response) {
     try {
         var data = response.message;
+        console.debug(data);
         if(!data) {
 
         }
