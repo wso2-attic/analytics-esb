@@ -179,11 +179,12 @@
                                 <h1 class="text-center-xs"><i class="icon fw fw-wso2-logo"></i><%=encodeHtml(dashboard.title)%></h1>
                             </div>
                             <div class="pull-right">
-                                <label>Dark/Light</label>
+                                <label>Light</label>
                                 <label class="switch">
                                     <input type="checkbox" id="themeToggle">
                                     <span class="helper"></span>
-                                </label>    
+                                </label>   
+                                <label>Dark</label>
                             </div>
                             <div class="pull-right auth visible-xs">
                                 <span class="add-padding-left-3x"><%= user ? user.username : "anon" %></span>
@@ -409,6 +410,41 @@
 
     <!-- Scripts -->
     <script>
+        
+        function getCookie(cname) {
+            var name = cname + "=";
+            var ca = document.cookie.split(';');
+            for(var i=0; i<ca.length; i++) {
+                var c = ca[i];
+                while (c.charAt(0)==' ') c = c.substring(1);
+                if (c.indexOf(name) == 0) return c.substring(name.length,c.length);
+            }
+            return "";
+        }
+        
+        $(document).ready(function() {
+            if(getCookie('dashboardTheme') == 'dark'){
+                $('#themeToggle').attr('checked', 'checked');
+                $('body').addClass('dark');  
+            }
+            else{
+                $('#themeToggle').removeAttr('checked');
+                $('body').removeClass('dark');
+            }
+        });
+                
+        $('#themeToggle').change(function(){
+            if($(this).prop('checked') == true){
+                $('body').addClass('dark');
+                $('iframe').contents().find('body').addClass('dark');
+                document.cookie = "dashboardTheme=dark";
+            }
+            else{
+                $('body').removeClass('dark');
+                $('iframe').contents().find('body').removeClass('dark');
+                document.cookie = "dashboardTheme=light";
+            }
+        });
 
         var nanoScrollerSelector = $(".nano");
         nanoScrollerSelector.nanoScroller();
@@ -450,44 +486,6 @@
             }
         }
         
-        function getCookie(cname) {
-            var name = cname + "=";
-            var ca = document.cookie.split(';');
-            for(var i=0; i<ca.length; i++) {
-                var c = ca[i];
-                while (c.charAt(0)==' ') c = c.substring(1);
-                if (c.indexOf(name) == 0) return c.substring(name.length,c.length);
-            }
-            return "";
-        }
-        
-        $(function(){
-            $('iframe').contents().load(function() {
-                if(getCookie('dashboardTheme') == 'Dark'){
-                    $('body').addClass('dark');
-                    $('iframe').contents().find('body').addClass('dark');
-                    $('#themeToggle').removeAttr('checked');
-                }
-                else{
-                    $('body').removeClass('dark');
-                    $('iframe').contents().find('body').removeClass('dark');
-                    $('#themeToggle').attr('checked', 'checked');
-                }
-            });
-        });
-                
-        $('#themeToggle').change(function(){
-            if($(this).prop('checked') == false){
-                $('body').addClass('dark');
-                $('iframe').contents().find('body').addClass('dark');
-                document.cookie = "dashboardTheme=Dark";
-            }
-            else{
-                $('body').removeClass('dark');
-                $('iframe').contents().find('body').removeClass('dark');
-                document.cookie = "dashboardTheme=Light";
-            }
-        });
     </script>
 </body>
 </html>

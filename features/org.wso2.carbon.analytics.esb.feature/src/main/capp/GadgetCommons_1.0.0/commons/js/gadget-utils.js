@@ -170,18 +170,38 @@ function GadgetUtil() {
                     '<p>Please select a date range to view stats.</p>'+
                 '</div>'+
             '</div>';
-    }
+    };
 
     this.getErrorText = function(msg) {
-        console.log(msg);
         return '<div class="status-message">'+
                 '<div class="message message-danger">'+
                     '<h4><i class="icon fw fw-info"></i>Error</h4>'+
                     '<p>An error occured while attempting to display this gadget. Error message is: ' + msg.status + ' - ' + msg.statusText + '</p>'+
                 '</div>'+
             '</div>';
-    }
+    };
+    
+    this.getCookie = function(cname) {
+        var name = cname + "=";
+        var ca = parent.document.cookie.split(';');
+        for(var i=0; i<ca.length; i++) {
+            var c = ca[i];
+            while (c.charAt(0)==' ') c = c.substring(1);
+            if (c.indexOf(name) == 0) return c.substring(name.length,c.length);
+        }
+        return "";
+    };
 
 }
 
 var gadgetUtil = new GadgetUtil();
+
+// Light/Dark Theme Switcher
+$(document).ready(function() {
+    if(gadgetUtil.getCookie('dashboardTheme') == 'dark'){
+        $('body').addClass('dark');
+    }
+    else{
+        $('body').removeClass('dark');
+    }
+});
