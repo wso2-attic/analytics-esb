@@ -10,7 +10,7 @@
         schema "year INT -i, month INT -i, day INT -i, hour INT -I, componentId FACET -i, hashCode FACET -i,
         componentName FACET -i, componentType FACET -i, totalDuration LONG, minDuration INT, maxDuration INT,
         noOfInvocation LONG -sp, faultCount INT, startingTime LONG -i, facetStartTime FACET -i, entryPoint FACET -i,
-        entryPointHashcode FACET -i",
+        entryPointHashcode FACET -i, _timestamp  LONG -i",
         primaryKeys "year, month, day, hour, hashCode, componentId, componentType",
         mergeSchema "false");
 
@@ -19,7 +19,8 @@
         sum(totalDuration) as totalDuration, min(minDuration) as minDuration, max(maxDuration) as maxDuration,
         sum(noOfInvocation) as noOfInvocation, sum(faultCount) as totalFault,
         getHourStartingTime(year, month, day, hour) as startingTime,
-        cast(getHourStartingTime(year, month, day, hour) as STRING) as facetStartTime, entryPoint, entryPointHashcode
+        cast(getHourStartingTime(year, month, day, hour) as STRING) as facetStartTime, entryPoint, entryPointHashcode,
+        getHourStartingTime(year, month, day, hour) as _timestamp
         FROM esbServiceStatPerMinute
         GROUP BY
         year, month, day, hour, componentId, hashCode, componentName, componentType, entryPoint, entryPointHashcode;
@@ -32,7 +33,8 @@
         schema "year INT -i, month INT -i, day INT -i, hour INT -I, entryPoint FACET -i, entryPointHashcode FACET -i,
         componentIndex INT, componentId FACET -i,
         hashCode FACET -i, componentName FACET -i, componentType FACET -i, totalDuration LONG, minDuration INT,
-        maxDuration INT, noOfInvocation LONG -sp, faultCount INT, startingTime LONG -i, facetStartTime FACET -i",
+        maxDuration INT, noOfInvocation LONG -sp, faultCount INT, startingTime LONG -i, facetStartTime FACET -i, 
+         _timestamp  LONG -i",
         primaryKeys "year, month, day, hour, entryPointHashcode, hashCode, componentId, componentType",
         mergeSchema "false");
 
@@ -41,7 +43,8 @@
         componentName, componentType, sum(totalDuration) as totalDuration, min(minDuration) as minDuration,
         max(maxDuration) as maxDuration, sum(noOfInvocation) as noOfInvocation, sum(faultCount) as totalFault,
         getHourStartingTime(year, month, day, hour) as startingTime,
-        cast(getHourStartingTime(year, month, day, hour) as STRING) as facetStartTime
+        cast(getHourStartingTime(year, month, day, hour) as STRING) as facetStartTime,
+        getHourStartingTime(year, month, day, hour) as _timestamp
         FROM mediatorStatPerMinute
         GROUP BY year, month, day, hour, entryPoint, entryPointHashcode, componentIndex, componentId, hashCode,
         componentName, componentType;
