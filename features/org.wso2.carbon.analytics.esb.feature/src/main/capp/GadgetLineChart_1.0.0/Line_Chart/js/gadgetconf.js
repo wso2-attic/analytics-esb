@@ -64,7 +64,7 @@ var charts = [{
 
             result.push([timestamp, "SUCCESS", success]);
             result.push([timestamp, "FAULT", fault]);
-            result.push([timestamp, "TOTAL", success + fault]);
+            // result.push([timestamp, "TOTAL", success + fault]);
         });
         return result;
     }
