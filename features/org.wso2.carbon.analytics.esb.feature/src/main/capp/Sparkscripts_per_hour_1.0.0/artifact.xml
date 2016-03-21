@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<artifact name="Sparkscripts_per_hour" version="1.0.0" type="analytics/spark" serverRole="DataAnalyticsServer">
+    <file>esb_stat_analytics_per_hour.xml</file>
+</artifact>

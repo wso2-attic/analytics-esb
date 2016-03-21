@@ -1354,6 +1354,7 @@
                 var timeFrom = request.getParameter("timeFrom");
                 var timeTo = request.getParameter("timeTo");
                 var componentName = request.getParameter("id");
+                timeUnit = timeRangeUtil.getSuitableTimeRangeUnit(timeFrom, timeTo);
                 var tableName = "ESB-STAT-PER-" + timeUnit;
                 query = stringify({
                                       tableName: tableName,

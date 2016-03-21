@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<Analytics>
+    <Name>esb_stat_analytics_per_day</Name>
+    <Script>
+        CREATE TEMPORARY TABLE esbServiceStatPerHour USING CarbonAnalytics
+        OPTIONS (tableName "ESB-Stat-per-Hour");
+
+        CREATE TEMPORARY TABLE esbServiceStatPerDay USING CarbonAnalytics
+        OPTIONS (tableName "ESB-Stat-per-Day",
+        schema "year INT -i, month INT -i, day INT -i, componentId FACET -i, hashCode FACET -i, componentName FACET -i,
+        componentType FACET -i, totalDuration LONG, minDuration INT, maxDuration INT, noOfInvocation LONG -sp,
+        faultCount INT, startingTime LONG -i, facetStartTime FACET -i, entryPoint FACET -i,
+        entryPointHashcode FACET -i",
+        primaryKeys "year, month, day, hashCode, componentId, componentType",
+        mergeSchema "false");
+
+        INSERT INTO TABLE esbServiceStatPerDay
+        SELECT year, month, day, componentId, hashCode, componentName, componentType,
+        sum(totalDuration) as totalDuration, min(minDuration) as minDuration, max(maxDuration) as maxDuration,
+        sum(noOfInvocation) as noOfInvocation, sum(faultCount) as totalFault,
+        getDateStartingTime(year, month, day) as startingTime,
+        cast(getDateStartingTime(year, month, day) as STRING) as facetStartTime, entryPoint, entryPointHashcode
+        FROM esbServiceStatPerHour
+        GROUP BY year, month, day, componentId, hashCode, componentName, componentType, entryPoint, entryPointHashcode;
+
+        CREATE TEMPORARY TABLE mediatorStatPerHour USING CarbonAnalytics
+        OPTIONS (tableName "mediator-stat-per-hour");
+
+        CREATE TEMPORARY TABLE mediatorStatPerDay USING CarbonAnalytics
+        OPTIONS (tableName "mediator-stat-per-day",
+        schema "year INT -i, month INT -i, day INT -i, entryPoint FACET -i, entryPointHashcode FACET -i, componentIndex
+        INT, componentId FACET -i, hashCode FACET -i, componentName FACET -i, componentType FACET -i, totalDuration
+        LONG, minDuration INT, maxDuration INT, noOfInvocation LONG -sp, faultCount INT, startingTime LONG -i,
+        facetStartTime FACET -i",
+        primaryKeys "year, month, day, entryPointHashcode, hashCode, componentId, componentType",
+        mergeSchema "false");
+
+        INSERT INTO TABLE mediatorStatPerDay
+        SELECT year, month, day, entryPoint, entryPointHashcode, componentIndex, componentId, hashCode,
+        componentName, componentType, sum(totalDuration) as totalDuration, min(minDuration) as minDuration,
+        max(maxDuration) as maxDuration, sum(noOfInvocation) as noOfInvocation, sum(faultCount) as totalFault,
+        getDateStartingTime(year, month, day) as startingTime,
+        cast(getDateStartingTime(year, month, day) as STRING) as facetStartTime
+        FROM mediatorStatPerHour
+        GROUP BY year, month, day, entryPoint, entryPointHashcode, componentIndex, componentId, hashCode,
+        componentName, componentType;
+    </Script>
+    <CronExpression>51 6/20 * * * ?</CronExpression>
+</Analytics>

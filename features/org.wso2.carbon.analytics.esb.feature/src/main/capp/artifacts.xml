@@ -7,7 +7,11 @@
         <dependency artifact="AnalyticsConfigEventStream" version="1.0.0" include="true" serverRole="DataAnalyticsServer"/>
         <dependency artifact="AnalyticsConfigEventSink" version="1.0.0" include="true" serverRole="DataAnalyticsServer"/>
         <dependency artifact="AnalyticsConfigEventReceiver" version="1.0.0" include="true" serverRole="DataAnalyticsServer"/>
-        <dependency artifact="Sparkscripts" version="1.0.0" include="true" serverRole="DataAnalyticsServer"/>
+        <dependency artifact="Sparkscripts_per_second" version="1.0.0" include="true" serverRole="DataAnalyticsServer"/>
+        <dependency artifact="Sparkscripts_per_minute" version="1.0.0" include="true" serverRole="DataAnalyticsServer"/>
+        <dependency artifact="Sparkscripts_per_hour" version="1.0.0" include="true" serverRole="DataAnalyticsServer"/>
+        <dependency artifact="Sparkscripts_per_day" version="1.0.0" include="true" serverRole="DataAnalyticsServer"/>
+        <dependency artifact="Sparkscripts_per_month" version="1.0.0" include="true" serverRole="DataAnalyticsServer"/>
         <!-- Gadgets -->
         <dependency artifact="GadgetCommons" version="1.0.0" include="true" serverRole="DataAnalyticsServer"/>
         <dependency artifact="GadgetDateRangePicker" version="1.0.0" include="true" serverRole="DataAnalyticsServer"/>
