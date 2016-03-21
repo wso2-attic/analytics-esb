@@ -52,7 +52,8 @@ var charts = [{
         { name: TYPE_PROXY, type: 7 },
         { name: TYPE_API, type: 12 },
         { name: TYPE_MEDIATOR, type: 17 },
-        { name: TYPE_ENDPOINT, type: 25 }
+        { name: TYPE_ENDPOINT, type: 25 },
+        { name: TYPE_SEQUENCE, type: 29 }
     ],
     processData: function(data) {
         var result = [];
@@ -85,7 +86,8 @@ var charts = [{
         { name: TYPE_PROXY, type: 8 },
         { name: TYPE_API, type: 13 },
         { name: TYPE_MEDIATOR, type: 18 },
-        { name: TYPE_ENDPOINT, type: 26 }
+        { name: TYPE_ENDPOINT, type: 26 },
+        { name: TYPE_SEQUENCE, type: 30 }
     ],
     processData: function(data) {
         var result = [];
