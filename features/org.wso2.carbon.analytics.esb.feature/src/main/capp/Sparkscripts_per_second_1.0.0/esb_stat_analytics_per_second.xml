@@ -5,7 +5,7 @@
         CREATE TEMPORARY TABLE esbFlowEvent USING CompressedEventAnalytics
         OPTIONS(tableName "ESB-FLOW-ENTRY-STREAM",
         schema "messageFlowId STRING, host STRING, hashCode INTEGER, componentName STRING, componentType STRING,
-        componentIndex INT, componentId STRING, startTime LONG, endTime LONG, duration INT, beforePayload STRING,
+        componentIndex INT -i, componentId STRING, startTime LONG, endTime LONG, duration INT, beforePayload STRING,
         afterPayload STRING, contextPropertyMap STRING, transportPropertyMap STRING, children STRING, entryPoint
         STRING, entryPointHashcode INTEGER, faultCount INT");
 
