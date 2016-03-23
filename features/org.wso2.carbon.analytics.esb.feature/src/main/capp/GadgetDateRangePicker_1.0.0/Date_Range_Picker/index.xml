@@ -34,12 +34,13 @@
             <div class="clearfix">
                 <div class="btn-group pull-right" id="date-select">
                     <div id="reportrange" class="btn-group" role="group">
+                        <span class="btn-label">CUSTOM:</span>
                         <button id="btnLastHour" type="button" class="btn btn-default">Last Hour</button>
-                        <button id="btnLastDay"  type="button" class="btn btn-default">Yesterday</button>
+                        <button id="btnLastDay"  type="button" class="btn btn-default">Last 24 Hours</button>
                         <button id="btnLastMonth" type="button" class="btn btn-default">Last 30 Days</button>
                         <button id="btnLastYear" type="button" class="btn btn-default">Last Year</button>
                         <button id="btnCustomRange" type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            <i class="glyphicon glyphicon-calendar fa fa-calendar"></i> <span></span>
+                            <i class="glyphicon glyphicon-calendar fa fa-calendar"></i> Custom
                             <b class="caret"></b>
                         </button>
                     </div>
