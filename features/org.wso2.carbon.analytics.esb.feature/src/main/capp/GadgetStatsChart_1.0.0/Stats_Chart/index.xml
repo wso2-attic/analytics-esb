@@ -18,6 +18,13 @@
           <!-- jQuery -->
           <script src="/portal/libs/jquery_1.11.0/jquery-1.11.3.min.js"></script> 
 
+          <!-- Include VizGrammar -->
+          <script src="../commons/js/d3.min.js"></script>
+          <script src="../commons/js/vega.js"></script>
+          <script src="../commons/js/VizGrammar.min.js"></script>
+          <script src="/portal/extensions/themes/analytics/js/colorbrewer.js"></script>
+          <script src="/portal/extensions/themes/analytics/js/VizGrammarSettings.js"></script>
+
           <!-- Custom -->
           <script src="../commons/js/moment.min.js"></script>
           <script src="../commons/js/gadget-utils.js"></script>
@@ -28,8 +35,8 @@
         </head>
         <body>
 
-            <div class="row no-gutter">
-                <div class="col-12">
+            <div class="row no-gutter" id="canvas">
+                <div class="col-6">
                     <div class="stats add-padding-5x">
                         <div class="row no-gutter add-margin-top-5x">
                             <div class="col-7 stats-total add-padding-top-1x">
@@ -49,14 +56,14 @@
                         </div>
                     </div>
                 </div>
-<!--
+
                 <div class="col-3">
-                    <div id="canvas"></div>
+                    <div id="dChartTrue"></div>
                 </div>
                 <div class="col-3">
-                    <div id="canvas2"></div>
+                    <div id="dChartFalse"></div>
                 </div>
--->
+
             </div>
 
         </body>
