@@ -4,10 +4,11 @@ var href = parent.window.location.href,
 
 $(function() {
     var TOPIC = "range-selected";
-
+    var dateLabel = $('#reportrange .btn-label');
     //if there are url elemements present, use them. Otherwis use last hour
     var timeFrom = moment().subtract(29, 'days');
     var timeTo = moment();
+    var message = {};
 
     var qs = gadgetUtil.getQueryString();
     if (qs.timeFrom != null) {
@@ -21,6 +22,7 @@ $(function() {
 
     //make the selected time range highlighted
     var timeUnit = qs.timeUnit;
+    
     if(timeUnit != null) {
         $("#btnLast" + timeUnit).addClass("active");
     } else {
@@ -30,9 +32,9 @@ $(function() {
     cb(moment().subtract(29, 'days'), moment());
 
     function cb(start, end) {
-        $('#reportrange #btnCustomRange').html(start.format('MMMM D, YYYY HH:mm') + ' - ' + end.format('MMMM D, YYYY HH:mm'));
+        dateLabel.html(start.format('MMMM D, YYYY hh:mm A') + ' - ' + end.format('MMMM D, YYYY hh:mm A'));
         if (count != 0) {
-            var message = {
+            message = {
                 timeFrom: new Date(start).getTime(),
                 timeTo: new Date(end).getTime(),
                 timeUnit: "Custom"
@@ -40,10 +42,10 @@ $(function() {
             gadgets.Hub.publish(TOPIC, message);
         }
         count++;
-        // if(qs.timeUnit == 'Custom'){
-        //     $("#date-select button").removeClass("active");
-        //     $("#reportrange #btnCustomRange").addClass("active");
-        // }
+        if(message.timeUnit && (message.timeUnit == 'Custom')){
+            $("#date-select button").removeClass("active");
+            $("#reportrange #btnCustomRange").addClass("active");
+        }
         // parent.window.location.hash = "some";
     }
 
@@ -55,22 +57,22 @@ $(function() {
     }, cb);
 
     $("#btnLastHour").click(function() {
+        dateLabel.html(moment().subtract(1, 'hours').format('MMMM D, YYYY hh:mm A') + ' - ' + moment().format('MMMM D, YYYY hh:mm A'));
         $("#date-select button").removeClass("active");
         $(this).addClass("active");
-        var timeFrom = new Date(moment().subtract(1, 'hours')).getTime();
-        var timeTo = new Date(moment()).getTime();
-        var message = {
-            timeFrom: timeFrom,
-            timeTo: timeTo,
+        message = {
+            timeFrom: new Date(moment().subtract(1, 'hours')).getTime(),
+            timeTo: new Date(moment()).getTime(),
             timeUnit: "Hour"
         };
         gadgets.Hub.publish(TOPIC, message);
     });
 
     $("#btnLastDay").click(function() {
+        dateLabel.html(moment().subtract(1, 'day').format('MMMM D, YYYY hh:mm A') + ' - ' + moment().format('MMMM D, YYYY hh:mm A'));
         $("#date-select button").removeClass("active");
         $(this).addClass("active");
-        var message = {
+        message = {
             timeFrom: new Date(moment().subtract(1, 'day')).getTime(),
             timeTo: new Date(moment()).getTime(),
             timeUnit: "Day"
@@ -79,9 +81,10 @@ $(function() {
     });
 
     $("#btnLastMonth").click(function() {
+        dateLabel.html(moment().subtract(29, 'days').format('MMMM D, YYYY hh:mm A') + ' - ' + moment().format('MMMM D, YYYY hh:mm A'));
         $("#date-select button").removeClass("active");
         $(this).addClass("active");
-        var message = {
+        message = {
             timeFrom: new Date(moment().subtract(29, 'days')).getTime(),
             timeTo: new Date(moment()).getTime(),
             timeUnit: "Month"
@@ -90,9 +93,10 @@ $(function() {
     });
 
     $("#btnLastYear").click(function() {
+        dateLabel.html(moment().subtract(1, 'year').format('MMMM D, YYYY hh:mm A') + ' - ' + moment().format('MMMM D, YYYY hh:mm A'));
         $("#date-select button").removeClass("active");
         $(this).addClass("active");
-        var message = {
+        message = {
             timeFrom: new Date(moment().subtract(1, 'year')).getTime(),
             timeTo: new Date(moment()).getTime(),
             timeUnit: "Year"

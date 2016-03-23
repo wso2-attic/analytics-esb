@@ -386,8 +386,8 @@
     }
 
     .applyBtn, .applyBtn:focus, .applyBtn:hover, .applyBtn.btn-success[disabled] {
-        background: #007D85;
-        border-color: #007D85;
+        background: #438CAD;
+        border-color: #438CAD;
     }
 
     .applyBtn.btn-success[disabled] {
@@ -404,6 +404,10 @@
   .daterangepicker .calendar.left {
     clear: none;
   }
+}
+
+.btn-label {
+    color: #fff;
 }
 
 /* Date Range Picker Gadget */
