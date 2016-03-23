@@ -65,6 +65,7 @@
     var TYPE_TOP_INVOKED_ENDPOINTS = 45;
     var TYPE_TOP_INVOKED_INBOUNDS = 46;
     var TYPE_TOP_INVOKED_SEQUENCES = 47;
+    var TYPE_MESSAGE_COMPARISON = 45;
 
 
     if (configs.cacheTimeoutSeconds) {
@@ -210,62 +211,17 @@
             }
             case TYPE_TOP_INVOKED_PROXIES:
             {
-                var result = [];
-                var timeFrom = request.getParameter("timeFrom");
-                var timeTo = request.getParameter("timeTo");
-                var tableName = "ESB-STAT-PER-MINUTE"
-                var query = stringify({
-                    "fieldName": "componentName",
-                    "categoryPath": [],
-                    "query": "startingTime : [" + timeFrom + " TO " + timeTo + "] AND componentType:\"Proxy Service\"",
-                    "scoreFunction": "noOfInvocation"
-                });
-                var resp = connector.drillDownCategories(loggedInUser, tableName, query);
-                var drillDownResult = JSON.parse(resp.getMessage());
-                for (var key in drillDownResult["categories"]) {
-                    if (drillDownResult["categories"].hasOwnProperty(key)) {
-                        result.push({"name": key, "requests": drillDownResult["categories"][key]});
-                    }
-                }
-                result = result.slice(0, 5);
+                var result = getMostInvokedComponentNames(connector, loggedInUser, "Proxy Service");
                 break;
             }
             case TYPE_TOP_INVOKED_APIS:
             {
-                var result = [];
-                var timeFrom = request.getParameter("timeFrom");
-                var timeTo = request.getParameter("timeTo");
-                var tableName = "ESB-STAT-PER-MINUTE"
-                var query = stringify({
-                    "fieldName": "componentName",
-                    "categoryPath": [],
-                    "query": "startingTime : [" + timeFrom + " TO " + timeTo + "] AND componentType:API",
-                    "scoreFunction": "noOfInvocation"
-                });
-                var resp = connector.drillDownCategories(loggedInUser, tableName, query);
-                var drillDownResult = JSON.parse(resp.getMessage());
-                for (var key in drillDownResult["categories"]) {
-                    if (drillDownResult["categories"].hasOwnProperty(key)) {
-                        result.push({"name": key, "requests": drillDownResult["categories"][key]});
-                    }
-                }
-                result = result.slice(0, 5);
+                var result = getMostInvokedComponentNames(connector, loggedInUser, "API");
                 break;
             }
             case TYPE_PROXY_NAMES:
             {
-                result = [];
-                var tableName = "ESB-STAT-PER-MINUTE";
-                query = stringify({
-                                    "fieldName": "componentName",
-                                    "query": "componentType : \"Proxy Service\""
-                                  });
-                resp = connector.drillDownCategories(loggedInUser, tableName, query);
-                var proxyNames = JSON.parse(resp.getMessage());
-
-                for (var name in proxyNames["categories"]) {
-                    result.push(name);
-                }
+                var result = getComponentNames(connector, loggedInUser, "Proxy Service");
                 break;
             }
             case TYPE_PROXY_MESSAGE_RATE:
@@ -530,18 +486,7 @@
             }
             case TYPE_API_NAMES:
             {
-                result = [];
-                var tableName = "ESB-STAT-PER-MINUTE";
-                query = stringify({
-                                    "fieldName": "componentName",
-                                    "query": "componentType : API"
-                                  });
-                resp = connector.drillDownCategories(loggedInUser, tableName, query);
-                var proxyNames = JSON.parse(resp.getMessage());
-
-                for (var name in proxyNames["categories"]) {
-                    result.push(name);
-                }
+                var result = getComponentNames(connector, loggedInUser, "API");
                 break;
             }
             case TYPE_API_MESSAGE_RATE:
@@ -891,18 +836,7 @@
             }
             case TYPE_ENDPOINT_NAMES:
             {
-                var result = [];
-                var tableName = "ESB-STAT-PER-MINUTE";
-                var query = stringify({
-                                    "fieldName": "componentName",
-                                    "query": "componentType : \"Endpoint\""
-                                  });
-                var resp = connector.drillDownCategories(loggedInUser, tableName, query);
-                var proxyNames = JSON.parse(resp.getMessage());
-
-                for (var name in proxyNames["categories"]) {
-                    result.push(name);
-                }
+                var result = getComponentNames(connector, loggedInUser, "Endpoint");
                 break;
             }
             case TYPE_ENDPOINT_MESSAGE_RATE:
@@ -1037,19 +971,8 @@
             }
             case TYPE_SEQUENCE_NAMES:
             {
-                var result = [];
                 var excludeSequences = ["PROXY_INSEQ", "PROXY_OUTSEQ", "PROXY_FAULTSEQ", "API_OUTSEQ", "API_INSEQ", "API_FAULTSEQ", "AnonymousSequence"];
-                var tableName = "MEDIATOR-STAT-PER-MINUTE";
-                var query = stringify({
-                                    "fieldName": "componentName",
-                                    "query": "componentType : \"Sequence\""
-                                  });
-                var resp = connector.drillDownCategories(loggedInUser, tableName, query);
-                var proxyNames = JSON.parse(resp.getMessage());
-
-                for (var name in proxyNames["categories"]) {
-                    result.push(name);
-                }
+                var result = getComponentNames(connector, loggedInUser, "Endpoint");
                 // Remove well-known sequences
                 for(key in excludeSequences) {
                     var sequence = excludeSequences[key];
@@ -1337,17 +1260,7 @@
             }
             case TYPE_INBOUND_ENDPOINT_NAMES:
             {
-                var result = [];
-                var tableName = "ESB-STAT-PER-MINUTE";
-                var query = stringify({
-                                    "fieldName": "componentName",
-                                    "query": "componentType : \"Inbound EndPoint\""
-                                  });
-                var resp = connector.drillDownCategories(loggedInUser, tableName, query);
-                var proxyNames = JSON.parse(resp.getMessage());
-                for (var name in proxyNames["categories"]) {
-                    result.push(name);
-                }
+                var result = getComponentNames(connector, loggedInUser, "Inbound EndPoint");
                 break;
             }
             case TYPE_INBOUND_ENDPOINT_MESSAGE_RATE:
@@ -1819,6 +1732,89 @@
                 var result = [{ name : "Sequence1", requests: 12345}];
                 break;
             }
+            case TYPE_MESSAGE_COMPARISON:
+            {
+                var result = {};
+                var messageId = request.getParameter("id");
+
+                // TODO: read from request
+                var componentId = "TestPorxy_3@12:RespondMediator";
+                var hashCode = "2073050563";
+                var tableName = "ESB-EVENT";
+                // Get Message details for the current component
+                var query = stringify({
+                    "tableName": tableName,
+                    "query": "_messageFlowId : \"" + messageId + "\" AND _componentId :\"" + componentId + "\" AND _hashCode:\"" + hashCode + "\"",
+                    "start": 0,
+                    "count" : 10000
+                });
+                var resp = connector.search(loggedInUser, tableName, query);
+                var messageInfoBefore = JSON.parse(resp.getMessage())[0]["values"];
+
+                // Get Message details of the child component
+                if (messageInfoBefore["children"] != null) {
+                    var childIndex = messageInfoBefore["children"]["myArrayList"][0];
+                    var query = stringify({
+                        "tableName": tableName,
+                        "query": "_messageFlowId : \"" + messageId + "\" AND componentIndex :\"" + childIndex + "\" AND _hashCode:\"" + hashCode + "\"",
+                        "start": 0,
+                        "count" : 10000
+                    });
+                    var resp = connector.search(loggedInUser, tableName, query);
+                    component = JSON.parse(resp.getMessage())[0];
+                    if (component != null) {
+                        var messageInfoAfter = component["values"];
+                    }
+                }
+
+                // add payloads
+                result["payload"] = {"before" : messageInfoBefore["beforePayload"], "after" : messageInfoBefore["afterPayload"]};
+                
+                transportProperties = [];
+                contextProperties = [];
+                allTransportProperties = Object.keys(messageInfoBefore["transportPropertyMap"]["map"]);
+                allContextProperties = Object.keys(messageInfoBefore["contextPropertyMap"]["map"]);
+                if (messageInfoAfter != null) {
+                    for(var property in messageInfoAfter["transportPropertyMap"]["map"]) {
+                        if (!allTransportProperties.hasOwnProperty(property)) {
+                            allTransportProperties.push(property);
+                        }
+                    }
+                    for(var property in messageInfoAfter["contextPropertyMap"]["map"]) {
+                        if (!allContextProperties.hasOwnProperty(property)) {
+                            allContextProperties.push(property);
+                        }
+                    }
+                }
+
+                // Add Transport Properties
+                for(var property in allTransportProperties) {
+                    var propertyName = allTransportProperties[property];
+                    var beforeValue = messageInfoBefore["transportPropertyMap"]["map"][propertyName];
+                    if (messageInfoAfter != null) {
+                        afterValue = messageInfoAfter["transportPropertyMap"]["map"][propertyName];
+                    } else {
+                        afterValue = beforeValue;
+                    }
+                    
+                    transportProperties.push({"name": propertyName, "before": beforeValue, "after": afterValue});
+                }
+                result["transportProperties"] = transportProperties;
+
+                // Add Context Properties
+                for(var property in allContextProperties) {
+                    var propertyName = allContextProperties[property];
+                    var beforeValue = messageInfoBefore["contextPropertyMap"]["map"][propertyName];
+                    if (messageInfoAfter != null) {
+                        var afterValue = messageInfoAfter["contextPropertyMap"]["map"][propertyName];
+                    } else {
+                        afterValue = beforeValue;
+                    }
+                    contextProperties.push({"name": propertyName, "before": beforeValue, "after": afterValue});
+                }
+                result["contextProperties"] = contextProperties;
+                break;
+            }
             default:
             {
                 result = '{ "status": "Failed", "message": "Unidentified operation" }';
@@ -1839,4 +1835,42 @@
     }
 
 }());
+
+
+function getMostInvokedComponentNames(connector, loggedInUser, componentType) {
+    var result = [];
+    var timeFrom = request.getParameter("timeFrom");
+    var timeTo = request.getParameter("timeTo");
+    var tableName = "ESB-STAT-PER-MINUTE"
+    var query = stringify({
+        "fieldName": "componentName",
+        "categoryPath": [],
+        "query": "startingTime : [" + timeFrom + " TO " + timeTo + "] AND componentType:\"" + componentType + "\"",
+        "scoreFunction": "noOfInvocation"
+    });
+    var resp = connector.drillDownCategories(loggedInUser, tableName, query);
+    var drillDownResult = JSON.parse(resp.getMessage());
+    for (var key in drillDownResult["categories"]) {
+        if (drillDownResult["categories"].hasOwnProperty(key)) {
+            result.push({"name": key, "requests": drillDownResult["categories"][key]});
+        }
+    }
+    result = result.slice(0, 5);
+    return result;
+};
+
+function getComponentNames(connector, loggedInUser, componentType) {
+    result = [];
+    var tableName = "ESB-STAT-PER-MINUTE";
+    query = stringify({
+                        "fieldName": "componentName",
+                        "query": "componentType : \"" + componentType + "\""
+                      });
+    resp = connector.drillDownCategories(loggedInUser, tableName, query);
+    var proxyNames = JSON.parse(resp.getMessage());
+    for (var name in proxyNames["categories"]) {
+        result.push(name);
+    }
+    return result;
+};
 %>
