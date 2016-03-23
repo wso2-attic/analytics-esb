@@ -423,7 +423,7 @@
         }
         
         $(document).ready(function() {
-            if(getCookie('dashboardTheme') == 'dark'){
+            if((getCookie('dashboardTheme') == 'dark') || (getCookie('dashboardTheme') == '')){
                 $('#themeToggle').attr('checked', 'checked');
                 $('body').addClass('dark');  
             }
