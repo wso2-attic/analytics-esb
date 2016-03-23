@@ -406,7 +406,7 @@
   }
 }
 
-.btn-label {
+.btn-group > .btn-label {
     color: #fff;
 }
 
