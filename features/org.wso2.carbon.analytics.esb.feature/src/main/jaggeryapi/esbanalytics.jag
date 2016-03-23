@@ -62,6 +62,9 @@
     var TYPE_MEDIATOR_STATS = 42;
     var TYPE_ENDPOINT_STATS = 43;
     var TYPE_INBOUND_ENDPOINT_STATS = 44;
+    var TYPE_TOP_INVOKED_ENDPOINTS = 45;
+    var TYPE_TOP_INVOKED_INBOUNDS = 46;
+    var TYPE_TOP_INVOKED_SEQUENCES = 47;
 
 
     if (configs.cacheTimeoutSeconds) {
@@ -1800,6 +1803,20 @@
                     }
                 }
                 result = {total: totalInvocation, failed: totalFault};
+                break;
+            }case TYPE_TOP_INVOKED_ENDPOINTS:
+            {
+                var result = [{ name : "Endpoint1", requests: 12345}];
+                break;
+            }
+            case TYPE_TOP_INVOKED_INBOUNDS:
+            {
+                var result = [{ name : "Inbound1", requests: 12345}];
+                break;
+            }
+            case TYPE_TOP_INVOKED_SEQUENCES:
+            {
+                var result = [{ name : "Sequence1", requests: 12345}];
                 break;
             }
             default:
