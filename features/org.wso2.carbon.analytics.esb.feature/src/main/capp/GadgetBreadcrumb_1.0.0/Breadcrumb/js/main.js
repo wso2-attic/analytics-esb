@@ -6,6 +6,7 @@ var pageName = gadgetUtil.getCurrentPageName();
 var currentLocation;
 
 $(function() {
+    
     $("#homeLink").attr("href", baseUrl);
     currentLocation = pageName;
     if (currentLocation != TYPE_LANDING) {
@@ -15,22 +16,21 @@ $(function() {
         }
 
     }
-});
+    
+    function appendTrail(url,text) {
+        var ol = $(".breadcrumb");
+        var li = jQuery('<li/>');
+        var a = jQuery('<a/>');
+        li.addClass("active dashboard-name truncate");
+        a.attr("href",url);
+        a.text(text);
+        li.append(a);
+        ol.append(li);
+    }
+    
+    $(".breadcrumb").on('click', 'a', function(e) {
+        e.preventDefault();
+        parent.window.location = $(this).attr('href');
+    });
 
-function appendTrail(url,text) {
-    var ol = $(".breadcrumb");
-    var li = jQuery('<li/>');
-    var a = jQuery('<a/>');
-    li.addClass("active dashboard-name truncate");
-    a.attr("data-href",url);
-    a.text(text);
-    li.append(a);
-    ol.append(li);
-}
-
-$(".breadcrumb a").click(function(e) {
-     e.preventDefault();
-    // return false;
-    alert(e); 
-    // parent.window.location = $(this);
 });
