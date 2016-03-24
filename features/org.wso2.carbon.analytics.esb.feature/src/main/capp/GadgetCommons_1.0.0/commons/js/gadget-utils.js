@@ -198,7 +198,7 @@ var gadgetUtil = new GadgetUtil();
 
 // Light/Dark Theme Switcher
 $(document).ready(function() {
-    if(gadgetUtil.getCookie('dashboardTheme') == 'dark'){
+    if((gadgetUtil.getCookie('dashboardTheme') == 'dark') || gadgetUtil.getCookie('dashboardTheme') == ''){
         $('body').addClass('dark');
     }
     else{
