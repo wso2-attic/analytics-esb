@@ -1,5 +1,6 @@
     var TYPE = 1;
     var TOPIC = "subscriber";
+    var PUBLISHER_TOPIC = "node-clicked";
     var page = gadgetUtil.getCurrentPage();
     var qs = gadgetUtil.getQueryString();
     var timeFrom, timeTo, timeUnit = null;
@@ -19,6 +20,21 @@
             timeFrom: timeFrom,
             timeTo: timeTo
         }, onData, onError);
+
+        $("body").on("click", ".nodeLabel", function(e) {
+            e.preventDefault();
+            if (page.name != TYPE_MESSAGE) {
+                var targetUrl = $(this).data("target-url");
+                parent.window.location = targetUrl;
+            } else {
+                var mediatorId = $(this).data("mediator-id");
+                console.log("## Clicked on mediator [ " + mediatorId + " ]");
+                message = {
+                    mediatorId: mediatorId
+                };
+                gadgets.Hub.publish(PUBLISHER_TOPIC, message);
+            }
+        });
 
     });
 
@@ -42,187 +58,134 @@
 
     function onData(response) {
         var data = response.message;
-        console.log(data); 
+        console.log(data);
         if (data.length == 0) {
             $("#canvas").html(gadgetUtil.getEmptyRecordsText());
             return;
         }
         $("#canvas").empty();
-        // var g = new dagreD3.graphlib.Graph({ compound: true })
-        //     .setGraph({})
-        //     .setDefaultEdgeLabel(function() {
-        //         return {}; });
-
         var nodes = data;
-        // nodes.forEach(function(node, i) {
-        //     var label = buildLabel(node);
-        //     g.setNode(node.id, { labelType: "html", label: label });
-        //     if (node.children) {
-        //         node.children.forEach(function(child) {
-        //             g.setEdge(node.id, child, { lineInterpolate: 'basis', arrowheadClass: 'arrowhead' });
-        //         });
-        //     }
-        //     if (node.group) {
-        //         g.setParent(node.id, node.group);
-        //     }
-        //     if (node.type && node.type === "group") {
-        //         g.setNode(node.id, { label: node.label, clusterLabelPos: 'top' });
-        //     }
-        // });
-
-        // // Round the corners of the nodes
-        // g.nodes().forEach(function(v) {
-        //     var node = g.node(v);
-        //     node.rx = node.ry = 7;
-        // });
-        // // Create the renderer
-        // var render = new dagreD3.render();
-        // // Set up an SVG group so that we can translate the final graph.
-        // var svg = d3.select("svg"),
-        //     svgGroup = svg.append("g");
-        // // Run the renderer. This is what draws the final graph.
-        // render(d3.select("svg g"), g);
-        // // Center the graph
-        // var xCenterOffset = (svg.attr("width") - g.graph().width) / 2;
-        // svgGroup.attr("transform", "translate(" + xCenterOffset + ", 20)");
-        // svg.attr("height", g.graph().height + 140);
-
         // Create the input graph
-        var g = new dagreD3.graphlib.Graph({compound:true})
-          .setGraph({rankdir: "TD"})
-          .setDefaultEdgeLabel(function() { return {}; });
+        var g = new dagreD3.graphlib.Graph({ compound: true })
+            .setGraph({ rankdir: "TD" })
+            .setDefaultEdgeLabel(function() {
+                return {}; });
 
+        var groups = [];
 
-          var groups = [];
-
-          for (var i =0; i < nodes.length; i ++) {
+        for (var i = 0; i < nodes.length; i++) {
             if (nodes[i].id != null) {
-              //Set Nodes
-              if (nodes[i].type == "group") {
-                g.setNode(nodes[i].id,   {label:  "", clusterLabelPos: 'top'});
+                //Set Nodes
+                if (nodes[i].type == "group") {
+                    g.setNode(nodes[i].id, { label: "", clusterLabelPos: 'top' });
 
-                //Add arbitary nodes for group
-                g.setNode(nodes[i].id + "-s", {label: nodes[i].label, style: 'stroke-width: 0px;'});
-               // g.setEdge(nodes[i].id + "-s", nodes[i].id + "-e",  { style: 'stroke-width: 0px; fill: #ffd47f'});
-                g.setNode(nodes[i].id + "-e", {label:  "", style: 'stroke-width: 0px;'});
-                g.setParent(nodes[i].id + "-s", nodes[i].id);
-                g.setParent(nodes[i].id + "-e", nodes[i].id);
+                    //Add arbitary nodes for group
+                    g.setNode(nodes[i].id + "-s", { label: nodes[i].label, style: 'stroke-width: 0px;' });
+                    // g.setEdge(nodes[i].id + "-s", nodes[i].id + "-e",  { style: 'stroke-width: 0px; fill: #ffd47f'});
+                    g.setNode(nodes[i].id + "-e", { label: "", style: 'stroke-width: 0px;' });
+                    g.setParent(nodes[i].id + "-s", nodes[i].id);
+                    g.setParent(nodes[i].id + "-e", nodes[i].id);
 
-                groups.push(nodes[i]);
-              } else {
-                var label = buildLabel(nodes[i]);
-                g.setNode(nodes[i].id, {labelType: "html",label: label});
-                // g.setNode(nodes[i].id, {label: nodes[i].label});
-              }
-
-              //Set Edges
-              if (nodes[i].parents != null) {
-              for (var x =0; x < nodes[i].parents.length; x ++) {
-                var isParentGroup = false;
-                 for (var y = 0; y < groups.length; y++) {
-                      if (groups[y].id == nodes[i].parents[x] && groups[y].type == "group") {
-                            isParentGroup = true;
-                      }
-                 }
-            
-                if (nodes[i].type == "group") { 
-                      if (isParentGroup) {
-                            g.setEdge(nodes[i].parents[x] + "-e", nodes[i].id + "-s",{ lineInterpolate: 'basis', arrowheadClass: 'arrowhead' });
-                         } else {
-                            g.setEdge(nodes[i].parents[x], nodes[i].id + "-s", { lineInterpolate: 'basis', arrowheadClass: 'arrowhead' });
-                         }
+                    groups.push(nodes[i]);
                 } else {
-                   if (isParentGroup) {
-                    g.setEdge(nodes[i].parents[x] + "-e", nodes[i].id, { lineInterpolate: 'basis', arrowheadClass: 'arrowhead' });
-                   } else {
-                      g.setEdge(nodes[i].parents[x], nodes[i].id, { lineInterpolate: 'basis', arrowheadClass: 'arrowhead' });
-                   }
+                    var label = buildLabel(nodes[i]);
+                    g.setNode(nodes[i].id, { labelType: "html", label: label });
+                    // g.setNode(nodes[i].id, {label: nodes[i].label});
                 }
-            }
-          }
 
-          if (nodes[i].group != null) {
-            g.setParent(nodes[i].id, nodes[i].group);
-              if (nodes[i].type != "group" && nodes[i].parents.length == 0) {  
-                g.setEdge(nodes[i].group + "-s", nodes[i].id,  { style: 'stroke-width: 0px; '});
-                g.setEdge(nodes[i].id, nodes[i].group + "-e",  { style: 'stroke-width: 0px; '});
-          } 
+                //Set Edges
+                if (nodes[i].parents != null) {
+                    for (var x = 0; x < nodes[i].parents.length; x++) {
+                        var isParentGroup = false;
+                        for (var y = 0; y < groups.length; y++) {
+                            if (groups[y].id == nodes[i].parents[x] && groups[y].type == "group") {
+                                isParentGroup = true;
+                            }
+                        }
 
-          }
-         
+                        if (nodes[i].type == "group") {
+                            if (isParentGroup) {
+                                g.setEdge(nodes[i].parents[x] + "-e", nodes[i].id + "-s", { lineInterpolate: 'basis', arrowheadClass: 'arrowhead' });
+                            } else {
+                                g.setEdge(nodes[i].parents[x], nodes[i].id + "-s", { lineInterpolate: 'basis', arrowheadClass: 'arrowhead' });
+                            }
+                        } else {
+                            if (isParentGroup) {
+                                g.setEdge(nodes[i].parents[x] + "-e", nodes[i].id, { lineInterpolate: 'basis', arrowheadClass: 'arrowhead' });
+                            } else {
+                                g.setEdge(nodes[i].parents[x], nodes[i].id, { lineInterpolate: 'basis', arrowheadClass: 'arrowhead' });
+                            }
+                        }
+                    }
+                }
+
+                if (nodes[i].group != null) {
+                    g.setParent(nodes[i].id, nodes[i].group);
+                    if (nodes[i].type != "group" && nodes[i].parents.length == 0) {
+                        g.setEdge(nodes[i].group + "-s", nodes[i].id, { style: 'stroke-width: 0px; ' });
+                        g.setEdge(nodes[i].id, nodes[i].group + "-e", { style: 'stroke-width: 0px; ' });
+                    }
+
+                }
+
             }
-                
-          }
+
+        }
 
         g.nodes().forEach(function(v) {
-          var node = g.node(v);
+            var node = g.node(v);
 
-          node.rx = node.ry = 7;
+            node.rx = node.ry = 7;
         });
 
-
-  // Create the renderer
-  var render = new dagreD3.render();
-
-  var svg = d3.select("svg"),
-  svgGroup = svg.append("g");
-  inner = svg.select("g"),
-  zoom = d3.behavior.zoom().on("zoom", function() {
-    inner.attr("transform", "translate(" + d3.event.translate + ")" +
-                                "scale(" + d3.event.scale + ")");
-  });
-  svg.call(zoom);
-        
-    var nanoScrollerSelector = $(".nano");
-    nanoScrollerSelector.nanoScroller();
-
-
-
-    inner.call(render, g);
-
-    // Zoom and scale to fit
-    var graphWidth = g.graph().width + 80;
-    var graphHeight = g.graph().height + 40;
-    var width = parseInt(svg.style("width").replace(/px/, ""));
-    var height = parseInt(svg.style("height").replace(/px/, ""));
-    var zoomScale = Math.min(width / graphWidth, height / graphHeight);
-    var translate = [(width/2) - ((graphWidth*zoomScale)/2), (height/2) - ((graphHeight*zoomScale)/2)];
-    
-   zoom.translate(translate);
-   zoom.scale(zoomScale);
-   zoom.event(isUpdate ? svg.transition().duration(500) : d3.select("svg"));
-
         // Create the renderer
-        // var render = new dagreD3.render();
+        var render = new dagreD3.render();
 
-        // // Set up an SVG group so that we can translate the final graph.
-        // var svg = d3.select("svg"),
-        //     svgGroup = svg.append("g");
+        var svg = d3.select("svg"),
+            svgGroup = svg.append("g");
+        inner = svg.select("g"),
+            zoom = d3.behavior.zoom().on("zoom", function() {
+                inner.attr("transform", "translate(" + d3.event.translate + ")" +
+                    "scale(" + d3.event.scale + ")");
+            });
+        svg.call(zoom);
 
-        // // Run the renderer. This is what draws the final graph.
-        // render(d3.select("svg g"), g);
+        var nanoScrollerSelector = $(".nano");
+        nanoScrollerSelector.nanoScroller();
 
-        // // Center the graph
-        // var xCenterOffset = (svg.attr("width") - g.graph().width) / 2;
-        // svgGroup.attr("transform", "translate(" + xCenterOffset + ", 20)");
-        // svg.attr("height", g.graph().height + 140);
+        inner.call(render, g);
+
+        // Zoom and scale to fit
+        var graphWidth = g.graph().width + 80;
+        var graphHeight = g.graph().height + 40;
+        var width = parseInt(svg.style("width").replace(/px/, ""));
+        var height = parseInt(svg.style("height").replace(/px/, ""));
+        var zoomScale = Math.min(width / graphWidth, height / graphHeight);
+        var translate = [(width / 2) - ((graphWidth * zoomScale) / 2), (height / 2) - ((graphHeight * zoomScale) / 2)];
+
+        zoom.translate(translate);
+        zoom.scale(zoomScale);
+        zoom.event(isUpdate ? svg.transition().duration(500) : d3.select("svg"));
+
     };
 
     function buildLabel(node) {
         var pageUrl = MEDIATOR_PAGE_URL;
-        if(node.type === "Sequence") {
+        if (node.type === "Sequence") {
             pageUrl = SEQUENCE_PAGE_URL;
-        } else if(node.type === "Endpoint") {
+        } else if (node.type === "Endpoint") {
             pageUrl = ENDPOINT_PAGE_URL;
         }
-        var hiddenParams = "";
-        if(node.hiddenAttributes) {
-            node.hiddenAttributes.forEach(function(item,i) {
-                hiddenParams += "&" + item.name + "=" + item.value;
-            });   
+        var hiddenParams = '';
+        if (node.hiddenAttributes) {
+            node.hiddenAttributes.forEach(function(item, i) {
+                hiddenParams += '&' + item.name + '=' + item.value;
+            });
         }
-        var targetUrl = pageUrl + "?" + hiddenParams;
-        var labelText = '<div><h4><a target="_blank" href="' + targetUrl + '">' + node.label + "</a></h4>";;
+        var targetUrl = pageUrl + '?' + hiddenParams;
+        var labelText = '<div class="nodeLabel" data-mediator-id="' + node.id + '" data-target-url="' + targetUrl 
+          + '"><h4><a href="#">' + node.label + "</a></h4>";
+
         if (node.dataAttributes) {
             node.dataAttributes.forEach(function(item, i) {
                 labelText += "<h5><label>" + item.name + " : </label><span>" + item.value + "</span></h5>";

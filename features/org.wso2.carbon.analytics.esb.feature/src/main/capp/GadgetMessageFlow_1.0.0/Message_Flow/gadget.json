@@ -13,6 +13,12 @@
             "description": "This notifies message generated in publisher"
         }
     },
+    "notify": {
+        "node-clicked": {
+            "type": "mediator-info",
+            "description": "This notifies message generated in publisher"
+        }
+    },
     "styles": {
         "borders": false,
         "title": false

@@ -33,7 +33,8 @@ $(function() {
         if( timeUnit == null) {
             timeUnit = qs.timeUnit;
         }
-        var targetUrl = MESSAGE_PAGE_URL + "?" + PARAM_ID + "=" + id + "&timeFrom=" + timeFrom + "&timeTo=" + timeTo + "&timeUnit=" + timeUnit;;
+        // var targetUrl = MESSAGE_PAGE_URL + "?" + PARAM_ID + "=" + id + "&timeFrom=" + timeFrom + "&timeTo=" + timeTo + "&timeUnit=" + timeUnit;;
+        var targetUrl = MESSAGE_PAGE_URL + "?" + PARAM_ID + "=" + id;
         parent.window.location = targetUrl;
     });
 
