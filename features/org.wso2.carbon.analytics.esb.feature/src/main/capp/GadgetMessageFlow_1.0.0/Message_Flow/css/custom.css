@@ -64,6 +64,7 @@ text {
 .edgePath path {
     stroke: #5FDBCC;
     stroke-width: 2px;
+    fill: transparent;
 }
 
 .edgePath .arrowhead {

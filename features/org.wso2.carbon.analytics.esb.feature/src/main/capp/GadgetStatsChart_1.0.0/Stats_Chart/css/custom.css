@@ -37,3 +37,7 @@
 .stats-breakdown > :first-child {
     margin-bottom: 10px;
 }
+
+svg.marks .mark-group .background {
+    fill: transparent !important;
+}
