@@ -385,40 +385,9 @@
             }
             case TYPE_PROXY_MESSAGES:
             {
-                var result = [];
                 var proxyName = request.getParameter("id");
                 var tableName = "ESB-EVENT";
-                var query = stringify({
-                                      "query": "componentType : \"Proxy Service\" AND _componentName : \"" + proxyName + "\" AND startTime : [" + timeFrom + " TO " + timeTo + "]",
-                                      "start": 0,
-                                      "count": 100
-                                  });
-                var resp = connector.search(loggedInUser, tableName, query);
-                var dataPoints = JSON.parse(resp.getMessage());
-                var columns = ["messageFlowId", "transportPropertyMap","faultCount","startTime","host"];
-                for (i = 0 ; i < dataPoints.length ; i++) {
-                    var temp = {};
-                    for (j = 0 ; j < columns.length ; j++) {
-                        var column = columns[j];
-                        var value = dataPoints[i]["values"][column];
-                        if (column == "transportPropertyMap" || column == "contextPropertyMap") {
-                            temp[column] = stringify(value["map"]);
-                        } else if (column == "faultCount") {
-                            // Add message status
-                            if (value > 0) {
-                                temp["status"] = "Failed";
-                            } else {
-                                temp["status"] = "Success";
-                            }   
-                        }  else if (column == "startTime") {
-                            var date = new Date(value);
-                            temp[column] = date.toLocaleString();
-                        } else {
-                            temp[column] = value;
-                        }
-                    }
-                    result.push(temp);
-                }
+                var result = getComponentMessages(connector, loggedInUser, proxyName, "Proxy Service", null, "ESB-EVENT");
                 break;
             }
             case TYPE_API_NAMES:
@@ -449,42 +418,9 @@
             }
             case TYPE_API_MESSAGES:
             {
-                result = [];
                 var apiName = request.getParameter("id");
                 var tableName = "ESB-EVENT";
-                query = stringify({
-                                      "query": "componentType : API AND _componentName : \"" + apiName + "\" AND startTime : [" + timeFrom + " TO " + timeTo + "]",
-                                      "start": 0,
-                                      "count": 100
-                                  });
-                var resp = connector.search(loggedInUser, tableName, query);
-                var dataPoints = JSON.parse(resp.getMessage());
-
-                var columns = ["messageFlowId", "transportPropertyMap","faultCount","startTime","host"];
-                for (i = 0 ; i < dataPoints.length ; i++) {
-                    var temp = {};
-                    for (j = 0 ; j < columns.length ; j++) {
-                        var column = columns[j];
-                        var value = dataPoints[i]["values"][column];
-                        if (column == "transportPropertyMap" || column == "contextPropertyMap") {
-                            temp[column] = stringify(value["map"]);
-                        } else if (column == "faultCount") {
-                            // Add message status
-                            if (value > 0) {
-                                temp["status"] = "Failed";
-                            } else {
-                                temp["status"] = "Success";
-                            }   
-                        }  else if (column == "startTime") {
-                            var date = new Date(value);
-                            temp[column] = date.toLocaleString();
-                        } else {
-                            temp[column] = value;
-                        }
-                    }
-                    result.push(temp);
-                }
-                break;
+                var result = getComponentMessages(connector, loggedInUser, apiName, "API", null, "ESB-EVENT");
             }
             case TYPE_MEDIATOR_NAMES:
             {
@@ -712,7 +648,7 @@
                 var entryPoint = request.getParameter("entryPoint");
                 var timeUnit = timeRangeUtil.getSuitableTimeRangeUnit(timeFrom, timeTo);
                 var tableName = "ESB-STAT-PER-" + timeUnit;
-                result = getMessageRate(connector, loggedInUser, timeFrom, timeTo, tableName, componentName, entryPoint);
+                var result = getMessageRate(connector, loggedInUser, timeFrom, timeTo, tableName, componentName, entryPoint);
                 break;
             }
             case TYPE_ENDPOINT_LATENCY:
@@ -721,56 +657,15 @@
                 var tableName = "ESB-STAT-PER-" + timeUnit;
                 var componentName = request.getParameter("id");
                 var entryPoint = request.getParameter("entryPoint");
-                result = getLatency(connector, loggedInUser, timeFrom, timeTo, tableName, componentName, entryPoint);
+                var result = getLatency(connector, loggedInUser, timeFrom, timeTo, tableName, componentName, entryPoint);
                 break;
             }
             case TYPE_ENDPOINT_MESSAGES:
             {
-                var result = [];
                 var endpointName = request.getParameter("id");
                 var entryPoint = request.getParameter("entryPoint");
                 var tableName = "ESB-EVENT";
-
-                if (entryPoint != null && entryPoint != "undefined") {
-                    var query = stringify({
-                                      "query": "entryPoint : " + entryPoint + " AND componentType : \"Endpoint\" AND _componentName : \"" + endpointName + "\" AND startTime : [" + timeFrom + " TO " + timeTo + "]",
-                                      "start": 0,
-                                      "count": 100
-                                  });
-                } else {
-                    var query = stringify({
-                                      "query": "componentType : \"Endpoint\" AND _componentName : \"" + endpointName + "\" AND startTime : [" + timeFrom + " TO " + timeTo + "]",
-                                      "start": 0,
-                                      "count": 100
-                                  });
-                }
-                
-                var resp = connector.search(loggedInUser, tableName, query);
-                var dataPoints = JSON.parse(resp.getMessage());
-                var columns = ["messageFlowId", "faultCount","startTime","host"];
-                for (i = 0 ; i < dataPoints.length ; i++) {
-                    var temp = {};
-                    for (j = 0 ; j < columns.length ; j++) {
-                        var column = columns[j];
-                        var value = dataPoints[i]["values"][column];
-                        if (value != null && (column == "transportPropertyMap" || column == "contextPropertyMap")) {
-                            temp[column] = stringify(value["map"]);
-                        } else if (column == "faultCount") {
-                            // Add message status
-                            if (value > 0) {
-                                temp["status"] = "Failed";
-                            } else {
-                                temp["status"] = "Success";
-                            }   
-                        }  else if (column == "startTime") {
-                            var date = new Date(value);
-                            temp[column] = date.toLocaleString();
-                        } else {
-                            temp[column] = value;
-                        }
-                    }
-                    result.push(temp);
-                }
+                var result = getComponentMessages(connector, loggedInUser, endpointName, "Endpoint", entryPoint, "ESB-EVENT");
                 break;
             }
             case TYPE_SEQUENCE_NAMES:
@@ -802,55 +697,15 @@
                 var tableName = "MEDIATOR-STAT-PER-" + timeUnit;
                 var componentName = request.getParameter("id");
                 var entryPoint = request.getParameter("entryPoint");
-                result = getLatency(connector, loggedInUser, timeFrom, timeTo, tableName, componentName, entryPoint);
+                var result = getLatency(connector, loggedInUser, timeFrom, timeTo, tableName, componentName, entryPoint);
                 break;
             }
             case TYPE_SEQUENCE_MESSAGES:
             {
-                var result = [];
                 var sequenceName = request.getParameter("id");
                 var entryPoint = request.getParameter("entryPoint");
                 var tableName = "ESB-EVENT";
-                if (entryPoint != null && entryPoint != "undefined") {
-                    var query = stringify({
-                                      "query": "entryPoint : " + entryPoint + " AND componentType : \"Sequence\" AND _componentName : \"" + sequenceName + "\" AND startTime : [" + timeFrom + " TO " + timeTo + "]",
-                                      "start": 0,
-                                      "count": 100
-                                  });
-                } else {
-                    var query = stringify({
-                                      "query": "componentType : \"Sequence\" AND _componentName : \"" + sequenceName + "\" AND startTime : [" + timeFrom + " TO " + timeTo + "]",
-                                      "start": 0,
-                                      "count": 100
-                                  });
-                }
-                
-                var resp = connector.search(loggedInUser, tableName, query);
-                var dataPoints = JSON.parse(resp.getMessage());
-                var columns = ["messageFlowId", "faultCount","startTime","host"];
-                for (i = 0 ; i < dataPoints.length ; i++) {
-                    var temp = {};
-                    for (j = 0 ; j < columns.length ; j++) {
-                        var column = columns[j];
-                        var value = dataPoints[i]["values"][column];
-                        if (value != null && (column == "transportPropertyMap" || column == "contextPropertyMap")) {
-                            temp[column] = stringify(value["map"]);
-                        } else if (column == "faultCount") {
-                            // Add message status
-                            if (value > 0) {
-                                temp["status"] = "Failed";
-                            } else {
-                                temp["status"] = "Success";
-                            }   
-                        }  else if (column == "startTime") {
-                            var date = new Date(value);
-                            temp[column] = date.toLocaleString();
-                        } else {
-                            temp[column] = value;
-                        }
-                    }
-                    result.push(temp);
-                }
+                var result = getComponentMessages(connector, loggedInUser, sequenceName, "Sequence", entryPoint, "ESB-EVENT");
                 break;
             }
             case TYPE_SEQUENCE_MESSAGE_FLOW:
@@ -1021,50 +876,10 @@
             }
             case TYPE_INBOUND_ENDPOINT_MESSAGES:
             {
-                var result = [];
                 var inboundEndpointName = request.getParameter("id");
                 var entryPoint = request.getParameter("entryPoint");
                 var tableName = "ESB-EVENT";
-                if (entryPoint != null && entryPoint != "undefined") {
-                    var query = stringify({
-                                      "query": "entryPoint : " + entryPoint + " AND componentType : \"Inbound EndPoint\" AND _componentName : \"" + inboundEndpointName + "\" AND startTime : [" + timeFrom + " TO " + timeTo + "]",
-                                      "start": 0,
-                                      "count": 100
-                                  });
-                } else {
-                    var query = stringify({
-                                      "query": "componentType : \"Inbound EndPoint\" AND _componentName : \"" + inboundEndpointName + "\" AND startTime : [" + timeFrom + " TO " + timeTo + "]",
-                                      "start": 0,
-                                      "count": 100
-                                  });
-                }
-                
-                var resp = connector.search(loggedInUser, tableName, query);
-                var dataPoints = JSON.parse(resp.getMessage());
-                var columns = ["messageFlowId", "faultCount","startTime","host"];
-                for (i = 0 ; i < dataPoints.length ; i++) {
-                    var temp = {};
-                    for (j = 0 ; j < columns.length ; j++) {
-                        var column = columns[j];
-                        var value = dataPoints[i]["values"][column];
-                        if (value != null && (column == "transportPropertyMap" || column == "contextPropertyMap")) {
-                            temp[column] = stringify(value["map"]);
-                        } else if (column == "faultCount") {
-                            // Add message status
-                            if (value > 0) {
-                                temp["status"] = "Failed";
-                            } else {
-                                temp["status"] = "Success";
-                            }   
-                        }  else if (column == "startTime") {
-                            var date = new Date(value);
-                            temp[column] = date.toLocaleString();
-                        } else {
-                            temp[column] = value;
-                        }
-                    }
-                    result.push(temp);
-                }
+                var result = getComponentMessages(connector, loggedInUser, inboundEndpointName, "Inbound EndPoint", entryPoint, "ESB-EVENT");
                 break;
             }
             case TYPE_INBOUND_ENDPOINT_MESSAGE_FLOW:
@@ -1496,4 +1311,56 @@ function getStats(connector, loggedInUser, componentName, entryPoint, timeRanges
     result = {total: totalInvocation, failed: totalFault};
     return result;
 };
+
+function getComponentMessages(connector, loggedInUser, componentName, componentType, entryPoint, tableName) {
+    var result = [];
+    var timeFrom = request.getParameter("timeFrom");
+    var timeTo = request.getParameter("timeTo");
+    var tableName = "ESB-EVENT";
+    var messageCount = 100;
+
+    if (entryPoint == null || entryPoint == "undefined") {
+        var query = stringify({
+            "query": "componentType : \"" + componentType + "\" AND _componentName : \"" + componentName + "\" AND startTime : [" + timeFrom + " TO " + timeTo + "]",
+            "start": 0,
+            "count": messageCount
+        });
+    } else {
+        var query = stringify({
+            "query": "entryPoint : " + entryPoint + " AND componentType : \"" + componentType + "\" AND _componentName : \"" + componentName + "\" AND startTime : [" + timeFrom + " TO " + timeTo + "]",
+            "start": 0,
+            "count": messageCount
+        });
+    } 
+    log.info(query);
+    var resp = connector.search(loggedInUser, tableName, query);
+    var dataPoints = JSON.parse(resp.getMessage());
+    log.info(dataPoints);
+    var columns = ["messageFlowId", "faultCount","startTime","host"];
+    for (i = 0 ; i < dataPoints.length ; i++) {
+        var temp = {};
+        for (j = 0 ; j < columns.length ; j++) {
+            var column = columns[j];
+            var value = dataPoints[i]["values"][column];
+            if (column == "transportPropertyMap" || column == "contextPropertyMap") {
+                temp[column] = stringify(value["map"]);
+            } else if (column == "faultCount") {
+                // Add message status
+                if (value > 0) {
+                    temp["status"] = "Failed";
+                } else {
+                    temp["status"] = "Success";
+                }   
+            }  else if (column == "startTime") {
+                var date = new Date(value);
+                temp[column] = date.toLocaleString();
+            } else {
+                temp[column] = value;
+            }
+        }
+        result.push(temp);
+    }
+    return result;
+};
+
 %>
