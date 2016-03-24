@@ -55,5 +55,5 @@
 
         INCREMENTAL_TABLE_COMMIT mediatorStatPerHour;
     </Script>
-    <CronExpression>31 4/14 * * * ?</CronExpression>
+    <CronExpression>25 1/3 * * * ?</CronExpression>
 </Analytics>
