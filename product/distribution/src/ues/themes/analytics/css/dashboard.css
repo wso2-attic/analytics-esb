@@ -313,7 +313,8 @@ ul.sidebar-messages > li:last-child {
 }
 
 .dashboard.dark .tt-menu {
-    background: #E3E5E6;
+    background-color: #1E2531;
+    color: #fff;;
 }
 
 .ues-component-settings-handle {

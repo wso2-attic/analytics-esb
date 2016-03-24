@@ -19,7 +19,7 @@
  */
 
 var CONTEXT = "/portal/apis/esbanalytics";
-var DASHBOARD_NAME = "esb-analytics";
+var DASHBOARD_NAME = parent.ues.global.dashboard.id; //"esb-analytics"
 var BASE_URL = "/portal/dashboards/" + DASHBOARD_NAME + "/";
 
 var TYPE_LANDING = "landing";
