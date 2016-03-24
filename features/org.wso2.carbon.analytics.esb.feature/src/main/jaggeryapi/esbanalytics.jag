@@ -267,7 +267,7 @@
                     var searchParams = [];
                     var aggregateFields = [];
                     aggregateFields.push({fields: ["totalDuration"], aggregate: "SUM", alias: "TotalDuration"});
-                    aggregateFields.push({fields: ["totalDuration"], aggregate: "MAX", alias: "MaxDuration"});
+                    aggregateFields.push({fields: ["maxDuration"], aggregate: "MAX", alias: "MaxDuration"});
                     aggregateFields.push({fields: ["noOfInvocation"], aggregate: "SUM", alias: "Invocations"});
                     aggregateFields.push({fields: ["faultCount"], aggregate: "SUM", alias: "Faults"});
                     aggregateFields.push({fields: ["entryPoint"], aggregate: "FIRST", alias: "entryPoint"});
@@ -882,7 +882,7 @@
                     var searchParams = [];
                     var aggregateFields = [];
                     aggregateFields.push({fields: ["totalDuration"], aggregate: "SUM", alias: "TotalDuration"});
-                    aggregateFields.push({fields: ["totalDuration"], aggregate: "MAX", alias: "MaxDuration"});
+                    aggregateFields.push({fields: ["maxDuration"], aggregate: "MAX", alias: "MaxDuration"});
                     aggregateFields.push({fields: ["noOfInvocation"], aggregate: "SUM", alias: "Invocations"});
                     aggregateFields.push({fields: ["faultCount"], aggregate: "SUM", alias: "Faults"});
                     aggregateFields.push({fields: ["entryPoint"], aggregate: "FIRST", alias: "entryPoint"});
