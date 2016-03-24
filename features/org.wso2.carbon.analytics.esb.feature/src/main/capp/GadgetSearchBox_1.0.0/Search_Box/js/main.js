@@ -22,27 +22,36 @@ $(function() {
         $('.typeahead').typeahead({
             hint: true,
             highlight: true,
-            minLength: 1
+            minLength: 0
         }, {
             name: 'proxyName',
             source: substringMatcher(response.message)
-        });
+        }).on('typeahead:rendered', function() {
+            var typeAhead = $('.tt-menu'),
+                parentWindow = window.parent.document,
+                thisParentWrapper = $('#' + gadgets.rpc.RPC_ID, parentWindow).closest('.gadget-body');
+
+            $('head', parentWindow).append('<link rel="stylesheet" type="text/css" href="'+resolveURI+'store/carbon.super/gadget/Search_Box/css/autocomplete.css" />');
+            $('body', parentWindow).append('<script src="'+resolveURI+'store/carbon.super/gadget/Search_Box/js/typeahead.bundle.js" type="text/javascript"></script>');
+            //console.log(typeAhead);
+            $(thisParentWrapper).append(typeAhead);
+            $(thisParentWrapper).closest('.ues-component-box').addClass('widget form-control-widget');
+            $('body').addClass('widget');
+        }).on('typeahead:selected', function(evt, item) {
+            var href = parent.window.location.href;
+            if(qs[PARAM_ID]) {
+                href = href.replace(/(id=)[^\&]+/, '$1' + item);
+            } else {
+                href = href + "?" + PARAM_ID + "=" + item;
+            }
+            // console.log(href); 
+            parent.window.location = href;
+        }).focus().blur();
     }
 
     function onError(error) {
 
     }
-
-    $('.typeahead').on('typeahead:selected', function(evt, item) {
-        var href = parent.window.location.href;
-        if(qs[PARAM_ID]) {
-            href = href.replace(/(id=)[^\&]+/, '$1' + item);
-        } else {
-            href = href + "?" + PARAM_ID + "=" + item;
-        }
-        // console.log(href); 
-        parent.window.location = href;
-    });
 
     var substringMatcher = function(strs) {
         return function findMatches(q, cb) {
@@ -66,17 +75,4 @@ $(function() {
         };
     };
 
-});
-
-$(window).load(function() {
-    var typeAhead = $('.tt-menu'),
-        parentWindow = window.parent.document,
-        thisParentWrapper = $('#' + gadgets.rpc.RPC_ID, parentWindow).closest('.gadget-body');
-    
-    $('head', parentWindow).append('<link rel="stylesheet" type="text/css" href="'+resolveURI+'store/carbon.super/gadget/Search_Box/css/autocomplete.css" />');
-    $('body', parentWindow).append('<script src="'+resolveURI+'store/carbon.super/gadget/Search_Box/js/typeahead.bundle.js" type="text/javascript"></script>');
-    //console.log(typeAhead);
-    $(thisParentWrapper).append(typeAhead);
-    $(thisParentWrapper).closest('.ues-component-box').addClass('widget form-control-widget');
-    $('body').addClass('widget');
 });

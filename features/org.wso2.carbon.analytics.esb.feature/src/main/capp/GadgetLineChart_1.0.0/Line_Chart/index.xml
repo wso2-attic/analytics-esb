@@ -29,6 +29,7 @@
           <script src="/portal/extensions/themes/analytics/js/VizGrammarSettings.js"></script>
 
           <!-- Custom -->
+          <link rel="stylesheet" type="text/css" href="css/custom.css" />
           <script src="js/gadgetconf.js"></script>
           <script src="js/main.js"></script>
 

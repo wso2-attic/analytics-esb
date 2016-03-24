@@ -180,7 +180,7 @@
 }
 
 .daterangepicker td.in-range {
-  background: #ebf4f8;
+  background: #F9F9F9;
   border-radius: 0;
 }
 
@@ -406,7 +406,7 @@
   }
 }
 
-.btn-group > .btn-label {
+body.dark .btn-group > .btn-label {
     color: #fff;
 }
 

@@ -93,9 +93,9 @@ function onData(response) {
             tooltip: { "enabled": false },
             legend: false,
             percentage: true,
-            colorScale: ["steelblue", "#80ccff"],
+            colorScale: ["#5CB85C", "#121822"],
             width: 400,
-            height: 400
+            height: 250
         }
 
         var configF = {
@@ -104,9 +104,9 @@ function onData(response) {
             tooltip: { "enabled": false },
             legend: false,
             percentage: true,
-            colorScale: ["#b30000", "#ffb3b3"],
+            colorScale: ["#D9534F", "#121822"],
             width: 400,
-            height: 400
+            height: 250
         }
         var chartT = new vizg(dataT, configT);
         chartT.draw("#dChartTrue");
