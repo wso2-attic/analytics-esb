@@ -10,6 +10,14 @@ body.dashboard.dark {
     border: 1px solid #ccc;
 }
 
+body.dashboard .body-wrapper {
+    height: calc(100% - 50px);
+}
+
+body.dashboard .body-wrapper > .nano.has-scrollbar > .nano-content {
+    right: -34px !important;
+}
+
 .dashboard .btn-default.active,
 .dashboard .btn-default.active:focus {
     background-color: #29313E;
@@ -146,6 +154,10 @@ body.dashboard.dark {
 .sidebar-nav {
     background: #29313e;
     color: #e3e5e6;
+}
+
+.dashbaord .sidebar-nav {
+    height: calc(100% - 40px);
 }
 
 .dashboard.dark .sidebar-nav {
@@ -313,8 +325,17 @@ ul.sidebar-messages > li:last-child {
 }
 
 .dashboard.dark .tt-menu {
-    background-color: #1E2531;
-    color: #fff;;
+    background-color: #353C48;
+    border: 1px solid #6B7992;
+    color: #fff;
+}
+
+.dashboard.dark .tt-suggestion.tt-selectable:hover {
+    background: #121822;
+}
+
+.dashboard.dark .nano > .nano-pane > .nano-slider {
+    background: #E3E5E6;
 }
 
 .ues-component-settings-handle {

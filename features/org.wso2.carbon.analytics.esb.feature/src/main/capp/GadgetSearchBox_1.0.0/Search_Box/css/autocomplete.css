@@ -13,12 +13,11 @@
 }
 
 .tt-menu {
-    padding: 8px;
-    background-color: #1E2531;
-    color: #fff;
+    background-color: #fff;
+    color: #1E2531;
     margin: 5px 0;
     outline: 0;
-    border: 1px solid rgba(0,0,0,.15);
+    border: 1px solid #ccc;
     right: 0;
     left: 0;
 }
@@ -32,4 +31,13 @@
 .ues-component-box.widget .gadget-body .tt-menu {
     margin-left: 15px;
     margin-right: 15px;
+}
+
+.tt-suggestion {
+    padding: 2px 8px;
+}
+
+.tt-suggestion.tt-selectable:hover {
+    background: #ccc;
+    cursor: pointer;
 }

@@ -155,6 +155,18 @@ body.dark .message {
     color: #E3E5E6;
 }
 
+#canvas-tooltip {
+    background: #c4c4c4 !important;
+    color: #000;
+    opacity: 0.9;
+    font-size: 12px;
+}
+
+body.dark #canvas-tooltip {
+    background: #000 !important;
+    color: #fff;
+}
+
 /* DataTables issue fixing */
 
 .dataTables_filter, .dataTables_toolbar, .dataTables_length, .dataTables_info {
