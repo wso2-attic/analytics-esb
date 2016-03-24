@@ -16,6 +16,7 @@
         STRING, afterPayload STRING, contextPropertyMap STRING, transportPropertyMap STRING, children STRING,
         entryPoint FACET -i, entryPointHashcode FACET -i, faultCount INT, _timestamp LONG -i",
         primaryKeys "messageFlowId, componentId, componentType, componentIndex",
+        incrementalProcessing "esbEvent, 60, 2",
         mergeSchema "false");
 
         INSERT INTO TABLE esbEvent
@@ -53,7 +54,7 @@
         WHERE temp.componentType = "Proxy Service" OR temp.componentType = "API" OR temp.componentType = "Endpoint" OR
         temp.componentType = "Inbound EndPoint"
         GROUP BY temp.year, temp.month, temp.day, temp.hour, temp.minute, temp.second, temp.componentId,
-        temp.hashCode, temp.componentName, temp.componentType, temp.entryPoint, temp.entryPointHashcode) result;
+        temp.componentName, temp.componentType, temp.entryPoint, temp.hashCode, temp.entryPointHashcode) result;
 
         CREATE TEMPORARY TABLE mediatorStatPerSecond USING CarbonAnalytics
         OPTIONS (tableName "mediator-stat-per-second",
@@ -80,6 +81,8 @@
         GROUP BY temp.year, temp.month, temp.day, temp.hour, temp.minute, temp.second, temp.entryPoint,
         temp.entryPointHashcode, temp.componentIndex, temp.componentId, temp.hashCode, temp.componentName,
         temp.componentType;
+
+        INCREMENTAL_TABLE_COMMIT esbEvent;
     </Script>
     <CronExpression>5 0/1 * * * ?</CronExpression>
 </Analytics>

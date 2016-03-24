@@ -44,10 +44,14 @@ function onData(response) {
         var data = response.message;
         var total = data.total;
         var failed = data.failed;
-
         if(total <= 1) {
-            $('#canvas').html(gadgetUtil.getEmptyRecordsText());
+            $('#gadget-messge').html(gadgetUtil.getEmptyRecordsText());
+            $('#gadget-messge').show();
+            $('#stats').hide();
             return;
+        } else{
+            $('#gadget-messge').hide();
+            $('#stats').show();
         }
 
         var success = total - failed;
@@ -59,7 +63,6 @@ function onData(response) {
         $("#failedPercent").html(parseFloat(failedPct).toFixed(2));
         $("#successCount").html(success);
         $("#successPercent").html(parseFloat(successPct).toFixed(2));
-
 
         //draw donuts
         var dataT = [{

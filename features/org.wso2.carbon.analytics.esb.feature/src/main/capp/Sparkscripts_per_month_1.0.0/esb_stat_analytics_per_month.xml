@@ -3,7 +3,8 @@
     <Name>esb_stat_analytics_per_month</Name>
     <Script>
         CREATE TEMPORARY TABLE esbServiceStatPerDay USING CarbonAnalytics
-        OPTIONS (tableName "ESB-Stat-per-Day");
+        OPTIONS (tableName "ESB-Stat-per-Day",
+        incrementalProcessing "esbServiceStatPerDay, 2678400");
 
         CREATE TEMPORARY TABLE esbServiceStatPerMonth USING CarbonAnalytics
         OPTIONS (tableName "ESB-Stat-per-Month",
@@ -22,10 +23,13 @@
         cast(getMonthStartingTime(year, month) as STRING) as facetStartTime, entryPoint, entryPointHashcode,
         getMonthStartingTime(year, month) as _timestamp
         FROM esbServiceStatPerDay
-        GROUP BY year, month, componentId, hashCode, componentName, componentType, entryPoint, entryPointHashcode;
+        GROUP BY year, month, componentId, componentName, componentType, entryPoint, hashCode, entryPointHashcode;
+
+        INCREMENTAL_TABLE_COMMIT esbServiceStatPerDay;
 
         CREATE TEMPORARY TABLE mediatorStatPerDay USING CarbonAnalytics
-        OPTIONS (tableName "mediator-stat-per-day");
+        OPTIONS (tableName "mediator-stat-per-day",
+        incrementalProcessing "mediatorStatPerDay, 2678400");
 
         CREATE TEMPORARY TABLE mediatorStatPerMonth USING CarbonAnalytics
         OPTIONS (tableName "mediator-stat-per-month",
@@ -46,6 +50,8 @@
         FROM mediatorStatPerDay
         GROUP BY year, month, entryPoint, entryPointHashcode, componentIndex, componentId, hashCode, componentName,
         componentType;
+
+        INCREMENTAL_TABLE_COMMIT mediatorStatPerDay;
     </Script>
-    <CronExpression>22 8/30 * * * ?</CronExpression>
+    <CronExpression>54 1/5 * * * ?</CronExpression>
 </Analytics>
