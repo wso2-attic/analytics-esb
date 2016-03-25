@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Module>
+    <ModulePrefs title="Subscriber" description="Subscriber">
+        <Require feature="pubsub-2"/>
+        <Require feature="dynamic-height"/>
+    </ModulePrefs>
+    <Content type="html">
+        <![CDATA[
+        <head>
+
+          <!-- Theme -->
+          <link rel="stylesheet" type="text/css" href="/portal/libs/bootstrap_3.3.5/css/bootstrap.min.css" />
+          <link rel="stylesheet" type="text/css" href="/portal/libs/font-wso2_1.0.0/css/font-wso2.min.css" />
+          <link rel="stylesheet" type="text/css" href="/portal/libs/theme-wso2_1.0/css/theme-wso2.css" />
+          <link rel="stylesheet" type="text/css" href="/portal/extensions/themes/analytics/css/gadget.css" />
+          
+          <!-- jQuery -->
+          <script src="../commons/js/jquery-1.10.2.js"></script>
+          <script src="../commons/js/moment.min.js"></script>
+          <script src="../commons/js/gadget-utils.js"></script>
+
+          <!-- Custom -->
+          <link rel="stylesheet" type="text/css" href="../commons/css/dataTables.bootstrap.css">
+          <script type="text/javascript" src="../commons/js/jquery.dataTables.min.js"></script>
+          <script src="js/gadgetconf.js"></script>
+          <script src="js/main.js"></script>
+
+        </head>
+        <body>
+           <div id="gadget-message"></div>
+           <div id="props" class="container-fluid" >
+             <div class="row" style="padding:10px">
+
+               <div class="col-6">
+                  <h3>Before</h3></br>
+
+                  <h4>Payload</h4>
+                  <div id="payloadBfr">N/A</div>
+                  <br/>
+
+                  <h4>Transport Properties</h4>
+                  <table id="tblTransportBfr" class="table  table-condensed">
+                    <tbody></tbody>
+                  </table>
+                  <br/>
+
+                  <h4>Context Properties</h4>
+                  <table id="tblCtxtBfr" class="table  table-condensed">
+                    <tbody></tbody>
+                  </table>
+
+               </div>
+
+               <div class="col-6">
+                  <h3>After</h3></br>
+
+                  <h4>Payload</h4>
+                  <div id="payloadAftr">N/A</div>
+                  <br/>
+
+                  <h4>Transport Properties</h4>
+                  <table id="tblTransportAftr" class="table  table-condensed">
+                    <tbody></tbody>
+                  </table>
+                  <br/>
+                  
+                  <h4>Context Properties</h4>
+                  <table id="tblCtxtAftr" class="table  table-condensed">
+                    <tbody></tbody>
+                  </table>
+
+               </div>
+             </div>
+           </div>
+        </body>
+        ]]>
+    </Content>
+</Module>
