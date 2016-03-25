@@ -47,6 +47,10 @@ var INBOUND_ENDPOINT_PAGE_URL = BASE_URL + TYPE_INBOUND_ENDPOINT;
 var MEDIATOR_PAGE_URL = BASE_URL + TYPE_MEDIATOR;
 var MESSAGE_PAGE_URL = BASE_URL + TYPE_MESSAGE;
 
+var COLOR_BLUE = "#438CAD";
+var COLOR_RED = "#D9534F";
+var COLOR_GREEN = "#5CB85C";
+
 function GadgetUtil() {
     var DEFAULT_START_TIME = new Date(moment().subtract(29, 'days')).getTime();
     var DEFAULT_END_TIME = new Date(moment()).getTime();

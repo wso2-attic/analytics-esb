@@ -56,7 +56,7 @@ function onData(data) {
             charts: [{ type: "bar", y: "requests", orientation: "left" }],
             width: $('body').width(),
             height: $('body').height(),
-            padding: { "top": 10, "left": 140, "bottom": 40, "right": 50 }
+            colorScale: [COLOR_BLUE]
         };
 
         data.message.forEach(function(row, i) {

@@ -12,7 +12,9 @@ var charts = [{
         x: "Time",
         charts: [{ type: "line", y: "TPS" }],
         padding: { "top": 10, "left": 50, "bottom": 40, "right": 30 },
-        range: true
+        range: true,
+        rangeColor: COLOR_BLUE,
+        colorScale: [COLOR_BLUE]
     },
     types: [
         { name: TYPE_LANDING, type: 1 }
@@ -45,7 +47,10 @@ var charts = [{
         x: "Time",
         charts: [{ type: "line", y: "Count", color: "Status" }],
         padding: { "top": 10, "left": 80, "bottom": 40, "right": 100 },
-        range: true
+        range: true,
+        rangeColor: COLOR_BLUE,
+        colorScale: [COLOR_RED,COLOR_GREEN],
+        colorDomain: ["SUCCESS","FAULT"]
     },
     types: [
         { name: TYPE_LANDING, type: 2 },
