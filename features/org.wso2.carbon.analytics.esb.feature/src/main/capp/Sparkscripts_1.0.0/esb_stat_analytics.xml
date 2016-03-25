@@ -59,11 +59,17 @@
         temp.componentName, temp.componentType, temp.entryPoint) result;
 
         CREATE TEMPORARY TABLE esbServiceStatPerSecondAll USING CarbonAnalytics
-        OPTIONS (tableName "ESB-Stat-per-Second");
+        OPTIONS (tableName "ESB-Stat-per-Second",
+        schema "year INT -i, month INT -i, day INT -i, hour INT -I, minute INT -i, second INT -i, componentId FACET -i,
+        componentName FACET -i, componentType FACET -i, totalDuration LONG, minDuration INT, maxDuration INT,
+        noOfInvocation LONG -sp, faultCount INT, startingTime LONG -i, facetStartTime FACET -i, entryPoint FACET -i,
+        _timestamp LONG -i",
+        primaryKeys "year, month, day, hour, minute, second, componentId, componentType",
+        mergeSchema "false");
 
         INSERT INTO TABLE esbServiceStatPerSecondAll
         SELECT year, month, day, hour, minute, second, "ALL", "ALL", "ALL", totalDuration, minDuration, maxDuration,
-        noOfInvocation, totalFault, startingTime, facetStartTime, _timestamp
+        noOfInvocation, totalFault, startingTime, facetStartTime, "ALL", _timestamp
         FROM
         (SELECT year, month, day, hour, minute, second, sum(totalDuration) as totalDuration,
         min(minDuration) as minDuration, max(maxDuration) as maxDuration, sum(noOfInvocation) as noOfInvocation,
@@ -72,8 +78,7 @@
         cast(getSecondStartingTime(year, month, day, hour, minute, second) as STRING) as facetStartTime,
         getSecondStartingTime(year, month, day, hour, minute, second) as _timestamp
         FROM esbServiceStatPerSecond
-        WHERE componentType = "Proxy Service" OR componentType = "API" OR componentType = "Endpoint" OR
-        componentType = "Inbound EndPoint"
+        WHERE componentType = "Proxy Service" OR componentType = "API" OR componentType = "Inbound EndPoint"
         GROUP BY
         year, month, day, hour, minute, second) temp;
 
@@ -129,11 +134,17 @@
         year, month, day, hour, minute, componentId, componentName, componentType, entryPoint;
 
         CREATE TEMPORARY TABLE esbServiceStatPerMinuteAll USING CarbonAnalytics
-        OPTIONS (tableName "ESB-Stat-per-Minute");
+        OPTIONS (tableName "ESB-Stat-per-Minute",
+        schema "year INT -i, month INT -i, day INT -i, hour INT -i, minute INT -i, componentId FACET -i,
+        componentName FACET -i, componentType FACET -i, totalDuration LONG, minDuration INT,
+        maxDuration INT, noOfInvocation LONG -sp, faultCount INT, startingTime LONG -i, facetStartTime FACET -i,
+        entryPoint FACET -i, _timestamp LONG -i",
+        primaryKeys "year, month, day, hour, minute, componentId, componentType",
+        mergeSchema "false");
 
         INSERT INTO TABLE esbServiceStatPerMinuteAll
         SELECT year, month, day, hour, minute, "ALL", "ALL", "ALL", totalDuration, minDuration, maxDuration,
-        noOfInvocation, totalFault, startingTime, facetStartTime, _timestamp
+        noOfInvocation, totalFault, startingTime, facetStartTime, "ALL", _timestamp
         FROM
         (SELECT year, month, day, hour, minute, sum(totalDuration) as totalDuration, min(minDuration) as minDuration,
         max(maxDuration) as maxDuration, sum(noOfInvocation) as noOfInvocation, sum(faultCount) as totalFault,
@@ -141,8 +152,7 @@
         cast(getMinuteStartingTime(year, month, day, hour, minute) as STRING) as facetStartTime,
         getMinuteStartingTime(year, month, day, hour, minute) as _timestamp
         FROM esbServiceStatPerMinute
-        WHERE componentType = "Proxy Service" OR componentType = "API" OR componentType = "Endpoint" OR
-        componentType = "Inbound EndPoint"
+        WHERE componentType = "Proxy Service" OR componentType = "API" OR componentType = "Inbound EndPoint"
         GROUP BY
         year, month, day, hour, minute) temp;
 
@@ -193,11 +203,17 @@
         year, month, day, hour, componentId, componentName, componentType, entryPoint;
 
         CREATE TEMPORARY TABLE esbServiceStatPerHourAll USING CarbonAnalytics
-        OPTIONS (tableName "ESB-Stat-per-Hour");
+        OPTIONS (tableName "ESB-Stat-per-Hour",
+        schema "year INT -i, month INT -i, day INT -i, hour INT -I, componentId FACET -i,
+        componentName FACET -i, componentType FACET -i, totalDuration LONG, minDuration INT, maxDuration INT,
+        noOfInvocation LONG -sp, faultCount INT, startingTime LONG -i, facetStartTime FACET -i, entryPoint FACET -i,
+        _timestamp LONG -i",
+        primaryKeys "year, month, day, hour, componentId, componentType",
+        mergeSchema "false");
 
         INSERT INTO TABLE esbServiceStatPerHourAll
         SELECT year, month, day, hour, "ALL", "ALL", "ALL", totalDuration, minDuration, maxDuration,
-        noOfInvocation, totalFault, startingTime, facetStartTime, _timestamp
+        noOfInvocation, totalFault, startingTime, facetStartTime, "ALL", _timestamp
         FROM
         (SELECT year, month, day, hour, sum(totalDuration) as totalDuration, min(minDuration) as minDuration,
         max(maxDuration) as maxDuration, sum(noOfInvocation) as noOfInvocation, sum(faultCount) as totalFault,
@@ -205,8 +221,7 @@
         cast(getHourStartingTime(year, month, day, hour) as STRING) as facetStartTime,
         getHourStartingTime(year, month, day, hour) as _timestamp
         FROM esbServiceStatPerHour
-        WHERE componentType = "Proxy Service" OR componentType = "API" OR componentType = "Endpoint" OR
-        componentType = "Inbound EndPoint"
+        WHERE componentType = "Proxy Service" OR componentType = "API" OR componentType = "Inbound EndPoint"
         GROUP BY
         year, month, day, hour) temp;
 
@@ -258,11 +273,16 @@
         GROUP BY year, month, day, componentId, componentName, componentType, entryPoint;
 
         CREATE TEMPORARY TABLE esbServiceStatPerDayAll USING CarbonAnalytics
-        OPTIONS (tableName "ESB-Stat-per-Day");
+        OPTIONS (tableName "ESB-Stat-per-Day",
+        schema "year INT -i, month INT -i, day INT -i, componentId FACET -i, componentName FACET -i,
+        componentType FACET -i, totalDuration LONG, minDuration INT, maxDuration INT, noOfInvocation LONG -sp,
+        faultCount INT, startingTime LONG -i, facetStartTime FACET -i, entryPoint FACET -i, _timestamp LONG -i",
+        primaryKeys "year, month, day, componentId, componentType",
+        mergeSchema "false");
 
         INSERT INTO TABLE esbServiceStatPerDayAll
         SELECT year, month, day, "ALL", "ALL", "ALL", totalDuration, minDuration, maxDuration,
-        noOfInvocation, totalFault, startingTime, facetStartTime, _timestamp
+        noOfInvocation, totalFault, startingTime, facetStartTime, "ALL", _timestamp
         FROM
         (SELECT year, month, day, sum(totalDuration) as totalDuration, min(minDuration) as minDuration,
         max(maxDuration) as maxDuration, sum(noOfInvocation) as noOfInvocation, sum(faultCount) as totalFault,
@@ -270,8 +290,7 @@
         cast(getDateStartingTime(year, month, day) as STRING) as facetStartTime,
         getDateStartingTime(year, month, day) as _timestamp
         FROM esbServiceStatPerDay
-        WHERE componentType = "Proxy Service" OR componentType = "API" OR componentType = "Endpoint" OR
-        componentType = "Inbound EndPoint"
+        WHERE componentType = "Proxy Service" OR componentType = "API" OR componentType = "Inbound EndPoint"
         GROUP BY
         year, month, day) temp;
 
@@ -319,11 +338,16 @@
         GROUP BY year, month, componentId, componentName, componentType, entryPoint;
 
         CREATE TEMPORARY TABLE esbServiceStatPerMonthAll USING CarbonAnalytics
-        OPTIONS (tableName "ESB-Stat-per-Month");
+        OPTIONS (tableName "ESB-Stat-per-Month",
+        schema "year INT -i, month INT -i, componentId FACET -i, componentName FACET -i,
+        componentType FACET -i, totalDuration LONG, minDuration INT, maxDuration INT, noOfInvocation LONG -sp,
+        faultCount INT, startingTime LONG -i, facetStartTime FACET -i, entryPoint FACET -i, _timestamp LONG -i",
+        primaryKeys "year, month, componentId, componentType",
+        mergeSchema "false");
 
         INSERT INTO TABLE esbServiceStatPerMonthAll
         SELECT year, month, "ALL", "ALL", "ALL", totalDuration, minDuration, maxDuration,
-        noOfInvocation, totalFault, startingTime, facetStartTime, _timestamp
+        noOfInvocation, totalFault, startingTime, facetStartTime, "ALL", _timestamp
         FROM
         (SELECT year, month, sum(totalDuration) as totalDuration, min(minDuration) as minDuration,
         max(maxDuration) as maxDuration, sum(noOfInvocation) as noOfInvocation, sum(faultCount) as totalFault,
@@ -331,8 +355,7 @@
         cast(getMonthStartingTime(year, month) as STRING) as facetStartTime,
         getMonthStartingTime(year, month) as _timestamp
         FROM esbServiceStatPerMonth
-        WHERE componentType = "Proxy Service" OR componentType = "API" OR componentType = "Endpoint" OR
-        componentType = "Inbound EndPoint"
+        WHERE componentType = "Proxy Service" OR componentType = "API" OR componentType = "Inbound EndPoint"
         GROUP BY
         year, month) temp;
 
