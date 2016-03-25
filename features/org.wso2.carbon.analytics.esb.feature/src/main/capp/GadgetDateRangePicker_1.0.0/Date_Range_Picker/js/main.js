@@ -2,8 +2,8 @@ var href = parent.window.location.href,
     hrefLastSegment = href.substr(href.lastIndexOf('/') + 1),
     resolveURI = parent.ues.global.dashboard.id == hrefLastSegment ? '../' : '../../';
 
+var TOPIC = "range-selected";
 $(function() {
-    var TOPIC = "range-selected";
     var dateLabel = $('#reportrange .btn-label');
     //if there are url elemements present, use them. Otherwis use last hour
     var timeFrom = moment().subtract(29, 'days');
@@ -22,8 +22,8 @@ $(function() {
 
     //make the selected time range highlighted
     var timeUnit = qs.timeUnit;
-    
-    if(timeUnit != null) {
+
+    if (timeUnit != null) {
         $("#btnLast" + timeUnit).addClass("active");
     } else {
         $("#btnLastMonth").addClass("active");
@@ -42,15 +42,14 @@ $(function() {
             gadgets.Hub.publish(TOPIC, message);
         }
         count++;
-        if(message.timeUnit && (message.timeUnit == 'Custom')){
+        if (message.timeUnit && (message.timeUnit == 'Custom')) {
             $("#date-select button").removeClass("active");
             $("#reportrange #btnCustomRange").addClass("active");
         }
-        // parent.window.location.hash = "some";
     }
 
     $('#btnCustomRange').daterangepicker({
-        "timePicker" : true,
+        "timePicker": true,
         "autoApply": true,
         "alwaysShowCalendars": true,
         "opens": "left"
@@ -104,10 +103,6 @@ $(function() {
         gadgets.Hub.publish(TOPIC, message);
     });
 
-    function appendToHash(timeFrom,timeTo) {
-        parent.window.location.hash = "#timeFrom=" + timeFrom + "&timeTo=" + timeTo;
-    }
-
 });
 
 gadgets.HubSettings.onConnect = function() {
@@ -117,15 +112,21 @@ gadgets.HubSettings.onConnect = function() {
 };
 
 function onChartZoomed(data) {
-    console.log("#######################"); 
     console.log(data); 
-    // gadgetUtil.fetchData(CONTEXT, {
-    //     type: type,
-    //     id: qs.id,
-    //     timeFrom: data.timeFrom,
-    //     timeTo: data.timeTo,
-    //     entryPoint: qs.entryPoint
-    // }, onData, onError);
+    message = {
+        timeFrom: data.timeFrom,
+        timeTo: data.timeTo,
+        timeUnit: "Custom"
+    };
+    gadgets.Hub.publish(TOPIC, message);
+    var dateLabel = $('#reportrange .btn-label');
+    var start = data.timeFrom;
+    var end = data.timeTo;
+    // dateLabel.html(start.format('MMMM D, YYYY hh:mm A') + ' - ' + end.format('MMMM D, YYYY hh:mm A'));
+    if (data.timeUnit && (data.timeUnit == 'Custom')) {
+        $("#date-select button").removeClass("active");
+        $("#reportrange #btnCustomRange").addClass("active");
+    }
 };
 
 $(window).load(function() {
@@ -133,8 +134,8 @@ $(window).load(function() {
         parentWindow = window.parent.document,
         thisParentWrapper = $('#' + gadgets.rpc.RPC_ID, parentWindow).closest('.gadget-body');
 
-    $('head', parentWindow).append('<link rel="stylesheet" type="text/css" href="'+resolveURI+'store/carbon.super/gadget/Date_Range_Picker/css/daterangepicker.css" />');
-    $('body', parentWindow).append('<script src="'+resolveURI+'store/carbon.super/gadget/Date_Range_Picker/js/daterangepicker.js" type="text/javascript"></script>');
+    $('head', parentWindow).append('<link rel="stylesheet" type="text/css" href="' + resolveURI + 'store/carbon.super/gadget/Date_Range_Picker/css/daterangepicker.css" />');
+    $('body', parentWindow).append('<script src="' + resolveURI + 'store/carbon.super/gadget/Date_Range_Picker/js/daterangepicker.js" type="text/javascript"></script>');
     $(thisParentWrapper).append(datePicker);
     $(thisParentWrapper).closest('.ues-component-box').addClass('widget form-control-widget');
     $('body').addClass('widget');

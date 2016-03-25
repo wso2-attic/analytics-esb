@@ -63,7 +63,7 @@ function onData(response) {
     try {
         var data = response.message;
         console.log(data.length); 
-        if (data.length == 0) {
+        if (data.length <= 0) {
             $("#canvas").html(gadgetUtil.getEmptyRecordsText());
             return;
         }

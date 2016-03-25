@@ -1,32 +1,16 @@
 var TOPIC = "subscriber";
+var PUBLISHER_TOPIC = "chart-zoomed";
 var page = gadgetUtil.getCurrentPageName();
 var qs = gadgetUtil.getQueryString();
 var prefs = new gadgets.Prefs();
 var type;
 var chart = gadgetUtil.getChart(prefs.getString(PARAM_GADGET_ROLE));
+var rangeStart;
+var rangeEnd;
 
 if (chart) {
     type = gadgetUtil.getRequestType(page, chart);
 }
-
-var rangeStart;
-var rangeEnd;
-
-document.body.onmouseup = function() {
-    var div = document.getElementById("dChart");
-    div.innerHTML = "<p> Start : " + rangeStart + "</p>" + "<p> End : " + rangeEnd + "</p>";
-}
-
-var callbackmethod = function(start, end) {
-    rangeStart = start;
-    rangeEnd = end;
-    var message = {
-        timeFrom: new Date(rangeStart).getTime(),
-        timeTo: new Date(rangeEnd).getTime(),
-        timeUnit: "Custom"
-    };
-    gadgets.Hub.publish("chart-zoomed", message);
-};
 
 $(function() {
     if (!chart) {
@@ -85,7 +69,7 @@ function onData(response) {
 
         var vg = new vizg(chart.schema, chart.chartConfig);
         $("#canvas").empty();
-        vg.draw("#canvas",[{type:"range", callback:callbackmethod}]);
+        vg.draw("#canvas",[{type:"range", callback:onRangeSelected}]);
     } catch (e) {
         $('#canvas').html(gadgetUtil.getErrorText(e));
     }
@@ -100,3 +84,19 @@ function onError(msg) {
 //         drawChart();
 //     // }
 // });
+
+document.body.onmouseup = function() {
+    // var div = document.getElementById("dChart");
+    // div.innerHTML = "<p> Start : " + rangeStart + "</p>" + "<p> End : " + rangeEnd + "</p>";
+    var message = {
+        timeFrom: new Date(rangeStart).getTime(),
+        timeTo: new Date(rangeEnd).getTime(),
+        timeUnit: "Custom"
+    };
+    gadgets.Hub.publish(PUBLISHER_TOPIC, message);
+}
+
+var onRangeSelected = function(start, end) {
+    rangeStart = start;
+    rangeEnd = end;
+};
