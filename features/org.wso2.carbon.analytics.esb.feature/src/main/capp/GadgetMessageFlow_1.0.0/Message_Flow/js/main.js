@@ -165,7 +165,8 @@
 
         zoom.translate(translate);
         zoom.scale(zoomScale);
-        zoom.event(isUpdate ? svg.transition().duration(500) : d3.select("svg"));
+        // zoom.event(isUpdate ? svg.transition().duration(500) : d3.select("svg"));
+        zoom.event(svg);
 
     };
 
