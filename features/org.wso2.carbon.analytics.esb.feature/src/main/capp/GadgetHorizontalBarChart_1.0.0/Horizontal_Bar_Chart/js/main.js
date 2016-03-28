@@ -58,7 +58,7 @@ function onData(data) {
             width: $('body').width(),
             height: $('body').height(),
             colorScale: [COLOR_BLUE],
-            padding: { "top": 10, "left": 90, "bottom": 40, "right": 15 },
+            padding: { "top": 30, "left": 60, "bottom": 60, "right": 30 }
         };
 
         data.message.forEach(function(row, i) {
