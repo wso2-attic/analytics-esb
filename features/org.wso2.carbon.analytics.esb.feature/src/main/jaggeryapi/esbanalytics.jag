@@ -654,11 +654,13 @@
             case TYPE_SEQUENCE_NAMES:
             {
                 var result = [];
-                var excludeSequences = ["PROXY_INSEQ", "PROXY_OUTSEQ", "PROXY_FAULTSEQ", "API_OUTSEQ", "API_INSEQ", "API_FAULTSEQ", "AnonymousSequence"];
+                var excludeSequences = ["PROXY_INSEQ", "PROXY_OUTSEQ", "PROXY_FAULTSEQ", "API_OUTSEQ", "API_INSEQ", "API_FAULTSEQ", "AnonymousSequence", "fault"];
                 var allSequences = getComponentNames(connector, loggedInUser, "Sequence");
+
+                log.info(allSequences);
                 // Remove well-known sequences
                 for (key in allSequences) {
-                    var sequenceName = allSequences[key]["name"];
+                    var sequenceName = allSequences[key];
                     if (excludeSequences.indexOf(sequenceName) == -1) {
                         result.push(allSequences[key]);
                     }
