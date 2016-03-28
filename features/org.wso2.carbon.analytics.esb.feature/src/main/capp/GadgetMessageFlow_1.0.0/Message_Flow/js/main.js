@@ -23,6 +23,9 @@
 
         $("body").on("click", ".nodeLabel", function(e) {
             e.preventDefault();
+            if($(this).data("node-type") === "UNKNOWN") {
+                return;
+            }
             if (page.name != TYPE_MESSAGE) {
                 var targetUrl = $(this).data("target-url");
                 parent.window.location = targetUrl;
@@ -191,7 +194,7 @@
             });
         }
         var targetUrl = pageUrl + '?' + hiddenParams;
-        var labelText = '<div class="nodeLabel" data-component-id="' + node.id + '" data-hash-code="'+ hashCode +'" data-target-url="' + targetUrl 
+        var labelText = '<div class="nodeLabel" data-node-type="' + node.type +'" data-component-id="' + node.id + '" data-hash-code="'+ hashCode +'" data-target-url="' + targetUrl 
           + '"><h4><a href="#">' + node.label + "</a></h4>";
 
         if (node.dataAttributes) {
