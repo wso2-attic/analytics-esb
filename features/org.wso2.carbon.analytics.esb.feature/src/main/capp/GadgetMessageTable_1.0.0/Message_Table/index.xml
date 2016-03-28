@@ -21,7 +21,8 @@
 
           <!-- Custom -->
           <link rel="stylesheet" type="text/css" href="../commons/css/dataTables.bootstrap.css">
-          <script type="text/javascript" src="../commons/js/jquery.dataTables.min.js"></script>
+          <script src="../commons/js/jquery.dataTables.min.js"></script>
+          <script src="../commons/js/dataTables.bootstrap.js"></script>
           <script src="js/gadgetconf.js"></script>
           <script src="js/main.js"></script>
 

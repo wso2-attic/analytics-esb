@@ -58,11 +58,15 @@
                     </div>
                 </div>
 
-                <div class="col-3">
-                    <div id="dChartTrue"></div>
-                </div>
-                <div class="col-3">
-                    <div id="dChartFalse"></div>
+                <div class="col-6 clearfix">
+                    <div class="pull-right">
+                        <div id="dChartFalse"></div>
+                        <div class="chart-label">Failed Rate</div>
+                    </div>
+                    <div class="pull-right">
+                        <div id="dChartTrue"></div>
+                        <div class="chart-label">Success Rate</div>
+                    </div>
                 </div>
 
             </div>

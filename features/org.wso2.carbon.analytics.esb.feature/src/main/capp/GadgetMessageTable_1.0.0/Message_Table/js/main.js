@@ -90,7 +90,16 @@ function onData(response) {
             tr.appendTo(tbody);
 
         });
-        dataTable = $('#tblMessages').DataTable();
+        dataTable = $('#tblMessages').DataTable({
+            dom: '<"dataTablesTop"' +
+                'f' +
+                '<"dataTables_toolbar">' +
+                '>' +
+                'rt' +
+                '<"dataTablesBottom"' +
+                'lip' +
+                '>'
+        });
     } catch (e) {
         $("#canvas").html(gadgetUtil.getErrorText(e));
     }

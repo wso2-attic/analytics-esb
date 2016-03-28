@@ -71,8 +71,8 @@ function onData(response) {
                 "types": ["linear", "linear", "ordinal", "ordinal"]
             },
             "data": [
-                [0, 37, 12, "YES"],
-                [0, 63, 12, "NO"]
+                [0, parseFloat(successPct), 12, "YES"],
+                [0, parseFloat(failedPct), 12, "NO"]
             ]
         }];
 
@@ -82,31 +82,33 @@ function onData(response) {
                 "types": ["linear", "linear", "ordinal", "ordinal"]
             },
             "data": [
-                [0, 63, 12, "YES"],
-                [0, 37, 12, "NO"]
+                [0, parseFloat(failedPct), 12, "YES"],
+                [0, parseFloat(successPct), 12, "NO"]
             ]
         }];
 
         var configT = {
             charts: [{ type: "arc", x: "torque", color: "EngineType" }],
-
+            innerRadius: 0.3,
             tooltip: { "enabled": false },
+            padding: { top:0, right:0, bottom:0, left:0 },
             legend: false,
             percentage: true,
             colorScale: ["#5CB85C", "#121822"],
-            width: 400,
-            height: 250
+            width: 220,
+            height: 220
         }
 
         var configF = {
             charts: [{ type: "arc", x: "torque", color: "EngineType" }],
-
+            innerRadius: 0.3,
             tooltip: { "enabled": false },
+            padding: { top:0, right:0, bottom:0, left:0 },
             legend: false,
             percentage: true,
             colorScale: ["#D9534F", "#121822"],
-            width: 400,
-            height: 250
+            width: 220,
+            height: 220
         }
         var chartT = new vizg(dataT, configT);
         chartT.draw("#dChartTrue");

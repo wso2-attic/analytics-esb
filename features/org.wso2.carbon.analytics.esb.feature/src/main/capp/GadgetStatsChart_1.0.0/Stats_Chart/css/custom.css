@@ -41,3 +41,8 @@
 svg.marks .mark-group .background {
     fill: transparent !important;
 }
+
+.chart-label {
+    color: #A9ABAF;
+    text-align: center;
+}
