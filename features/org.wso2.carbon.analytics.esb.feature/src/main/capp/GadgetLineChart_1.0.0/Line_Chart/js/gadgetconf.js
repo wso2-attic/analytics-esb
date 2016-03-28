@@ -49,7 +49,7 @@ var charts = [{
         padding: { "top": 10, "left": 80, "bottom": 40, "right": 100 },
         range: true,
         rangeColor: COLOR_BLUE,
-        colorScale: [COLOR_RED,COLOR_GREEN],
+        colorScale: [COLOR_GREEN,COLOR_RED],
         colorDomain: ["SUCCESS","FAULT"]
     },
     types: [

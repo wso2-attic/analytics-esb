@@ -42,7 +42,30 @@ svg.marks .mark-group .background {
     fill: transparent !important;
 }
 
-.chart-label {
-    color: #A9ABAF;
+.arc-chart {
+    position: relative;
+}
+
+.chart-label-count {
+    font-size: 12px;
     text-align: center;
+    color: #A9ABAF;
+    position: absolute;
+    top: 58%;
+    left: 50%;
+    -webkit-transform: translate(-50%, -50%);
+    -moz-transform: translate(-50%, -50%);
+    -ms-transform: translate(-50%, -50%);
+    -o-transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%)
+}
+
+.chart-label {
+    font-size: 16px;
+    text-align: center;
+    margin-top: -10px;
+}
+
+body.drak .chart-label {
+    color: #ECEEF3;
 }
