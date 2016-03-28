@@ -27,10 +27,12 @@
                 var targetUrl = $(this).data("target-url");
                 parent.window.location = targetUrl;
             } else {
-                var mediatorId = $(this).data("mediator-id");
-                console.log("## Clicked on mediator [ " + mediatorId + " ]");
+                var componentId = $(this).data("component-id");
+                var hashCode = $(this).data("hash-code");
+                console.log("## componentId [ " + componentId + " ] hashCode [ " + hashCode + "]");
                 message = {
-                    mediatorId: mediatorId
+                    componentId: componentId,
+                    hashCode: hashCode
                 };
                 gadgets.Hub.publish(PUBLISHER_TOPIC, message);
             }
@@ -177,14 +179,19 @@
         } else if (node.type === "Endpoint") {
             pageUrl = ENDPOINT_PAGE_URL;
         }
+        var hashCode;
         var hiddenParams = '';
         if (node.hiddenAttributes) {
+            console.log(node.hiddenAttributes); 
             node.hiddenAttributes.forEach(function(item, i) {
                 hiddenParams += '&' + item.name + '=' + item.value;
+                if(item.name === "hashCode") {
+                    hashCode = item.value;
+                }
             });
         }
         var targetUrl = pageUrl + '?' + hiddenParams;
-        var labelText = '<div class="nodeLabel" data-mediator-id="' + node.id + '" data-target-url="' + targetUrl 
+        var labelText = '<div class="nodeLabel" data-component-id="' + node.id + '" data-hash-code="'+ hashCode +'" data-target-url="' + targetUrl 
           + '"><h4><a href="#">' + node.label + "</a></h4>";
 
         if (node.dataAttributes) {

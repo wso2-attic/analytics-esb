@@ -23,12 +23,14 @@ gadgets.HubSettings.onConnect = function() {
 };
 
 function mediatorClicked(data) {
-    var mediatorId = data.mediatorId;
-    if(mediatorId) {
+    var componentId = data.componentId;
+    var hashCode = data.hashCode;
+    if(componentId && hashCode) {
         gadgetUtil.fetchData(CONTEXT, {
             type: type,
             id: qs.id,
-            mediatorId: mediatorId
+            componentId: componentId,
+            hashCode: hashCode
         }, onData, onError);
     }
 };
