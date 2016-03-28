@@ -872,6 +872,7 @@
             }
             case TYPE_INBOUND_ENDPOINT_MESSAGE_FLOW:
             {
+                //TODO
                 var result = [];
                 break;
             }
@@ -1178,7 +1179,7 @@ function getComponentNames(connector, loggedInUser, componentType) {
     }
     query = stringify({
                           "fieldName": "componentName",
-                          "query": "componentType : \"" + componentType + "\""
+                          "query": "_componentType : \"" + componentType + "\""
                       });
     resp = connector.drillDownCategories(loggedInUser, tableName, query);
     var proxyNames = JSON.parse(resp.getMessage());
