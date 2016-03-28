@@ -54,6 +54,7 @@ function onData(data) {
             type: "bar",
             x: "name",
             charts: [{ type: "bar", y: "requests", orientation: "left" }],
+            grid: false,
             width: $('body').width(),
             height: $('body').height(),
             colorScale: [COLOR_BLUE],

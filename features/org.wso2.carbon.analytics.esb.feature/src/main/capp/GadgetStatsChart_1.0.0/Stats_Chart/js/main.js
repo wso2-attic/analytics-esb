@@ -63,6 +63,14 @@ function onData(response) {
         $("#failedPercent").html(parseFloat(failedPct).toFixed(2));
         $("#successCount").html(success);
         $("#successPercent").html(parseFloat(successPct).toFixed(2));
+        
+        var successColor = function(){
+            return parseFloat(successPct) > 0 ? '#5CB85C' : '#353B48';
+        };
+        
+        var failColor = function(){
+            return parseFloat(failedPct) > 0 ? '#D9534F' : '#353B48';
+        };
 
         //draw donuts
         var dataT = [{
@@ -94,7 +102,7 @@ function onData(response) {
             padding: { top:0, right:0, bottom:0, left:0 },
             legend: false,
             percentage: true,
-            colorScale: ["#5CB85C", "#121822"],
+            colorScale: [successColor(), "#353B48"],
             width: 220,
             height: 220
         }
@@ -106,7 +114,7 @@ function onData(response) {
             padding: { top:0, right:0, bottom:0, left:0 },
             legend: false,
             percentage: true,
-            colorScale: ["#D9534F", "#121822"],
+            colorScale: [failColor(), "#353B48"],
             width: 220,
             height: 220
         }
