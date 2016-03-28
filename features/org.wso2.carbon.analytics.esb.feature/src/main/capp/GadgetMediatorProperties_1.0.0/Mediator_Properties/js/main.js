@@ -1,5 +1,5 @@
 var TOPIC = "subscriber";
-var type = 45;
+var type = 48;
 var qs = gadgetUtil.getQueryString();
 var BEFORE = "before";
 var AFTER = "after";
