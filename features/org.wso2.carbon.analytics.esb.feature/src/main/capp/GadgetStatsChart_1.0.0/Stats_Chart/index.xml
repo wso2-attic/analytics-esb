@@ -37,34 +37,36 @@
 
             <div id="gadget-messge"></div>
             <div class="row no-gutter" id="stats">
-                <div class="col-6">
+                <div class="col-5">
                     <div class="stats add-padding-5x">
-                        <div class="row no-gutter add-margin-top-5x">
+                        <div class="row no-gutter">
                             <div class="col-7 stats-total add-padding-top-1x">
                                 <h2><b>Total</b> requests</h2>
                                 <h1 id="totalCount"></h1>
                             </div>
-                            <div class="col-5 stats-breakdown text-right">
+                            <!--<div class="col-5 stats-breakdown text-right">
                                 <div class="icon-danger">
                                     <h1><span id="failedPercent"></span>%</h1>
-                                    <h2><span id="failedCount"></span> Failed</h2>
+                                     Failed</h2>
                                 </div>
                                 <div class="icon-success">
                                     <h1><span id="successPercent"></span>%</h1>
                                     <h2><span id="successCount"></span> Success</h2>
                                 </div>
-                            </div>
+                            </div>-->
                         </div>
                     </div>
                 </div>
 
-                <div class="col-6 clearfix">
-                    <div class="pull-right">
+                <div class="col-7 clearfix">
+                    <div class="pull-right arc-chart">
                         <div id="dChartFalse"></div>
+                        <div class="chart-label-count"><span id="failedCount"></span> Requests</div>
                         <div class="chart-label">Failed Rate</div>
                     </div>
-                    <div class="pull-right">
+                    <div class="pull-right arc-chart">
                         <div id="dChartTrue"></div>
+                        <div class="chart-label-count"><span id="successCount"></span> Requests</div>
                         <div class="chart-label">Success Rate</div>
                     </div>
                 </div>
