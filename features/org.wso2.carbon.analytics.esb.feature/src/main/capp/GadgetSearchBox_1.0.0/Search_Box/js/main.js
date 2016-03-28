@@ -2,21 +2,21 @@ var href = parent.window.location.href,
     hrefLastSegment = href.substr(href.lastIndexOf('/') + 1),
     resolveURI = parent.ues.global.dashboard.id == hrefLastSegment ? '../' : '../../';
 
+
+
 $(function() {
     var page = gadgetUtil.getCurrentPage();
     var qs = gadgetUtil.getQueryString();
+    
+    $("#txtSearch").attr('placeholder', 'Search ' + page.placeholder + ' ...');
 
     if(qs[PARAM_ID] != null) {
         $("#txtSearch").val(qs[PARAM_ID]);
     }
 
-//    $("#txtSearch").click(function() {
-//        $("#txtSearch").val("");
-//    });
-
     gadgetUtil.fetchData(CONTEXT, {
         type: page.type,
-    }, onData, onError);
+    }, onData, onError); 
 
     function onData(response) {
         $('.typeahead').typeahead({

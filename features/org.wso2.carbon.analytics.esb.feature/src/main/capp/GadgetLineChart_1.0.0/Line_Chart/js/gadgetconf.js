@@ -11,7 +11,7 @@ var charts = [{
     chartConfig: {
         x: "Time",
         charts: [{ type: "line", y: "TPS" }],
-        padding: { "top": 10, "left": 50, "bottom": 40, "right": 30 },
+        padding: { "top": 30, "left": 60, "bottom": 60, "right": 30 },
         range: true,
         rangeColor: COLOR_BLUE,
         colorScale: [COLOR_BLUE]
@@ -46,7 +46,7 @@ var charts = [{
     chartConfig: {
         x: "Time",
         charts: [{ type: "line", y: "Count", color: "Status" }],
-        padding: { "top": 10, "left": 80, "bottom": 40, "right": 100 },
+        padding: { "top": 30, "left": 60, "bottom": 60, "right": 110 },
         range: true,
         rangeColor: COLOR_BLUE,
         colorScale: [COLOR_GREEN,COLOR_RED],
@@ -86,6 +86,7 @@ var charts = [{
     chartConfig: {
         x: "Time",
         charts: [{ type: "line", y: "Value", color: "Type" }],
+        padding: { "top": 30, "left": 60, "bottom": 60, "right": 110 },
         range: true
     },
     types: [

@@ -88,12 +88,15 @@ function onError(msg) {
 document.body.onmouseup = function() {
     // var div = document.getElementById("dChart");
     // div.innerHTML = "<p> Start : " + rangeStart + "</p>" + "<p> End : " + rangeEnd + "</p>";
-    var message = {
-        timeFrom: new Date(rangeStart).getTime(),
-        timeTo: new Date(rangeEnd).getTime(),
-        timeUnit: "Custom"
-    };
-    gadgets.Hub.publish(PUBLISHER_TOPIC, message);
+    
+    if((rangeStart) && (rangeEnd) && (rangeStart !== rangeEnd)){
+        var message = {
+            timeFrom: new Date(rangeStart).getTime(),
+            timeTo: new Date(rangeEnd).getTime(),
+            timeUnit: "Custom"
+        };
+        gadgets.Hub.publish(PUBLISHER_TOPIC, message);
+    }
 }
 
 var onRangeSelected = function(start, end) {
