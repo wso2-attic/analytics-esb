@@ -986,9 +986,13 @@
             if (log.isDebugEnabled()) {
                 log.debug("value of result: " + result);
             }
-            var finalResult = {
-                status: "success",
-                message: result
+            if (type == TYPE_PROXY_MESSAGES || type == TYPE_API_MESSAGES || type == TYPE_MEDIATOR_MESSAGES || type == TYPE_ENDPOINT_MESSAGES || type == TYPE_INBOUND_ENDPOINT_MESSAGES) {
+                finalResult = result;
+            } else {
+                var finalResult = {
+                    status: "success",
+                    message: result
+                }
             }
             print(finalResult);
         }
@@ -1150,52 +1154,67 @@ function getStats(connector, loggedInUser, componentName, entryPoint, timeRanges
 };
 
 function getComponentMessages(connector, loggedInUser, componentName, componentType, entryPoint, tableName) {
-    var result = [];
+    var result = {};
+    var data = [];
     var timeFrom = request.getParameter("timeFrom");
     var timeTo = request.getParameter("timeTo");
+    var start = request.getParameter("start");
+    var length = request.getParameter("length");
+    var userQuery = request.getParameter("query");
+    var draw = request.getParameter("draw");
     var tableName = "ESB-EVENT";
-    var messageCount = 100;
+    //TODO: remove hardcode
+    var limit = 500;
 
-    if (entryPoint == null || entryPoint == "undefined") {
+    if (userQuery != null) {
         var query = stringify({
-                                  "query": "componentType : \"" + componentType + "\" AND _componentName : \"" + componentName + "\" AND startTime : [" + timeFrom + " TO " + timeTo + "]",
-                                  "start": 0,
-                                  "count": messageCount
-                              });
+            "query": userQuery + "AND startTime : [" + timeFrom + " TO " + timeTo + "]",
+            "start": start,
+            "count": length
+        });
+    } else if (entryPoint == null || entryPoint == "undefined") {
+        var query = stringify({
+            "query": "componentType : \"" + componentType + "\" AND _componentName : \"" + componentName + "\" AND startTime : [" + timeFrom + " TO " + timeTo + "]",
+            "start": start,
+            "count": length
+        });
     } else {
         var query = stringify({
-                                  "query": "entryPoint : " + entryPoint + " AND componentType : \"" + componentType + "\" AND _componentName : \"" + componentName + "\" AND startTime : [" + timeFrom + " TO " + timeTo + "]",
-                                  "start": 0,
-                                  "count": messageCount
-                              });
+            "query": "entryPoint : " + entryPoint + " AND componentType : \"" + componentType + "\" AND _componentName : \"" + componentName + "\" AND startTime : [" + timeFrom + " TO " + timeTo + "]",
+            "start": start,
+            "count": length
+        });
     }
-
     var resp = connector.search(loggedInUser, tableName, query);
     var dataPoints = JSON.parse(resp.getMessage());
-    var columns = ["messageFlowId", "faultCount", "startTime", "host"];
+    var columns = ["messageFlowId", "host", "startTime", "faultCount"];
     for (i = 0; i < dataPoints.length; i++) {
-        var temp = {};
+        var temp = [];
         for (j = 0; j < columns.length; j++) {
             var column = columns[j];
             var value = dataPoints[i]["values"][column];
             if (column == "transportPropertyMap" || column == "contextPropertyMap") {
-                temp[column] = stringify(value["map"]);
+                temp.push(stringify(value["map"]));
             } else if (column == "faultCount") {
                 // Add message status
                 if (value > 0) {
-                    temp["status"] = "Failed";
+                    temp.push("Failed");
                 } else {
-                    temp["status"] = "Success";
+                    temp.push("Success");
                 }
             } else if (column == "startTime") {
                 var date = new Date(value);
-                temp[column] = date.toLocaleString();
+                temp.push(date.toLocaleString());
             } else {
-                temp[column] = value;
+                temp.push(value);
             }
         }
-        result.push(temp);
+        data.push(temp);
     }
+    result["draw"] = draw;
+    result["data"] = data;
+    result["recordsFiltered"] = limit;
+    result["recordsTotal"] = limit;
     return result;
 };
 

@@ -14,13 +14,27 @@ $(function() {
     timeTo = gadgetUtil.timeTo();
     console.log("MESSAGE_TABLE[" + page.name + "]: TimeFrom: " + timeFrom + " TimeTo: " + timeTo);
 
-    gadgetUtil.fetchData(CONTEXT, {
-        type: page.type,
-        id: qs.id,
-        timeFrom: timeFrom,
-        timeTo: timeTo,
-        entryPoint:qs.entryPoint
-    }, onData, onError);
+    $('#tblMessages').DataTable( {
+            "processing": true,
+            "serverSide": true,
+            "columns" : [
+                        { title: "Message ID" },
+                        { title: "Host" },
+                        { title: "Start Time" },
+                        { title: "Status" }
+            ],
+            "ajax": {
+                "url" : CONTEXT,
+                "data" :  {
+                   "id" : qs.id,
+                   "type" : page.type,
+                   "timeFrom" : timeFrom,
+                   "timeTo" : timeTo,
+                   "entryPoint" : qs.entryPoint
+               }
+
+            }
+        } );
 
     $('#tblMessages tbody').on('click', 'tr', function() {
         var id = $(this).find("td:first").html(); 
