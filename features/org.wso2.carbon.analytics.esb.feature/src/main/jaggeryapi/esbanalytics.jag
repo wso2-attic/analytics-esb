@@ -260,6 +260,7 @@
                 var apiName = request.getParameter("id");
                 var tableName = "ESB-EVENT";
                 var result = getComponentMessages(connector, loggedInUser, apiName, "API", null, "ESB-EVENT");
+                break;
             }
             case TYPE_MEDIATOR_NAMES:
             {
@@ -1168,6 +1169,7 @@ function getComponentMessages(connector, loggedInUser, componentName, componentT
                                   "count": messageCount
                               });
     }
+
     var resp = connector.search(loggedInUser, tableName, query);
     var dataPoints = JSON.parse(resp.getMessage());
     var columns = ["messageFlowId", "faultCount", "startTime", "host"];
@@ -1202,6 +1204,7 @@ function getEntrypointMessageFlow(connector, loggedInUser, timeRanges) {
     var timeFrom = request.getParameter("timeFrom");
     var timeTo = request.getParameter("timeTo");
     var entryName = request.getParameter("id");
+
     // get schema 
     var tableName = "ESB-CONFIG-ENTRY-STREAM";
     var query = stringify({
@@ -1218,10 +1221,10 @@ function getEntrypointMessageFlow(connector, loggedInUser, timeRanges) {
                           });
     var resp = connector.search(loggedInUser, tableName, query);
     var config = JSON.parse(resp.getMessage())[0];
+
     if (config != null) {
         var schema = JSON.parse(config["values"]["configData"]);
         var entryHashCode = config["values"]["hashcode"];
-
         // get components info from different tables
         var searchParams = [];
         var aggregateFields = [];
