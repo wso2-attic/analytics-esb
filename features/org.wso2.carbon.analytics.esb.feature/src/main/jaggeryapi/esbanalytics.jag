@@ -1149,9 +1149,9 @@ function getMostInvokedComponentNames(connector, loggedInUser, componentType) {
     var timeFrom = request.getParameter("timeFrom");
     var timeTo = request.getParameter("timeTo");
     if (componentType == "Proxy Service" || componentType == "API" || componentType == "Endpoint" || componentType == "Inbound EndPoint") {
-        var tableName = "ESB-STAT-PER-MINUTE";
+        var tableName = "ESB-STAT-PER-SECOND";
     } else {
-        var tableName = "MEDIATOR-STAT-PER-MINUTE";
+        var tableName = "MEDIATOR-STAT-PER-SECOND";
     }
     var query = stringify({
                               "fieldName": "componentName",
