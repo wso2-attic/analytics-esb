@@ -10,9 +10,9 @@ $(function() {
         $("#txtSearch").val(qs[PARAM_ID]);
     }
 
-    $("#txtSearch").click(function() {
-        $("#txtSearch").val("");
-    });
+//    $("#txtSearch").click(function() {
+//        $("#txtSearch").val("");
+//    });
 
     gadgetUtil.fetchData(CONTEXT, {
         type: page.type,
