@@ -100,18 +100,6 @@ body.widget {
 }
 
 /* Dark Theme Styles */
-body.dark svg.marks .mark-group .background {
-    fill: #121822 !important;
-}
-
-body.dark svg.marks .mark-group .mark-text text {
-    fill: #7D8596 !important;
-}
-
-body.dark svg.marks .mark-group .mark-rule line {
-    stroke: #E3E5E6 !important;
-}
-
 body.dark .tt-hint {
     background: transparent !important;
 }
@@ -168,7 +156,30 @@ body.dark #canvas-tooltip {
 }
 
 /* DataTables issue fixing */
+.table {
+    font-size: 14px;
+}
 
-.dataTables_filter, .dataTables_toolbar, .dataTables_length, .dataTables_info {
-    float: none;
+div.dataTables_length select {
+    background: transparent;
+}
+
+body.dark div.dataTables_length select {
+    color: #fff;
+}
+
+.dataTables_filter input {
+    margin: 0 0 0 14px !important;
+    background: transparent;
+    padding: 0 5px;
+    border: 1px solid #747F8F;
+}
+
+div.dataTables_length select option {
+    color: #31383e;
+}
+
+.pagination > .active > a, .pagination > .active > a:focus, .pagination > .active > a:hover, .pagination > .active > span, .pagination > .active > span:focus, .pagination > .active > span:hover {
+    background: #438CAD;
+    border-color: #438CAD;
 }
