@@ -36,12 +36,12 @@
         <body>
 
             <div id="gadget-messge"></div>
-            <div class="row no-gutter" id="stats">
+            <div class="row no-gutter" style="display:none;" id="stats">
                 <div class="col-5">
                     <div class="stats add-padding-5x">
                         <div class="row no-gutter">
                             <div class="col-7 stats-total add-padding-top-1x">
-                                <h2><b>Total</b> requests</h2>
+                                <h2><b>Total</b> requests <span id="title"></span></h2>
                                 <h1 id="totalCount"></h1>
                             </div>
                             <!--<div class="col-5 stats-breakdown text-right">
@@ -59,15 +59,37 @@
                 </div>
 
                 <div class="col-7 clearfix">
-                    <div class="pull-right arc-chart">
-                        <div id="dChartFalse"></div>
-                        <div class="chart-label-count"><span id="failedCount"></span> Requests</div>
-                        <div class="chart-label">Failed Rate</div>
-                    </div>
-                    <div class="pull-right arc-chart">
-                        <div id="dChartTrue"></div>
-                        <div class="chart-label-count"><span id="successCount"></span> Requests</div>
-                        <div class="chart-label">Success Rate</div>
+                    <div class="pull-right clearfix">
+                        <div class="pull-left chart-breakdown hidden">
+                            <h2>Min.</h2>
+                            <h1>25</h1>
+                            <hr>
+                            <h2>Avg.</h2>
+                            <h1>25</h1>
+                            <hr>
+                            <h2>Max.</h2>
+                            <h1>25</h1>
+                        </div>
+                        <div class="pull-left arc-chart">
+                            <div id="dChartTrue"></div>
+                            <div class="chart-label-count"><span id="successCount"></span> Requests</div>
+                            <div class="chart-label">Success Rate</div>
+                        </div>
+                        <div class="pull-left chart-breakdown hidden">
+                            <h2>Min.</h2>
+                            <h1>25</h1>
+                            <hr>
+                            <h2>Avg.</h2>
+                            <h1>25</h1>
+                            <hr>
+                            <h2>Max.</h2>
+                            <h1>25</h1>
+                        </div>
+                        <div class="pull-left arc-chart">
+                            <div id="dChartFalse"></div>
+                            <div class="chart-label-count"><span id="failedCount"></span> Requests</div>
+                            <div class="chart-label">Failed Rate</div>
+                        </div>
                     </div>
                 </div>
 
