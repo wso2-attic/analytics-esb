@@ -179,6 +179,15 @@ div.dataTables_length select option {
     color: #31383e;
 }
 
+div.dataTables_processing {
+    background: transparent !important;
+    padding-top: 30px !important;
+}
+
+.dataTablesBottom {
+    margin: 20px 0 0 0;
+}
+
 .pagination > .active > a, .pagination > .active > a:focus, .pagination > .active > a:hover, .pagination > .active > span, .pagination > .active > span:focus, .pagination > .active > span:hover {
     background: #438CAD;
     border-color: #438CAD;

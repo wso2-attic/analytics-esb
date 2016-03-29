@@ -14,7 +14,15 @@ $(function() {
     timeTo = gadgetUtil.timeTo();
     console.log("MESSAGE_TABLE[" + page.name + "]: TimeFrom: " + timeFrom + " TimeTo: " + timeTo);
 
-    $('#tblMessages').DataTable( {
+    $('#tblMessages').DataTable({
+            dom: '<"dataTablesTop"' +
+                 'f' +
+                 '<"dataTables_toolbar">' +
+                 '>' +
+                 'rt' +
+                 '<"dataTablesBottom"' +
+                 'lip' +
+                 '>',
             "processing": true,
             "serverSide": true,
             "columns" : [
@@ -34,7 +42,7 @@ $(function() {
                }
 
             }
-        } );
+        });
 
     $('#tblMessages tbody').on('click', 'tr', function() {
         var id = $(this).find("td:first").html(); 
