@@ -208,4 +208,8 @@ $(document).ready(function() {
     else{
         $('body').removeClass('dark');
     }
+    
+    if(typeof $.fn.nanoScroller == 'function'){
+        $(".nano").nanoScroller();
+    }
 });
