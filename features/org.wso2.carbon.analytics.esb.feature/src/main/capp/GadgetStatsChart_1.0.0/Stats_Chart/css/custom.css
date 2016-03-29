@@ -46,6 +46,29 @@ svg.marks .mark-group .background {
     position: relative;
 }
 
+.chart-breakdown {
+    margin: 40px 0;
+    width: 100px;
+    text-align: center;
+    color: #A9ABAF;
+}
+
+.chart-breakdown > hr {
+    margin: 10px 0;
+    border-top-color: #353B48;
+}
+
+.chart-breakdown h1 {
+    font-size: 25px;
+    margin: 0;
+    color: #fff;
+}
+
+.chart-breakdown h2 {
+    font-size: 14px;
+    margin: 0;
+}
+
 .chart-label-count {
     font-size: 12px;
     text-align: center;

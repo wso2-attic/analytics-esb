@@ -4,9 +4,16 @@ var qs = gadgetUtil.getQueryString();
 var type = 38;
 
 $(function() {
+    
     if (page && qs[PARAM_ID] == null) {
         $("body").html(gadgetUtil.getDefaultText());
         return;
+    }
+    else {
+        $('#stats').show();
+        if(qs[PARAM_ID]) {
+            $("#title").html('for ' + qs[PARAM_ID]);
+        }
     }
     var timeFrom = gadgetUtil.timeFrom();
     var timeTo = gadgetUtil.timeTo();
