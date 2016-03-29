@@ -4,6 +4,7 @@ var timeTo;
 var timeUnit = null;
 var page = gadgetUtil.getCurrentPage();
 var qs = gadgetUtil.getQueryString();
+var oTable;
 
 $(function() {
     if (qs[PARAM_ID] == null) {
@@ -14,42 +15,41 @@ $(function() {
     timeTo = gadgetUtil.timeTo();
     console.log("MESSAGE_TABLE[" + page.name + "]: TimeFrom: " + timeFrom + " TimeTo: " + timeTo);
 
-    $('#tblMessages').DataTable({
-            dom: '<"dataTablesTop"' +
-                 'f' +
-                 '<"dataTables_toolbar">' +
-                 '>' +
-                 'rt' +
-                 '<"dataTablesBottom"' +
-                 'lip' +
-                 '>',
-            "processing": true,
-            "serverSide": true,
-            "columns" : [
-                        { title: "Message ID" },
-                        { title: "Host" },
-                        { title: "Start Time" },
-                        { title: "Status" }
-            ],
-            "ajax": {
-                "url" : CONTEXT,
-                "data" :  {
-                   "id" : qs.id,
-                   "type" : page.type,
-                   "timeFrom" : timeFrom,
-                   "timeTo" : timeTo,
-                   "entryPoint" : qs.entryPoint
-               }
+    oTable = $('#tblMessages').DataTable({
+        dom: '<"dataTablesTop"' +
+             'f' +
+             '<"dataTables_toolbar">' +
+             '>' +
+             'rt' +
+             '<"dataTablesBottom"' +
+             'lip' +
+             '>',
+        "processing": true,
+        "serverSide": true,
+        "columns" : [
+                    { title: "Message ID" },
+                    { title: "Host" },
+                    { title: "Start Time" },
+                    { title: "Status" }
+        ],
+        "ajax": {
+            "url" : CONTEXT,
+            "data" :  {
+               "id" : qs.id,
+               "type" : page.type,
+               "timeFrom" : timeFrom,
+               "timeTo" : timeTo,
+               "entryPoint" : qs.entryPoint
+           }
+        }
+    });
 
-            }
-        });
-
-    $('#tblMessages tbody').on('click', 'tr', function() {
+    $('#tblMessages').on('click', 'tr', function() {
         var id = $(this).find("td:first").html(); 
         if ($(this).hasClass('selected')) {
             $(this).removeClass('selected');
         } else {
-            dataTable.$('tr.selected').removeClass('selected');
+            oTable.$('tr.selected').removeClass('selected');
             $(this).addClass('selected');
         }
         if( timeUnit == null) {
@@ -72,13 +72,9 @@ function onTimeRangeChanged(data) {
     timeFrom = data.timeFrom;
     timeTo = data.timeTo;
     timeUnit = data.timeUnit;
-    gadgetUtil.fetchData(CONTEXT, {
-        type: page.type,
-        id: qs.id,
-        timeFrom: timeFrom,
-        timeTo: timeTo,
-        entryPoint:qs.entryPoint
-    }, onData, onError);
+
+    oTable.clear().draw();
+    //oTable.ajax.reload().draw();
 };
 
 function onData(response) {
@@ -112,6 +108,7 @@ function onData(response) {
             tr.appendTo(tbody);
 
         });
+        
         dataTable = $('#tblMessages').DataTable({
             dom: '<"dataTablesTop"' +
                 'f' +

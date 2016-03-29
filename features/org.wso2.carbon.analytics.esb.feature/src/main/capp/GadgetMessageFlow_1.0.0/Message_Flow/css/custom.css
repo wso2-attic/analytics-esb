@@ -7,6 +7,10 @@ body {
     font-family: 'Roboto';
     min-height: 100%;
 }
+body {
+    background: #A2A2A2;
+    color: #fff;
+}
 .page-content-wrapper {
     width: 100%;
     min-height: 100%;
