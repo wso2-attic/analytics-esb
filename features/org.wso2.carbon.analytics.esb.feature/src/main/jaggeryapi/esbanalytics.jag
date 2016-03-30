@@ -229,7 +229,6 @@
             case TYPE_PROXY_MESSAGES:
             {
                 var proxyName = request.getParameter("id");
-                var tableName = "ESB-EVENT";
                 var result = esbanalyticsUtils.getComponentMessages(connector, loggedInUser, proxyName, "Proxy Service", null, "ESB-EVENT");
                 break;
             }
@@ -263,7 +262,6 @@
             case TYPE_API_MESSAGES:
             {
                 var apiName = request.getParameter("id");
-                var tableName = "ESB-EVENT";
                 var result = esbanalyticsUtils.getComponentMessages(connector, loggedInUser, apiName, "API", null, "ESB-EVENT");
                 break;
             }
@@ -339,40 +337,10 @@
             }
             case TYPE_MEDIATOR_MESSAGES:
             {
-                var result = [];
                 var componentId = request.getParameter("id");
                 var entryPoint = request.getParameter("entryPoint");
                 var tableName = "ESB-EVENT";
-                var query = stringify({
-                                          "query": "(componentType : Mediator OR  componentType : Sequence) AND _entryPoint : \"" + entryPoint + "\" AND _componentId : \"" + componentId + "\" AND startTime : [" + timeFrom + " TO " + timeTo + "]",
-                                          "start": 0,
-                                          "count": 100
-                                      });
-                var resp = connector.search(loggedInUser, tableName, query);
-                var dataPoints = JSON.parse(resp.getMessage());
-                var columns = ["messageFlowId", "transportPropertyMap", "faultCount", "startTime", "host"];
-                for (i = 0; i < dataPoints.length; i++) {
-                    var temp = {};
-                    for (j = 0; j < columns.length; j++) {
-                        var column = columns[j];
-                        var value = dataPoints[i]["values"][column];
-                        if (column == "transportPropertyMap" || column == "contextPropertyMap") {
-                            temp[column] = stringify(value["map"]);
-                        } else if (column == "faultCount") {
-                            if (value > 0) {
-                                temp["status"] = "Failed";
-                            } else {
-                                temp["status"] = "Success";
-                            }
-                        } else if (column == "startTime") {
-                            var date = new Date(value);
-                            temp[column] = date.toLocaleString();
-                        } else {
-                            temp[column] = value;
-                        }
-                    }
-                    result.push(temp);
-                }
+                var result = esbanalyticsUtils.getComponentMessages(connector, loggedInUser, componentId, "Mediator", entryPoint, tableName);
                 break;
             }
             case TYPE_MESSAGE_FLOW:

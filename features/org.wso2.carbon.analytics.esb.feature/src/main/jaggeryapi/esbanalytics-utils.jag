@@ -181,33 +181,36 @@ function getComponentMessages(connector, loggedInUser, componentName, componentT
     var data = [];
     var timeFrom = request.getParameter("timeFrom");
     var timeTo = request.getParameter("timeTo");
-    var start = request.getParameter("start");
-    var length = request.getParameter("length");
+    var start = parseInt(request.getParameter("start"));
+    var length = parseInt(request.getParameter("length"));
     var userQuery = request.getParameter("query");
     var draw = request.getParameter("draw");
     var tableName = "ESB-EVENT";
     //TODO: remove hardcode
     var limit = 500;
 
-    if (userQuery != null) {
-        var query = stringify({
-            "query": userQuery + "AND startTime : [" + timeFrom + " TO " + timeTo + "]",
-            "start": start,
-            "count": length
-        });
-    } else if (entryPoint == null || entryPoint == "undefined") {
-        var query = stringify({
-            "query": "_componentType : \"" + componentType + "\" AND _componentName : \"" + componentName + "\" AND startTime : [" + timeFrom + " TO " + timeTo + "]",
-            "start": start,
-            "count": length
-        });
+    if (componentType == "Mediator") {
+        tempQuery = "_componentType : \"" + componentType + "\" AND _componentId : \"" + componentName + "\" AND startTime : [" + timeFrom + " TO " + timeTo + "]";
     } else {
-        var query = stringify({
-            "query": "entryPoint : " + entryPoint + " AND _componentType : \"" + componentType + "\" AND _componentName : \"" + componentName + "\" AND startTime : [" + timeFrom + " TO " + timeTo + "]",
+        tempQuery = "_componentType : \"" + componentType + "\" AND _componentName : \"" + componentName + "\" AND startTime : [" + timeFrom + " TO " + timeTo + "]";
+    } 
+
+    // Add the entry point if exists
+    if (entryPoint != null || entryPoint != "undefined") {
+        tempQuery = tempQuery + " entryPoint : \"" + entryPoint + "\"";
+    }
+
+    // Add the user search query if exists
+    if (userQuery != null) {
+        tempQuery = tempQuery + " AND (" + userQuery + ")";
+    }
+
+    var query = stringify({
+            "query": tempQuery,
             "start": start,
             "count": length
         });
-    }
+
     var resp = connector.search(loggedInUser, tableName, query);
     var dataPoints = JSON.parse(resp.getMessage());
     var columns = ["messageFlowId", "host", "startTime", "faultCount"];
@@ -238,6 +241,10 @@ function getComponentMessages(connector, loggedInUser, componentName, componentT
     }
     result["draw"] = draw;
     result["data"] = data;
+
+    if (dataPoints.length < length) {
+        limit = start + length;
+    }
     result["recordsFiltered"] = limit;
     result["recordsTotal"] = limit;
     return result;
