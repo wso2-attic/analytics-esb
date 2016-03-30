@@ -706,8 +706,8 @@
             }
             case TYPE_INBOUND_ENDPOINT_MESSAGE_FLOW:
             {
-                //TODO
-                var result = [];
+                var timeRanges = timeRangeUtil.getDateTimeRanges(timeFrom, timeTo);
+                var result = esbanalyticsUtils.getEntrypointMessageFlow(connector, loggedInUser, timeRanges);
                 break;
             }
             case TYPE_OVERALL_STATS:
