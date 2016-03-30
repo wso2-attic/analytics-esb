@@ -960,7 +960,7 @@
             if (log.isDebugEnabled()) {
                 log.debug("value of result: " + result);
             }
-            if (type == TYPE_PROXY_MESSAGES || type == TYPE_API_MESSAGES || type == TYPE_MEDIATOR_MESSAGES || type == TYPE_ENDPOINT_MESSAGES || type == TYPE_INBOUND_ENDPOINT_MESSAGES) {
+            if (type == TYPE_PROXY_MESSAGES || type == TYPE_SEQUENCE_MESSAGES || type == TYPE_API_MESSAGES || type == TYPE_MEDIATOR_MESSAGES || type == TYPE_ENDPOINT_MESSAGES || type == TYPE_INBOUND_ENDPOINT_MESSAGES) {
                 finalResult = result;
             } else {
                 var finalResult = {
@@ -975,5 +975,4 @@
     }
 
 }());
-
 %>
