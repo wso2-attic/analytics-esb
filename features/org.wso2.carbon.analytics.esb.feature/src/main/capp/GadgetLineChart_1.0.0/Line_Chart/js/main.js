@@ -88,8 +88,8 @@ function onError(msg) {
 document.body.onmouseup = function() {
     // var div = document.getElementById("dChart");
     // div.innerHTML = "<p> Start : " + rangeStart + "</p>" + "<p> End : " + rangeEnd + "</p>";
-    
-    if((rangeStart) && (rangeEnd) && (rangeStart !== rangeEnd)){
+
+    if((rangeStart) && (rangeEnd) && (rangeStart.toString() !== rangeEnd.toString())){
         var message = {
             timeFrom: new Date(rangeStart).getTime(),
             timeTo: new Date(rangeEnd).getTime(),
