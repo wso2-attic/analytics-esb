@@ -14,7 +14,7 @@
         OPTIONS (tableName "ESB-EVENT",
         schema "messageFlowId FACET -i, host STRING, hashCode FACET -i, componentName FACET -i, componentType FACET -i,
         componentIndex INT, componentId FACET -i, startTime LONG -i, endTime LONG -i, duration INT, beforePayload
-        STRING, afterPayload STRING, contextPropertyMap STRING, transportPropertyMap STRING, children STRING,
+        FACET -i, afterPayload STRING, contextPropertyMap STRING, transportPropertyMap STRING, children STRING,
         entryPoint FACET -i, entryPointHashcode FACET -i, faultCount INT, _timestamp LONG -i",
         primaryKeys "messageFlowId, componentId, componentType, componentIndex",
         incrementalParams "esbEvent, 60",
