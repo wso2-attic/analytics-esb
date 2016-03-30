@@ -456,7 +456,7 @@
             }
             case TYPE_ENDPOINT_NAMES:
             {
-                var result = getComponentNames(connector, loggedInUser, "Endpoint");
+                var result = esbanalyticsUtils.getComponentNames(connector, loggedInUser, "Endpoint");
                 break;
             }
             case TYPE_ENDPOINT_MESSAGE_RATE:
