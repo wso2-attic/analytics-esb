@@ -183,7 +183,8 @@ function getComponentMessages(connector, loggedInUser, componentName, componentT
     var timeTo = request.getParameter("timeTo");
     var start = parseInt(request.getParameter("start"));
     var length = parseInt(request.getParameter("length"));
-    var userQuery = request.getParameter("query");
+    // var userQuery = request.getParameter("query");
+    var userQuery = request.getParameter("search[value]");
     var draw = request.getParameter("draw");
     var tableName = "ESB-EVENT";
     //TODO: remove hardcode
@@ -196,12 +197,12 @@ function getComponentMessages(connector, loggedInUser, componentName, componentT
     } 
 
     // Add the entry point if exists
-    if (entryPoint != null || entryPoint != "undefined") {
-        tempQuery = tempQuery + " entryPoint : \"" + entryPoint + "\"";
+    if (entryPoint != null && entryPoint != "undefined") {
+        tempQuery = tempQuery + " AND entryPoint : \"" + entryPoint + "\"";
     }
 
     // Add the user search query if exists
-    if (userQuery != null) {
+    if (userQuery != null && userQuery.length > 0) {
         tempQuery = tempQuery + " AND (" + userQuery + ")";
     }
 

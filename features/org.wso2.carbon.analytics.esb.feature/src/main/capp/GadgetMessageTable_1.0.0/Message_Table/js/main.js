@@ -74,10 +74,6 @@ function onTimeRangeChanged(data) {
     timeUnit = data.timeUnit;
 
     oTable.clear().draw();
-    var data = {
-        "foo": "bar"
-    };
-    oTable.ajax.data(data);
     oTable.ajax.reload().draw();
 };
 
