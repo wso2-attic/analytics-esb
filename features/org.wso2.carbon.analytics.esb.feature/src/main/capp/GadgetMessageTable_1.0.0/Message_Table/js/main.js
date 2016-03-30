@@ -34,13 +34,13 @@ $(function() {
         ],
         "ajax": {
             "url" : CONTEXT,
-            "data" :  {
-               "id" : qs.id,
-               "type" : page.type,
-               "timeFrom" : timeFrom,
-               "timeTo" : timeTo,
-               "entryPoint" : qs.entryPoint
-           }
+            "data" : function (d) {
+                d.id = qs.id;
+                d.type = page.type;
+                d.timeFrom = timeFrom;
+                d.timeTo = timeTo;
+                d.entryPoint = qs.entryPoint;
+            }
         }
     });
 
@@ -74,7 +74,11 @@ function onTimeRangeChanged(data) {
     timeUnit = data.timeUnit;
 
     oTable.clear().draw();
-    //oTable.ajax.reload().draw();
+    var data = {
+        "foo": "bar"
+    };
+    oTable.ajax.data(data);
+    oTable.ajax.reload().draw();
 };
 
 function onData(response) {
