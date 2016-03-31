@@ -229,7 +229,7 @@
             case TYPE_PROXY_MESSAGES:
             {
                 var proxyName = request.getParameter("id");
-                var result = esbanalyticsUtils.getComponentMessages(connector, loggedInUser, proxyName, "Proxy Service", null, "ESB-STAT-PER-", timeRangeUtil);
+                var result = esbanalyticsUtils.getComponentMessages(connector, loggedInUser, proxyName, "Proxy Service", null, timeRangeUtil);
                 break;
             }
             case TYPE_API_NAMES:
@@ -262,7 +262,7 @@
             case TYPE_API_MESSAGES:
             {
                 var apiName = request.getParameter("id");
-                var result = esbanalyticsUtils.getComponentMessages(connector, loggedInUser, apiName, "API", null, "ESB-STAT-PER-", timeRangeUtil);
+                var result = esbanalyticsUtils.getComponentMessages(connector, loggedInUser, apiName, "API", null, timeRangeUtil);
                 break;
             }
             case TYPE_MEDIATOR_NAMES:
@@ -339,8 +339,7 @@
             {
                 var componentId = request.getParameter("id");
                 var entryPoint = request.getParameter("entryPoint");
-                var tableName = "MEDIATOR-STAT-PER-";
-                var result = esbanalyticsUtils.getComponentMessages(connector, loggedInUser, componentId, "Mediator", entryPoint, tableName, timeRangeUtil);
+                var result = esbanalyticsUtils.getComponentMessages(connector, loggedInUser, componentId, "Mediator", entryPoint, timeRangeUtil);
                 break;
             }
             case TYPE_MESSAGE_FLOW:
@@ -481,7 +480,7 @@
             {
                 var endpointName = request.getParameter("id");
                 var entryPoint = request.getParameter("entryPoint");
-                var result = esbanalyticsUtils.getComponentMessages(connector, loggedInUser, endpointName, "Endpoint", entryPoint, "ESB-STAT-PER-", timeRangeUtil);
+                var result = esbanalyticsUtils.getComponentMessages(connector, loggedInUser, endpointName, "Endpoint", entryPoint, timeRangeUtil);
                 break;
             }
             case TYPE_SEQUENCE_NAMES:
@@ -520,7 +519,7 @@
             {
                 var sequenceName = request.getParameter("id");
                 var entryPoint = request.getParameter("entryPoint");
-                var result = esbanalyticsUtils.getComponentMessages(connector, loggedInUser, sequenceName, "Sequence", entryPoint, "MEDIATOR-STAT-PER-", timeRangeUtil);
+                var result = esbanalyticsUtils.getComponentMessages(connector, loggedInUser, sequenceName, "Sequence", entryPoint, timeRangeUtil);
                 break;
             }
             case TYPE_SEQUENCE_MESSAGE_FLOW:
@@ -698,7 +697,7 @@
             {
                 var inboundEndpointName = request.getParameter("id");
                 var entryPoint = request.getParameter("entryPoint");
-                var result = esbanalyticsUtils.getComponentMessages(connector, loggedInUser, inboundEndpointName, "Inbound EndPoint", entryPoint, "ESB-STAT-PER-", timeRangeUtil);
+                var result = esbanalyticsUtils.getComponentMessages(connector, loggedInUser, inboundEndpointName, "Inbound EndPoint", entryPoint, timeRangeUtil);
                 break;
             }
             case TYPE_INBOUND_ENDPOINT_MESSAGE_FLOW:

@@ -183,7 +183,7 @@ function getStats(connector, loggedInUser, componentType, componentName, entryPo
 /*
 * Get the list of messages arrived to a component
 */
-function getComponentMessages(connector, loggedInUser, componentName, componentType, entryPoint, tableName, timeRangeUtil) {
+function getComponentMessages(connector, loggedInUser, componentName, componentType, entryPoint, timeRangeUtil) {
     var result = {};
     var data = [];
     var timeFrom = request.getParameter("timeFrom");
@@ -409,5 +409,4 @@ function getEntrypointMessageFlow(connector, loggedInUser, timeRanges) {
     }
     return result;
 };
-
 %>
