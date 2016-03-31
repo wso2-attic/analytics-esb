@@ -123,7 +123,7 @@ function getMessageRate(connector, loggedInUser, timeFrom, timeTo, tableName, co
 /*
 * Get message stats of a component
 */
-function getStats(connector, loggedInUser, componentName, entryPoint, timeRanges, table) {
+function getStats(connector, loggedInUser, componentType, componentName, entryPoint, timeRanges, table) {
     var timeRange = Packages.org.wso2.carbon.analytics.esb.bean.TimeRange;
     var result = {};
     var searchParams = [];
@@ -140,12 +140,19 @@ function getStats(connector, loggedInUser, componentName, entryPoint, timeRanges
     var aggregateFields = [];
     aggregateFields.push(noOfInvocationSum);
     aggregateFields.push(faultCountSum);
+
+    if (componentType == "Mediator" || componentType == "ALL") {
+        componentIdentifier = "componentId";
+    } else {
+        componentIdentifier = "componentName";
+    }
+
     for (var i = 0; i < timeRanges.size(); i++) {
         timeRange = timeRanges.get(i);
         if (entryPoint == 'undefined' || entryPoint === null) {
-            query = "_componentName : \"" + componentName + "\" AND startingTime : [" + timeRange.range[0] + " TO " + timeRange.range[1] + "]";
+            query = "_" + componentIdentifier + " : \"" + componentName + "\" AND startingTime : [" + timeRange.range[0] + " TO " + timeRange.range[1] + "]";
         } else {
-            query = "entryPoint : " + entryPoint + " AND _componentName : \"" + componentName + "\" AND startingTime : [" + timeRange.range[0] + " TO " + timeRange.range[1] + "]";
+            query = "entryPoint : " + entryPoint + " AND _" + componentIdentifier + " : \"" + componentName + "\" AND startingTime : [" + timeRange.range[0] + " TO " + timeRange.range[1] + "]";
         }
         var searchParam = {
             tableName: table + timeRange.unit,
@@ -176,19 +183,16 @@ function getStats(connector, loggedInUser, componentName, entryPoint, timeRanges
 /*
 * Get the list of messages arrived to a component
 */
-function getComponentMessages(connector, loggedInUser, componentName, componentType, entryPoint, tableName) {
+function getComponentMessages(connector, loggedInUser, componentName, componentType, entryPoint, tableName, timeRangeUtil) {
     var result = {};
     var data = [];
     var timeFrom = request.getParameter("timeFrom");
     var timeTo = request.getParameter("timeTo");
     var start = parseInt(request.getParameter("start"));
     var length = parseInt(request.getParameter("length"));
-    // var userQuery = request.getParameter("query");
     var userQuery = request.getParameter("search[value]");
     var draw = request.getParameter("draw");
-    var tableName = "ESB-EVENT";
-    //TODO: remove hardcode
-    var limit = 500;
+    var timeRanges = timeRangeUtil.getDateTimeRanges(timeFrom, timeTo);
 
     if (componentType == "Mediator") {
         tempQuery = "_componentType : \"" + componentType + "\" AND _componentId : \"" + componentName + "\" AND startTime : [" + timeFrom + " TO " + timeTo + "]";
@@ -212,7 +216,10 @@ function getComponentMessages(connector, loggedInUser, componentName, componentT
             "count": length
         });
 
-    var resp = connector.search(loggedInUser, tableName, query);
+    var resp = connector.search(loggedInUser, "ESB-EVENT", query);
+    var count = connector.searchCount(loggedInUser, "ESB-EVENT", query);
+    var limit = count.getMessage();
+
     var dataPoints = JSON.parse(resp.getMessage());
     var columns = ["messageFlowId", "host", "startTime", "faultCount"];
     for (i = 0; i < dataPoints.length; i++) {
@@ -242,10 +249,6 @@ function getComponentMessages(connector, loggedInUser, componentName, componentT
     }
     result["draw"] = draw;
     result["data"] = data;
-
-    if (dataPoints.length < length) {
-        limit = start + length;
-    }
     result["recordsFiltered"] = limit;
     result["recordsTotal"] = limit;
     return result;
