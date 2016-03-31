@@ -4,14 +4,14 @@
         <ColumnDefinition>
             <Name>hashcode</Name>
             <EnableIndexing>true</EnableIndexing>
-            <IsPrimaryKey>true</IsPrimaryKey>
+            <IsPrimaryKey>false</IsPrimaryKey>
             <EnableScoreParam>false</EnableScoreParam>
             <Type>STRING</Type>
         </ColumnDefinition>
         <ColumnDefinition>
             <Name>entryName</Name>
             <EnableIndexing>true</EnableIndexing>
-            <IsPrimaryKey>true</IsPrimaryKey>
+            <IsPrimaryKey>false</IsPrimaryKey>
             <EnableScoreParam>false</EnableScoreParam>
             <Type>FACET</Type>
         </ColumnDefinition>
