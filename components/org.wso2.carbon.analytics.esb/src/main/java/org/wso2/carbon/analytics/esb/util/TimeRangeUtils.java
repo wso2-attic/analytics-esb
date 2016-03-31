@@ -37,7 +37,7 @@ import java.util.List;
 
 public class TimeRangeUtils {
 
-    private static final int INTERVAL = 10;
+    private static final int INTERVAL = 6;
     private static final Log log = LogFactory.getLog(TimeRangeUtils.class);
     private static final SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH.mm.ss");
 

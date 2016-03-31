@@ -150,9 +150,9 @@ function getStats(connector, loggedInUser, componentType, componentName, entryPo
     for (var i = 0; i < timeRanges.size(); i++) {
         timeRange = timeRanges.get(i);
         if (entryPoint == 'undefined' || entryPoint === null) {
-            query = "_" + componentIdentifier + " : \"" + componentName + "\" AND startingTime : [" + timeRange.range[0] + " TO " + timeRange.range[1] + "]";
+            query = "_" + componentIdentifier + " : \"" + componentName + "\" AND startingTime : [" + timeRange.range[0] + " TO " + timeRange.range[1] + "}";
         } else {
-            query = "entryPoint : " + entryPoint + " AND _" + componentIdentifier + " : \"" + componentName + "\" AND startingTime : [" + timeRange.range[0] + " TO " + timeRange.range[1] + "]";
+            query = "entryPoint : " + entryPoint + " AND _" + componentIdentifier + " : \"" + componentName + "\" AND startingTime : [" + timeRange.range[0] + " TO " + timeRange.range[1] + "}";
         }
         var searchParam = {
             tableName: table + timeRange.unit,
@@ -198,7 +198,7 @@ function getComponentMessages(connector, loggedInUser, componentName, componentT
         tempQuery = "_componentType : \"" + componentType + "\" AND _componentId : \"" + componentName + "\" AND startTime : [" + timeFrom + " TO " + timeTo + "]";
     } else {
         tempQuery = "_componentType : \"" + componentType + "\" AND _componentName : \"" + componentName + "\" AND startTime : [" + timeFrom + " TO " + timeTo + "]";
-    } 
+    }
 
     // Add the entry point if exists
     if (entryPoint != null && entryPoint != "undefined") {

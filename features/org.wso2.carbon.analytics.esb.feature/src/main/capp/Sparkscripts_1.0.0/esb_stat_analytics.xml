@@ -133,6 +133,8 @@
         GROUP BY
         year, month, day, hour, minute, componentId, componentName, componentType, entryPoint;
 
+        INCREMENTAL_TABLE_COMMIT esbServiceStatPerSecond;
+
         CREATE TEMPORARY TABLE esbServiceStatPerMinuteAll USING CarbonAnalytics
         OPTIONS (tableName "ESB-Stat-per-Minute",
         schema "year INT -i, month INT -i, day INT -i, hour INT -i, minute INT -i, componentId FACET -i,
@@ -155,8 +157,6 @@
         WHERE componentType = "Proxy Service" OR componentType = "API" OR componentType = "Inbound EndPoint"
         GROUP BY
         year, month, day, hour, minute) temp;
-
-        INCREMENTAL_TABLE_COMMIT esbServiceStatPerSecond;
 
         CREATE TEMPORARY TABLE mediatorStatPerMinute USING CarbonAnalytics
         OPTIONS (tableName "mediator-stat-per-minute",
@@ -202,6 +202,8 @@
         GROUP BY
         year, month, day, hour, componentId, componentName, componentType, entryPoint;
 
+        INCREMENTAL_TABLE_COMMIT esbServiceStatPerMinute;
+
         CREATE TEMPORARY TABLE esbServiceStatPerHourAll USING CarbonAnalytics
         OPTIONS (tableName "ESB-Stat-per-Hour",
         schema "year INT -i, month INT -i, day INT -i, hour INT -I, componentId FACET -i,
@@ -224,10 +226,6 @@
         WHERE componentType = "Proxy Service" OR componentType = "API" OR componentType = "Inbound EndPoint"
         GROUP BY
         year, month, day, hour) temp;
-
-        INCREMENTAL_TABLE_COMMIT esbServiceStatPerSecond;
-
-        INCREMENTAL_TABLE_COMMIT esbServiceStatPerMinute;
 
         CREATE TEMPORARY TABLE mediatorStatPerHour USING CarbonAnalytics
         OPTIONS (tableName "mediator-stat-per-hour",
@@ -272,6 +270,8 @@
         FROM esbServiceStatPerHour
         GROUP BY year, month, day, componentId, componentName, componentType, entryPoint;
 
+        INCREMENTAL_TABLE_COMMIT esbServiceStatPerHour;
+
         CREATE TEMPORARY TABLE esbServiceStatPerDayAll USING CarbonAnalytics
         OPTIONS (tableName "ESB-Stat-per-Day",
         schema "year INT -i, month INT -i, day INT -i, componentId FACET -i, componentName FACET -i,
@@ -293,8 +293,6 @@
         WHERE componentType = "Proxy Service" OR componentType = "API" OR componentType = "Inbound EndPoint"
         GROUP BY
         year, month, day) temp;
-
-        INCREMENTAL_TABLE_COMMIT esbServiceStatPerHour;
 
         CREATE TEMPORARY TABLE mediatorStatPerDay USING CarbonAnalytics
         OPTIONS (tableName "mediator-stat-per-day",
@@ -337,6 +335,8 @@
         FROM esbServiceStatPerDay
         GROUP BY year, month, componentId, componentName, componentType, entryPoint;
 
+        INCREMENTAL_TABLE_COMMIT esbServiceStatPerDay;
+
         CREATE TEMPORARY TABLE esbServiceStatPerMonthAll USING CarbonAnalytics
         OPTIONS (tableName "ESB-Stat-per-Month",
         schema "year INT -i, month INT -i, componentId FACET -i, componentName FACET -i,
@@ -358,8 +358,6 @@
         WHERE componentType = "Proxy Service" OR componentType = "API" OR componentType = "Inbound EndPoint"
         GROUP BY
         year, month) temp;
-
-        INCREMENTAL_TABLE_COMMIT esbServiceStatPerDay;
 
         CREATE TEMPORARY TABLE mediatorStatPerMonth USING CarbonAnalytics
         OPTIONS (tableName "mediator-stat-per-month",
