@@ -5,6 +5,11 @@
     var qs = gadgetUtil.getQueryString();
     var timeFrom, timeTo, timeUnit = null;
 
+    var TOPDOWN = "TD";
+    var LEFT_TO_RIGHT = "LR";
+    var orientation = TOPDOWN;
+    var gadgetMaximized = false;
+
     $(function() {
         if (qs[PARAM_ID] == null) {
             $("#canvas").html(gadgetUtil.getDefaultText());
@@ -23,7 +28,7 @@
 
         $("body").on("click", ".nodeLabel", function(e) {
             e.preventDefault();
-            if($(this).data("node-type") === "UNKNOWN") {
+            if ($(this).data("node-type") === "UNKNOWN") {
                 return;
             }
             if (page.name != TYPE_MESSAGE) {
@@ -63,20 +68,22 @@
 
     function onData(response) {
         var data = response.message;
-        console.log(data);
         if (data.length == 0) {
             $("#canvas").html(gadgetUtil.getEmptyRecordsText());
             return;
         }
+        var groups = [];
         $("#canvas").empty();
         var nodes = data;
         // Create the input graph
-        var g = new dagreD3.graphlib.Graph({ compound: true })
-            .setGraph({ rankdir: "TD" })
-            .setDefaultEdgeLabel(function() {
-                return {}; });
 
-        var groups = [];
+        orientation = (page.name === TYPE_MESSAGE) ? LEFT_TO_RIGHT : TOPDOWN;
+
+        var g = new dagreD3.graphlib.Graph({ compound: true })
+            .setGraph({ rankdir: orientation })
+            .setDefaultEdgeLabel(function() {
+                return {};
+            });
 
         for (var i = 0; i < nodes.length; i++) {
             if (nodes[i].id != null) {
@@ -153,11 +160,15 @@
                 inner.attr("transform", "translate(" + d3.event.translate + ")" +
                     "scale(" + d3.event.scale + ")");
             });
-        svg.call(zoom);
 
-        var nanoScrollerSelector = $(".nano");
-        nanoScrollerSelector.nanoScroller();
-
+        //TODO hide zoom when the gadget is gadgetMaximized
+        if (gadgetMaximized) {
+            
+        } else {
+            svg.call(zoom);
+            var nanoScrollerSelector = $(".nano");
+            nanoScrollerSelector.nanoScroller();
+        }
         inner.call(render, g);
 
         // Zoom and scale to fit
@@ -185,19 +196,19 @@
         var hashCode;
         var hiddenParams = '';
         if (node.hiddenAttributes) {
-            console.log(node.hiddenAttributes); 
+            console.log(node.hiddenAttributes);
             node.hiddenAttributes.forEach(function(item, i) {
                 hiddenParams += '&' + item.name + '=' + item.value;
-                if(item.name === "hashCode") {
+                if (item.name === "hashCode") {
                     hashCode = item.value;
                 }
             });
         }
         var targetUrl = pageUrl + '?' + hiddenParams;
-        var labelText = '<div class="nodeLabel" data-node-type="' + node.type +'" data-component-id="' + node.id + '" data-hash-code="'+ hashCode +'" data-target-url="' + targetUrl 
-          + '"><h4><a href="#">' + node.label + "</a></h4>";
+        var labelText = '<div class="nodeLabel" data-node-type="' + node.type + '" data-component-id="' + node.id 
+        + '" data-hash-code="' + hashCode + '" data-target-url="' + targetUrl + '"><h4><a href="#">' + node.label + "</a></h4>";
 
-        if (node.dataAttributes) {
+        if (node.dataAttributes && gadgetMaximized) {
             node.dataAttributes.forEach(function(item, i) {
                 labelText += "<h5><label>" + item.name + " : </label><span>" + item.value + "</span></h5>";
             });
