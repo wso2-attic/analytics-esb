@@ -53,7 +53,7 @@
         as hour, getMinute(startTime) as minute, getSeconds(startTime) as second, duration as duration, componentName,
         componentType, componentId, (CASE WHEN faultCount > 0 then 1 ELSE 0 END) as faultCount,
         entryPoint FROM esbEvent) temp
-        WHERE temp.componentType = "Proxy Service" OR temp.componentType = "API" OR temp.componentType = "Endpoint" OR
+        WHERE temp.componentType = "Proxy Service" OR temp.componentType = "API" OR 
         temp.componentType = "Inbound EndPoint"
         GROUP BY temp.year, temp.month, temp.day, temp.hour, temp.minute, temp.second, temp.componentId,
         temp.componentName, temp.componentType, temp.entryPoint) result;

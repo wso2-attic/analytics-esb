@@ -6,7 +6,7 @@ function getMostInvokedComponentNames(connector, loggedInUser, componentType) {
     var result = [];
     var timeFrom = request.getParameter("timeFrom");
     var timeTo = request.getParameter("timeTo");
-    if (componentType == "Proxy Service" || componentType == "API" || componentType == "Endpoint" || componentType == "Inbound EndPoint") {
+    if (componentType == "Proxy Service" || componentType == "API" || componentType == "Inbound EndPoint") {
         var tableName = "ESB-STAT-PER-SECOND";
     } else {
         var tableName = "MEDIATOR-STAT-PER-SECOND";
@@ -34,7 +34,7 @@ function getMostInvokedComponentNames(connector, loggedInUser, componentType) {
 */
 function getComponentNames(connector, loggedInUser, componentType) {
     result = [];
-    if (componentType == "Proxy Service" || componentType == "API" || componentType == "Endpoint" || componentType == "Inbound EndPoint") {
+    if (componentType == "Proxy Service" || componentType == "API" || componentType == "Inbound EndPoint") {
         var tableName = "ESB-STAT-PER-MINUTE";
     } else {
         var tableName = "MEDIATOR-STAT-PER-MINUTE";
@@ -267,17 +267,17 @@ function getEntrypointMessageFlow(connector, loggedInUser, timeRanges) {
     // get schema 
     var tableName = "ESB-CONFIG-ENTRY-STREAM";
     var query = stringify({
-                              "query": "_entryName : \"" + entryName + "\" AND _timestamp : [0000000000 TO " + timeTo + "] ",
-                              "start": 0,
-                              "count": 100,
-                              "sortBy": [
-                                  {
-                                      "field": "_timestamp",
-                                      "sortType": "DESC",
-                                      "reversed": "false"
-                                  }
-                              ]
-                          });
+            "query": "_entryName : \"" + entryName + "\" AND _timestamp : [" + 0000000000 + " TO " + timeTo + "]",
+            "start": 0,
+            "count": 100,
+            "sortBy": [
+                {
+                    "field": "_timestamp",
+                    "sortType": "DESC", // get the first update after "timeTo"
+                    "reversed": "false"
+                }
+            ]
+        });
     var resp = connector.search(loggedInUser, tableName, query);
     var config = JSON.parse(resp.getMessage())[0];
 

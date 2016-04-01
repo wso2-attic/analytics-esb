@@ -743,7 +743,7 @@
                 var componentName = request.getParameter("id");
                 var timeRanges = timeRangeUtil.getDateTimeRanges(timeFrom, timeTo);
                 var entryPoint = request.getParameter("entryPoint");
-                var table = "ESB-STAT-PER-";
+                var table = "MEDIATOR-STAT-PER-";
                 var result = esbanalyticsUtils.getStats(connector, loggedInUser, "Endpoint", componentName, entryPoint, timeRanges, table);
                 break;
             }
