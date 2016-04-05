@@ -200,8 +200,14 @@ function GadgetUtil() {
 
 var gadgetUtil = new GadgetUtil();
 
+var parentWindow = window.parent.document,
+    thisParentWrapper = $('#' + gadgets.rpc.RPC_ID, parentWindow).closest('.gadget-body');
+
 // Light/Dark Theme Switcher
 $(document).ready(function() {
+    
+    $(thisParentWrapper).addClass('loading');
+    
     if((gadgetUtil.getCookie('dashboardTheme') == 'dark') || gadgetUtil.getCookie('dashboardTheme') == ''){
         $('body').addClass('dark');
     }
@@ -212,4 +218,12 @@ $(document).ready(function() {
     if(typeof $.fn.nanoScroller == 'function'){
         $(".nano").nanoScroller();
     }
+    
 });
+
+var readyInterval = setInterval(function() {
+    if (document.readyState == "complete") {
+        $(thisParentWrapper).removeClass('loading');
+        clearInterval(readyInterval);
+    }   
+}, 100);

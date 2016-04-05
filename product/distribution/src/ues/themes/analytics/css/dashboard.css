@@ -1,5 +1,7 @@
 body.dashboard {
     background: #fff;
+    margin: 0;
+    padding-bottom: 40px;
 }
 
 body.dashboard.dark {
@@ -12,6 +14,12 @@ body.dashboard.dark {
 
 body.dashboard .body-wrapper {
     height: calc(100% - 50px);
+}
+
+body.dashboard .body-wrapper.loading[data-loading-style=overlay] .loading-bg {
+    opacity: 1;
+    background: #121822;
+    z-index: 100;
 }
 
 body.dashboard .body-wrapper > .nano.has-scrollbar > .nano-content {
@@ -40,6 +48,10 @@ body.dashboard .body-wrapper > .nano.has-scrollbar > .nano-content {
     background: #29313e;
 }
 
+.dashboard .page-header ul.dropdown-menu > li > a > .icon {
+    margin-right: 5px;
+}
+
 .dashboard .page-header .page-title > h1 {
     padding: 15px 15px 0 15px;
     font-weight: 100;
@@ -57,6 +69,17 @@ body.dashboard .body-wrapper > .nano.has-scrollbar > .nano-content {
     margin-right: 15px;
     margin-left: 15px;
     float: none;
+}
+
+.dashboard .page-header .navbar-header .nav > li > a {
+    padding: 6px 15px;
+}
+
+.dashboard.dark .page-header .navbar-header .nav li:hover > a,
+.dashboard.dark .page-header .navbar-header .nav li.open > a,
+.dashboard.dark .page-header .navbar-header .nav li.open > a:focus,
+.dashboard.dark .page-header .navbar-header .nav li.open > a:hover {
+    color: #E3E5E6;
 }
 
 @media (min-width: 768px) {
@@ -258,6 +281,22 @@ body.dashboard .body-wrapper > .nano.has-scrollbar > .nano-content {
     color: #29313e;
 }
 
+.sidebar-nav .product-logo {
+    text-align: center;
+    margin-top: 30px;
+    font-size: 45px;
+}
+
+.sidebar-nav .product-name {
+    text-align: center;
+    margin: 10px auto 30px;
+    font-size: 18px;
+}
+
+.sidebar-nav .switch {
+    margin-right: 5px;
+}
+
 .widget .gadget-wrapper {
     border: none;
 }
@@ -340,4 +379,111 @@ ul.sidebar-messages > li:last-child {
 
 .ues-component-settings-handle {
     display: none;
+}
+
+.light-dark-switcher {
+    margin-left: 15px;
+}
+
+.progress {
+    position: relative;
+    height: 2px;
+    display: block;
+    width: 100%;
+    background-color: transparent;
+    border-radius: 2px;
+    margin: 0;
+    overflow: hidden
+}
+.progress .determinate {
+    position: absolute;
+    background-color: inherit;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    background-color: #26a69a;
+    transition: width .3s linear
+}
+.progress .indeterminate {
+    background-color: #438CAD;
+}
+.progress .indeterminate:before {
+    content: '';
+    position: absolute;
+    background-color: inherit;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    will-change: left, right;
+    -webkit-animation: indeterminate 2.1s cubic-bezier(0.65, 0.815, 0.735, 0.395) infinite;
+    animation: indeterminate 2.1s cubic-bezier(0.65, 0.815, 0.735, 0.395) infinite
+}
+.progress .indeterminate:after {
+    content: '';
+    position: absolute;
+    background-color: inherit;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    will-change: left, right;
+    -webkit-animation: indeterminate-short 2.1s cubic-bezier(0.165, 0.84, 0.44, 1) infinite;
+    animation: indeterminate-short 2.1s cubic-bezier(0.165, 0.84, 0.44, 1) infinite;
+    -webkit-animation-delay: 1.15s;
+    animation-delay: 1.15s
+}
+@-webkit-keyframes indeterminate {
+    0% {
+        left: -35%;
+        right: 100%
+    }
+    60% {
+        left: 100%;
+        right: -90%
+    }
+    100% {
+        left: 100%;
+        right: -90%
+    }
+}
+@keyframes indeterminate {
+    0% {
+        left: -35%;
+        right: 100%
+    }
+    60% {
+        left: 100%;
+        right: -90%
+    }
+    100% {
+        left: 100%;
+        right: -90%
+    }
+}
+@-webkit-keyframes indeterminate-short {
+    0% {
+        left: -200%;
+        right: 100%
+    }
+    60% {
+        left: 107%;
+        right: -8%
+    }
+    100% {
+        left: 107%;
+        right: -8%
+    }
+}
+@keyframes indeterminate-short {
+    0% {
+        left: -200%;
+        right: 100%
+    }
+    60% {
+        left: 107%;
+        right: -8%
+    }
+    100% {
+        left: 107%;
+        right: -8%
+    }
 }
