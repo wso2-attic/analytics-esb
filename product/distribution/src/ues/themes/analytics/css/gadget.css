@@ -114,16 +114,22 @@ body.dark .form-control-btn {
 }
 
 body.dark #date-select .btn-default {
-    background: #E3E5E6;
+    background: #636C7C;
+    color: #fff;
+    border-color: #353C48;
 }
 
-body.dark #date-select .btn-default:hover {
-    background: #f1f1f1;
+body.dark #date-select .btn-default:hover, body.dark #date-select .btn-default[aria-expanded=true] {
+    background: #1E2531;
 }
 
-body.dark #date-select .btn-default.active, #date-select .btn-default.active:hover {
+#date-select .btn-default[aria-expanded=true] {
+    background: #e6e6e6;
+}
+
+body.dark #date-select .btn-default.active, body.dark #date-select .btn-default.active:hover {
     background: #438CAD;
-    border-color: #438CAD;
+    border-color: #353C48;
 }
 
 body.dark .stats {

@@ -18,8 +18,30 @@ body.dashboard .body-wrapper {
 
 body.dashboard .body-wrapper.loading[data-loading-style=overlay] .loading-bg {
     opacity: 1;
-    background: #121822;
+    background: #fff;
     z-index: 100;
+}
+
+body.dashboard .body-wrapper.loading .loading-animation .logo .pulse-line,
+body.dashboard .body-wrapper.loading .loading-animation .logo .circle {
+    stroke: #222;
+}
+
+body.dashboard .body-wrapper.loading .loading-animation p {
+    color: #222;
+}
+
+body.dashboard.dark .body-wrapper.loading[data-loading-style=overlay] .loading-bg {
+    background: #121822;
+}
+
+body.dashboard.dark .body-wrapper.loading .loading-animation .logo .pulse-line,
+body.dashboard.dark .body-wrapper.loading .loading-animation .logo .circle {
+    stroke: #fff;
+}
+
+body.dashboard.dark .body-wrapper.loading .loading-animation p {
+    color: #fff;
 }
 
 body.dashboard .body-wrapper > .nano.has-scrollbar > .nano-content {
