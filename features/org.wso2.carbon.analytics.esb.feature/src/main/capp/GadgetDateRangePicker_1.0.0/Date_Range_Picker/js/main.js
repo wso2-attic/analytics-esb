@@ -47,13 +47,17 @@ $(function() {
             $("#reportrange #btnCustomRange").addClass("active");
         }
     }
+    
+    $('#btnCustomRange').on('apply.daterangepicker', function(ev, picker) {
+        cb(picker.startDate, picker.endDate);
+    });
 
     $('#btnCustomRange').daterangepicker({
         "timePicker": true,
         "autoApply": true,
         "alwaysShowCalendars": true,
         "opens": "left"
-    }, cb);
+    });
 
     $("#btnLastHour").click(function() {
         dateLabel.html(moment().subtract(1, 'hours').format('MMMM D, YYYY hh:mm A') + ' - ' + moment().format('MMMM D, YYYY hh:mm A'));

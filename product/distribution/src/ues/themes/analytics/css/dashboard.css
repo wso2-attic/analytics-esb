@@ -48,6 +48,10 @@ body.dashboard .body-wrapper > .nano.has-scrollbar > .nano-content {
     background: #29313e;
 }
 
+.dashboard .page-header ul.dropdown-menu > li > a > .icon {
+    margin-right: 5px;
+}
+
 .dashboard .page-header .page-title > h1 {
     padding: 15px 15px 0 15px;
     font-weight: 100;
