@@ -24,7 +24,7 @@
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
-    <artifactId>org.wso2.das.multitenancy.dashboard.ui</artifactId>
+    <artifactId>org.wso2.das4esb.multitenancy.dashboard.ui</artifactId>
     <packaging>bundle</packaging>
     <name>WSO2 Data Analytics Server - Multi-tenant Dashboard</name>
     <build>
@@ -44,7 +44,7 @@
                         <Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
                         <Bundle-Name>${project.artifactId}</Bundle-Name>
                         <Export-Package>
-                            org.wso2.multitenancy.das.dashboard.ui.*; version="${das.release.version}",
+                            org.wso2.multitenancy.das4esb.dashboard.ui.*; version="${das.release.version}",
                         </Export-Package>
                         <Import-Package>
                             !javax.xml.namespace,
