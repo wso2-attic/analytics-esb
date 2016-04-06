@@ -100,18 +100,6 @@
     <div class="sidebar-wrapper sidebar-nav toggled hidden-xs" id="left-sidebar" data-side="left" data-width="260" style="width:260px">
         <div class="nano">
             <div class="nano-content">
-                
-                <div class="user hidden">
-                    <div class="user-image">
-                        <span class="default">
-                            <span class="icon fw fw-stack">   
-                                <i class="fw fw-circle fw-stack-2x"></i>
-                                <i class="fw fw-user fw-stack-1x fw-inverse"></i>
-                            </span>
-                        </span>
-                    </div>
-                    <div class="user-name"><%= user ? user.username : "anon" %></div>
-                </div>
                     
                 <div class="product-logo">
                     <i class="icon fw fw-wso2-logo"></i>
@@ -145,7 +133,7 @@
                 <div class="light-dark-switcher">
                     <label>Light</label>
                     <label class="switch">
-                        <input type="checkbox" id="themeToggle" checked="checked">
+                        <input type="checkbox" data-toggle="theme" checked="checked">
                         <span class="helper"></span>
                     </label>   
                     <label>Dark</label>
@@ -263,8 +251,17 @@
                             <li class="<%= (p.id === pageId) ? 'active': '' %>"><a href="<%=dbRoot%><%=p.id%><%=queryString%>"><%=encodeHtml(p.title)%></a></li>
                         <% } %>
                     </ul>
-
+                                
                     <hr>
+                
+                    <div class="light-dark-switcher">
+                        <label>Light</label>
+                        <label class="switch">
+                            <input type="checkbox" data-toggle="theme" checked="checked">
+                            <span class="helper"></span>
+                        </label>   
+                        <label>Dark</label>
+                    </div>
 
                     <ul class="nav nav-pills nav-stacked">
                         <% if (user) { %>
@@ -448,22 +445,28 @@
         
         $(document).ready(function() {
             if((getCookie('dashboardTheme') == 'dark') || (getCookie('dashboardTheme') == '')){
-                $('#themeToggle').attr('checked', 'checked');
+                $('[data-toggle="theme"]').attr('checked', 'checked');
                 $('body').addClass('dark');  
             }
             else{
-                $('#themeToggle').removeAttr('checked');
+                $('[data-toggle="theme"]').removeAttr('checked');
                 $('body').removeClass('dark');
             }
         });
                 
-        $('#themeToggle').change(function(){
+        $('[data-toggle="theme"]').change(function(){
             if($(this).prop('checked') == true){
+                $('[data-toggle="theme"]').each(function(){
+                    $('[data-toggle="theme"]').attr('checked', 'checked');
+                });
                 $('body').addClass('dark');
                 $('iframe').contents().find('body').addClass('dark');
                 document.cookie = "dashboardTheme=dark";
             }
             else{
+                $('[data-toggle="theme"]').each(function(){
+                    $(this).removeAttr('checked');
+                });
                 $('body').removeClass('dark');
                 $('iframe').contents().find('body').removeClass('dark');
                 document.cookie = "dashboardTheme=light";
