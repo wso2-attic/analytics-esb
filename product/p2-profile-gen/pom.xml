@@ -138,7 +138,7 @@
                                     org.wso2.carbon:org.wso2.carbon.core.ui.feature:${carbon.kernel.version}
                                 </featureArtifactDef>
                                 <featureArtifactDef>
-                                    org.wso2.carbon.analytics.esb:org.wso2.das.styles.feature:${das.release.version}
+                                    org.wso2.carbon.analytics.esb:org.wso2.das4esb.styles.feature:${das.release.version}
                                 </featureArtifactDef>
 
                                 <!-- ********* START - Registry related  *********** -->
@@ -233,7 +233,7 @@
                                     org.wso2.carbon.identity:org.wso2.carbon.security.mgt.feature:${carbon.identity.version}
                                 </featureArtifactDef>
                                 <featureArtifactDef>
-                                    org.wso2.carbon.analytics.esb:org.wso2.das.multitenancy.dashboard.ui.feature:${das.release.version}
+                                    org.wso2.carbon.analytics.esb:org.wso2.das4esb.multitenancy.dashboard.ui.feature:${das.release.version}
                                 </featureArtifactDef>
                                 <featureArtifactDef>
                                     org.wso2.carbon.commons:org.wso2.carbon.tenant.mgt.common.feature:${carbon.commons.version}
@@ -299,7 +299,7 @@
                                     org.wso2.carbon.analytics:org.wso2.carbon.analytics.stream.persistence.server.feature:${carbon.analytics.version}
                                 </featureArtifactDef>
                                 <featureArtifactDef>
-                                    org.wso2.carbon.event-processing:org.wso2.carbon.event.execution.manager.feature:${carbon.event-processing.version}
+                                    org.wso2.carbon.analytics-common:org.wso2.carbon.event.execution.manager.feature:${carbon.analytics.common.version}
                                 </featureArtifactDef>
                                 <!-- ************** END - EVENT PROCESSING FEATURES ************ -->
 
@@ -426,7 +426,7 @@
                                     <version>${carbon.kernel.version}</version>
                                 </feature>
                                 <feature>
-                                    <id>org.wso2.das.styles.feature.group</id>
+                                    <id>org.wso2.das4esb.styles.feature.group</id>
                                     <version>${das.release.version}</version>
                                 </feature>
 
@@ -546,7 +546,7 @@
                                     <version>${carbon.identity.version}</version>
                                 </feature>
                                 <feature>
-                                    <id>org.wso2.das.multitenancy.dashboard.ui.feature.group</id>
+                                    <id>org.wso2.das4esb.multitenancy.dashboard.ui.feature.group</id>
                                     <version>${das.release.version}</version>
                                 </feature>
                                 <!-- END - Multitenancy related -->
@@ -632,7 +632,7 @@
                                 </feature>
                                 <feature>
                                     <id>org.wso2.carbon.event.execution.manager.feature.group</id>
-                                    <version>${carbon.event-processing.version}</version>
+                                    <version>${carbon.analytics.common.version}</version>
                                 </feature>
 
                                 <!-- ************** END - EVENT PROCESSING FEATURES ************ -->

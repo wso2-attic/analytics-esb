@@ -33,12 +33,13 @@
     <modules>
         <module>components</module>
         <module>features</module>
-        <module>product/org.wso2.das.multitenancy.dashboard.ui</module>
+        <module>product/org.wso2.das4esb.multitenancy.dashboard.ui</module>
         <module>product/org.wso2.cep.storm.dependencies</module>
         <module>product/styles</module>
         <module>product/features</module>
         <module>product/p2-profile-gen</module>
         <module>product/distribution</module>
+        <module>product/integration</module>
     </modules>
 
     <dependencyManagement>
@@ -105,31 +106,31 @@
                 <version>2.0.0.v200706191603</version>
             </dependency>
             <dependency>
-                <groupId>org.wso2.das</groupId>
-                <artifactId>org.wso2.das.styles</artifactId>
+                <groupId>org.wso2.das4esb</groupId>
+                <artifactId>org.wso2.das4esb.styles</artifactId>
                 <version>${das.release.version}</version>
             </dependency>
             <dependency>
-                <groupId>org.wso2.das</groupId>
-                <artifactId>org.wso2.das.multitenancy.styles</artifactId>
+                <groupId>org.wso2.das4esb</groupId>
+                <artifactId>org.wso2.das4esb.multitenancy.styles</artifactId>
                 <version>${das.release.version}</version>
             </dependency>
             <dependency>
-                <groupId>org.wso2.das</groupId>
-                <artifactId>org.wso2.das.multitenancy.dashboard.ui</artifactId>
+                <groupId>org.wso2.das4esb</groupId>
+                <artifactId>org.wso2.das4esb.multitenancy.dashboard.ui</artifactId>
                 <version>${das.release.version}</version>
             </dependency>
             <!-- ************************ END - Vanilla carbon server + DAS style ************* -->
 
             <!-- START - Integration test dependencies -->
             <dependency>
-                <groupId>org.wso2.das</groupId>
-                <artifactId>org.wso2.das.integration.common.utils</artifactId>
+                <groupId>org.wso2.das4esb</groupId>
+                <artifactId>org.wso2.das4esb.integration.common.utils</artifactId>
                 <version>${das.release.version}</version>
             </dependency>
             <dependency>
-                <groupId>org.wso2.das</groupId>
-                <artifactId>org.wso2.das.integration.common.clients</artifactId>
+                <groupId>org.wso2.das4esb</groupId>
+                <artifactId>org.wso2.das4esb.integration.common.clients</artifactId>
                 <version>${das.release.version}</version>
             </dependency>
             <dependency>
