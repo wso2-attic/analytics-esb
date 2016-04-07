@@ -1,9 +1,9 @@
 var vizgSettings = {
     colorScale: colorbrewer.RdYlBu[4].reverse(),
     colors: {
-        green:"#5FCE9B",
+        green:"#5CB85C",
         blue:"#438CAD",
-        red:"#E87352",
+        red:"#D9483D",
         yellow:"#EECA5A",
         purple:"#B6688F",
         grey:"434343",

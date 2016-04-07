@@ -4,8 +4,10 @@ var href = parent.window.location.href,
 
 var TOPIC = "range-selected";
 $(function() {
-    var dateLabel = $('#reportrange .btn-label');
+    var dateLabel = $('#reportrange .btn-label'),
+        datePickerBtn = $('#btnCustomRange');
     //if there are url elemements present, use them. Otherwis use last hour
+
     var timeFrom = moment().subtract(29, 'days');
     var timeTo = moment();
     var message = {};
@@ -48,11 +50,19 @@ $(function() {
         }
     }
     
-    $('#btnCustomRange').on('apply.daterangepicker', function(ev, picker) {
+    $(datePickerBtn).on('apply.daterangepicker', function(ev, picker) {
         cb(picker.startDate, picker.endDate);
     });
+    
+    $(datePickerBtn).on('show.daterangepicker', function(ev, picker) {
+        $(this).attr('aria-expanded', 'true');
+    });
+    
+    $(datePickerBtn).on('hide.daterangepicker', function(ev, picker) {
+        $(this).attr('aria-expanded', 'false');
+    });
 
-    $('#btnCustomRange').daterangepicker({
+    $(datePickerBtn).daterangepicker({
         "timePicker": true,
         "autoApply": true,
         "alwaysShowCalendars": true,

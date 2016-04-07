@@ -51,6 +51,8 @@ var COLOR_BLUE = "#438CAD";
 var COLOR_RED = "#D9534F";
 var COLOR_GREEN = "#5CB85C";
 
+var PARENT_WINDOW = window.parent.document;
+
 function GadgetUtil() {
     var DEFAULT_START_TIME = new Date(moment().subtract(29, 'days')).getTime();
     var DEFAULT_END_TIME = new Date(moment()).getTime();
@@ -195,18 +197,32 @@ function GadgetUtil() {
         }
         return "";
     };
+    
+    this.getGadgetWrapper = function(){
+        return $('#' + gadgets.rpc.RPC_ID, PARENT_WINDOW).closest('.gadget-body');
+    };
+    
+    this.getGadgetParentWrapper = function(){
+        return $('#' + gadgets.rpc.RPC_ID, PARENT_WINDOW).closest('.ues-component-box');
+    };
+    
+    this.getView = function(){
+        if( $('#' + gadgets.rpc.RPC_ID, PARENT_WINDOW).closest('.ues-component-box').hasClass('ues-component-fullview') ){
+            return 'maximized';
+        }
+        else{
+            return 'minimized';
+        }
+    };
 
 }
 
 var gadgetUtil = new GadgetUtil();
 
-var parentWindow = window.parent.document,
-    thisParentWrapper = $('#' + gadgets.rpc.RPC_ID, parentWindow).closest('.gadget-body');
-
 // Light/Dark Theme Switcher
 $(document).ready(function() {
     
-    $(thisParentWrapper).addClass('loading');
+    $(gadgetUtil.getGadgetWrapper()).addClass('loading');
     
     if((gadgetUtil.getCookie('dashboardTheme') == 'dark') || gadgetUtil.getCookie('dashboardTheme') == ''){
         $('body').addClass('dark');
@@ -223,7 +239,7 @@ $(document).ready(function() {
 
 var readyInterval = setInterval(function() {
     if (document.readyState == "complete") {
-        $(thisParentWrapper).removeClass('loading');
+        $(gadgetUtil.getGadgetWrapper()).removeClass('loading');
         clearInterval(readyInterval);
     }   
 }, 100);
