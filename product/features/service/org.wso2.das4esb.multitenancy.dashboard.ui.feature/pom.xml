@@ -34,7 +34,6 @@
         <dependency>
             <groupId>org.wso2.carbon.analytics.esb</groupId>
             <artifactId>org.wso2.das4esb.multitenancy.dashboard.ui</artifactId>
-	    <version>${das.release.version}</version>
         </dependency>
         <dependency>
             <groupId>org.wso2.carbon</groupId>

@@ -106,32 +106,32 @@
                 <version>2.0.0.v200706191603</version>
             </dependency>
             <dependency>
-                <groupId>org.wso2.das4esb</groupId>
+                <groupId>org.wso2.carbon.analytics.esb</groupId>
                 <artifactId>org.wso2.das4esb.styles</artifactId>
-                <version>${das.release.version}</version>
+                <version>${esb.analytics.version}</version>
             </dependency>
             <dependency>
-                <groupId>org.wso2.das4esb</groupId>
+                <groupId>org.wso2.carbon.analytics.esb</groupId>
                 <artifactId>org.wso2.das4esb.multitenancy.styles</artifactId>
-                <version>${das.release.version}</version>
+                <version>${esb.analytics.version}</version>
             </dependency>
             <dependency>
-                <groupId>org.wso2.das4esb</groupId>
+                <groupId>org.wso2.carbon.analytics.esb</groupId>
                 <artifactId>org.wso2.das4esb.multitenancy.dashboard.ui</artifactId>
-                <version>${das.release.version}</version>
+                <version>${esb.analytics.version}</version>
             </dependency>
             <!-- ************************ END - Vanilla carbon server + DAS style ************* -->
 
             <!-- START - Integration test dependencies -->
             <dependency>
-                <groupId>org.wso2.das4esb</groupId>
+                <groupId>org.wso2.carbon.analytics.esb</groupId>
                 <artifactId>org.wso2.das4esb.integration.common.utils</artifactId>
-                <version>${das.release.version}</version>
+                <version>${esb.analytics.version}</version>
             </dependency>
             <dependency>
-                <groupId>org.wso2.das4esb</groupId>
+                <groupId>org.wso2.carbon.analytics.esb</groupId>
                 <artifactId>org.wso2.das4esb.integration.common.clients</artifactId>
-                <version>${das.release.version}</version>
+                <version>${esb.analytics.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.wso2.carbon.commons</groupId>
@@ -430,10 +430,9 @@
     </profiles>
 
     <properties>
-        <das.release.version>1.0.0-SNAPSHOT</das.release.version>
+        <esb.analytics.version>1.0.0-SNAPSHOT</esb.analytics.version>
 
         <carbon.kernel.version>4.4.3</carbon.kernel.version>
-        <esb.analytics.version>1.0.0-SNAPSHOT</esb.analytics.version>
         <carbon.analytics.version>1.0.6-SNAPSHOT</carbon.analytics.version>
         <carbon.analytics.common.version>5.0.12-SNAPSHOT</carbon.analytics.common.version>
         <carbon.automationutils.version>4.4.1</carbon.automationutils.version>

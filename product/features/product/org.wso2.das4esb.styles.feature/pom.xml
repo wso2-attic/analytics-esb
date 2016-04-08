@@ -33,7 +33,7 @@
         <dependency>
             <groupId>org.wso2.carbon.analytics.esb</groupId>
             <artifactId>org.wso2.das4esb.styles</artifactId>
-	    <version>${das.release.version}</version>
+	    <version>${esb.analytics.version}</version>
         </dependency>
     </dependencies>
 

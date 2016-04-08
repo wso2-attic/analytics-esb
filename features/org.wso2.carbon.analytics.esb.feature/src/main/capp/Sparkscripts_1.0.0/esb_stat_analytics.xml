@@ -8,7 +8,7 @@
         componentIndex INT -i, componentId STRING, startTime LONG, endTime LONG, duration INT, beforePayload STRING,
         afterPayload STRING, contextPropertyMap STRING, transportPropertyMap STRING, children STRING, entryPoint
         STRING, entryPointHashcode INTEGER, faultCount INT, _timestamp LONG -i",
-        incrementalParams "esbFlowEvent, 60");
+        incrementalParams "esbFlowEvent, 30");
 
         CREATE TEMPORARY TABLE esbEvent USING CarbonAnalytics
         OPTIONS (tableName "ESB-EVENT",
@@ -17,7 +17,7 @@
         FACET -i, afterPayload STRING, contextPropertyMap STRING, transportPropertyMap STRING, children STRING,
         entryPoint FACET -i, entryPointHashcode FACET -i, faultCount INT, _timestamp LONG -i",
         primaryKeys "messageFlowId, componentId, componentType, componentIndex",
-        incrementalParams "esbEvent, 60",
+        incrementalParams "esbEvent, 30",
         mergeSchema "false");
 
         INSERT INTO TABLE esbEvent
@@ -36,7 +36,7 @@
         noOfInvocation LONG -sp, faultCount INT, startingTime LONG -i, facetStartTime FACET -i, entryPoint FACET -i,
         _timestamp LONG -i",
         primaryKeys "year, month, day, hour, minute, second, componentId, componentType",
-        incrementalParams "esbServiceStatPerSecond, 60",
+        incrementalParams "esbServiceStatPerSecond, 30",
         mergeSchema "false");
 
         INSERT INTO TABLE esbServiceStatPerSecond
@@ -90,7 +90,7 @@
         maxDuration INT, noOfInvocation LONG -sp, faultCount INT, startingTime LONG -i, facetStartTime FACET -i,
         _timestamp LONG -i",
         primaryKeys "year, month, day, hour, minute, second, entryPointHashcode, hashCode, componentId, componentType",
-        incrementalParams "mediatorStatPerSecond, 60",
+        incrementalParams "mediatorStatPerSecond, 30",
         mergeSchema "false");
 
         INSERT INTO TABLE mediatorStatPerSecond

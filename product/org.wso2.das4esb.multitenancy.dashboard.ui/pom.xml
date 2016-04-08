@@ -44,7 +44,7 @@
                         <Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
                         <Bundle-Name>${project.artifactId}</Bundle-Name>
                         <Export-Package>
-                            org.wso2.multitenancy.das4esb.dashboard.ui.*; version="${das.release.version}",
+                            org.wso2.multitenancy.das4esb.dashboard.ui.*; version="${esb.analytics.version}",
                         </Export-Package>
                         <Import-Package>
                             !javax.xml.namespace,

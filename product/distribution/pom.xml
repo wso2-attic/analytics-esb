@@ -25,7 +25,6 @@
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
-    <groupId>org.wso2.das4esb</groupId>
     <artifactId>wso2analytics-esb</artifactId>
     <packaging>jar</packaging>
  
