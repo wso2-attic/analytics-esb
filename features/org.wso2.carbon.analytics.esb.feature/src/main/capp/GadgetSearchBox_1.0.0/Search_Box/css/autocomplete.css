@@ -15,7 +15,7 @@
 .tt-menu {
     background-color: #fff;
     color: #1E2531;
-    margin: 5px 0;
+    margin: -15px 0 0 15px;
     outline: 0;
     border: 1px solid #ccc;
     right: 0;
@@ -40,4 +40,12 @@
 .tt-suggestion.tt-selectable:hover {
     background: #ccc;
     cursor: pointer;
+}
+
+.form-group {
+    margin-bottom: 0;
+}
+
+pre {
+    display: none;
 }
