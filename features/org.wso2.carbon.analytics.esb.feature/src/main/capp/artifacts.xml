@@ -1,11 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <artifacts>
     <artifact name="org.wso2.carbon.analytics.esb" version="1.0.0" type="carbon/application">
-	<dependency artifact="AnalyticsStatEventStream" version="1.0.0" include="true" serverRole="DataAnalyticsServer"/>
+	    <dependency artifact="AnalyticsStatEventStream" version="1.0.0" include="true" serverRole="DataAnalyticsServer"/>
+	    <dependency artifact="ESBStatPerSecondStream" version="1.0.0" include="true" serverRole="DataAnalyticsServer"/>
         <dependency artifact="AnalyticsStatEventSink" version="1.0.0" include="true" serverRole="DataAnalyticsServer"/>
-        <dependency artifact="AnaylticsStatEventReceiver" version="1.0.0" include="true" serverRole="DataAnalyticsServer"/>
+        <dependency artifact="AnalyticsStatEventReceiver" version="1.0.0" include="true" serverRole="DataAnalyticsServer"/>
         <dependency artifact="AnalyticsConfigEventStream" version="1.0.0" include="true" serverRole="DataAnalyticsServer"/>
         <dependency artifact="AnalyticsConfigEventSink" version="1.0.0" include="true" serverRole="DataAnalyticsServer"/>
+        <dependency artifact="ESBStatPerSecondEventSink" version="1.0.0" include="true" serverRole="DataAnalyticsServer"/>
         <dependency artifact="AnalyticsConfigEventReceiver" version="1.0.0" include="true" serverRole="DataAnalyticsServer"/>
         <dependency artifact="Sparkscripts" version="1.0.0" include="true" serverRole="DataAnalyticsServer"/>
         <!--<dependency artifact="Sparkscripts_per_second" version="1.0.0" include="true" serverRole="DataAnalyticsServer"/>

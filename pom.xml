@@ -391,13 +391,23 @@
                 <artifactId>org.wso2.carbon.analytics.spark.core</artifactId>
                 <version>${carbon.analytics.version}</version>
             </dependency>
+            <dependency>
+                <groupId>org.wso2.siddhi</groupId>
+                <artifactId>siddhi-core</artifactId>
+                <version>${siddhi.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.wso2.siddhi</groupId>
+                <artifactId>siddhi-query-api</artifactId>
+                <version>${siddhi.version}</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
     <scm>
-        <url>https://github.com/wso2/product-das.git</url>
-        <developerConnection>scm:git:https://github.com/wso2/product-das.git</developerConnection>
-        <connection>scm:git:https://github.com/wso2/product-das.git</connection>
+        <url>https://github.com/wso2/analytics-esb.git</url>
+        <developerConnection>scm:git:https://github.com/wso2/analytics-esb.git</developerConnection>
+        <connection>scm:git:https://github.com/wso2/analytics-esb.git</connection>
         <tag>HEAD</tag>
     </scm>
 
@@ -446,6 +456,7 @@
         <carbon.event-processing.version>2.0.13-SNAPSHOT</carbon.event-processing.version>
         <carbon.dashboard.version>1.0.14</carbon.dashboard.version>
         <carbon.metrics.version>1.2.0</carbon.metrics.version>
+        <siddhi.version>3.0.6-SNAPSHOT</siddhi.version>
 
         <jaggery.version>0.12.1</jaggery.version>
         <jaggery.modules.carbon.version>1.5.0</jaggery.modules.carbon.version>
