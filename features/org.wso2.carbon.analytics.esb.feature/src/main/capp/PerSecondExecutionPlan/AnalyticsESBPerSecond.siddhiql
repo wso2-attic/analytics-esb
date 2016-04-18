@@ -1,0 +1,25 @@
+/* Enter a unique ExecutionPlan */
+@Plan:name('AnalyticsESBPerSecond')
+
+/* Enter a unique description for ExecutionPlan */
+-- @Plan:description('ExecutionPlan')
+
+@Import('esb-flow-entry-stream:1.0.0')
+define stream flowEntry(meta_compressed bool, messageId string, flowData string);
+
+@Export('ESB-Stat-per-Second:1.0.0')
+define stream perSecond (year int, month int, day int, hour int, minute int, second int, componentId string, componentName string, componentType string, totalDuration long, minDuration int, maxDuration int, noOfInvocation long, faultCount int, startingTime long, facetStartTime string, entryPoint string, _timestamp long);
+
+from flowEntry#esbAnalytics:decompress(meta_compressed, flowData, messageId)
+select messageFlowId, host, hashCode, componentName, componentType, componentIndex, componentId, startTime, endTime, duration, beforePayload, afterPayload, contextPropertyMap, transportPropertyMap, children, entryPoint, entryPointHashcode, faultCount, _timestamp
+insert into outputStream;
+
+from outputStream[componentType == 'Proxy Service' OR componentType == 'API' OR componentType == 'Inbound EndPoint']#window.externalTimeBatch(startTime, 1 sec)
+select time:extract(startTime, 'year') as year, time:extract(startTime, 'month') as month, time:extract(startTime, 'day') as day, time:extract(startTime, 'hour') as hour, time:extract(startTime, 'minute') as minute, time:extract(startTime, 'second') as second, componentId, componentName, componentType, sum(duration) as totalDuration, min(duration) as minDuration, max(duration) as maxDuration, count(*) as noOfInvocation, 0 as faultCount, esbAnalytics:getSecondStartingTime(startTime) as startingTime, convert(esbAnalytics:getSecondStartingTime(startTime), 'string') as facetStartTime, entryPoint, esbAnalytics:getSecondStartingTime(startTime) as _timestamp
+insert current events into tempPerSecond;
+
+from tempPerSecond
+select *
+group by year, month, day, hour, minute, second, componentId, componentName, componentType, entryPoint
+insert into perSecond;
+

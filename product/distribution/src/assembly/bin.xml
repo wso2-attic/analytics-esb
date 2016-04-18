@@ -242,30 +242,24 @@
                 ../p2-profile-gen/target/wso2carbon-core-${carbon.kernel.version}/repository/deployment/server/jaggeryapps/portal
             </directory>
             <outputDirectory>${pom.artifactId}-${pom.version}/repository/deployment/server/jaggeryapps/portal</outputDirectory>
+            <excludes>
+                <exclude>**/extensions/themes/basic/css/dashboard.css</exclude>
+                <exclude>**/extensions/themes/basic/css/portal.css</exclude>
+                <exclude>**/extensions/themes/basic/js/*</exclude>
+            </excludes>
         </fileSet>
 
-        <!-- Adding analytics theme to extensions -->
+        <!-- Adding customized analytics theme to themes directory -->
         <fileSet>
             <directory>
-                src/ues/themes
+                src/ues/themes/basic
             </directory>
-            <outputDirectory>${pom.artifactId}-${pom.version}/repository/deployment/server/jaggeryapps/portal/extensions/themes</outputDirectory>
+            <outputDirectory>${pom.artifactId}-${pom.version}/repository/deployment/server/jaggeryapps/portal/extensions/themes/basic/</outputDirectory>
             <includes>
                 <include>**/*</include>
             </includes>
         </fileSet>
-
-        <!-- Adding custom designer.json which as specified analytics as the default theme -->
-        <fileSet>
-            <directory>
-                src/ues/configs
-            </directory>
-            <outputDirectory>${pom.artifactId}-${pom.version}/repository/deployment/server/jaggeryapps/portal/configs</outputDirectory>
-            <includes>
-                <include>**/*</include>
-            </includes>
-        </fileSet>
-
+       
         <!-- END UES related dashboard artifacts -->
 
 
@@ -290,6 +284,9 @@
                 <include>**/*.sql</include>
             </includes>
         </fileSet>
+
+
+        
 
     </fileSets>
 
