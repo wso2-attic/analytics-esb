@@ -29,7 +29,7 @@ $(function() {
         }).on('typeahead:rendered', function() {
             var typeAhead = $('.tt-menu'),
                 parentWindow = window.parent.document,
-                thisParentWrapper = $('#' + gadgets.rpc.RPC_ID, parentWindow).closest('.gadget-body');
+                thisParentWrapper = $('#' + gadgets.rpc.RPC_ID, parentWindow).closest('.grid-stack-item');
 
             $('head', parentWindow).append('<link rel="stylesheet" type="text/css" href="'+resolveURI+'store/carbon.super/gadget/Search_Box/css/autocomplete.css" />');
             $('body', parentWindow).append('<script src="'+resolveURI+'store/carbon.super/gadget/Search_Box/js/typeahead.bundle.js" type="text/javascript"></script>');
