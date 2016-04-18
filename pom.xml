@@ -401,6 +401,21 @@
                 <artifactId>siddhi-query-api</artifactId>
                 <version>${siddhi.version}</version>
             </dependency>
+            <dependency>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-lang3</artifactId>
+                <version>${commons.lang3.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>commons-io</groupId>
+                <artifactId>commons-io</artifactId>
+                <version>${commons.io.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.json.wso2</groupId>
+                <artifactId>json</artifactId>
+                <version>${orbit.version.json}</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
@@ -472,6 +487,7 @@
         <orbit.version.disruptor>2.10.4-wso2v2</orbit.version.disruptor>
         <orbit.version.h2>1.2.140.wso2v3</orbit.version.h2>
         <orbit.version.joda-time>2.8.2.wso2v1</orbit.version.joda-time>
+         <orbit.version.json>2.0.0.wso2v1</orbit.version.json>
 
         <jacoco.agent.version>0.7.4.201502262128</jacoco.agent.version>
         <testng.version>6.1.1</testng.version>
@@ -485,6 +501,11 @@
         <selenium.version>2.40.0</selenium.version>
         <xfer.version>3.3.0</xfer.version>
         <commons.logging.version>1.1.1</commons.logging.version>
+        <commons.lang3.version>3.4</commons.lang3.version>
+        <commons.io.version>2.4</commons.io.version>
+        
+        
+        
         <axis2.version>1.6.1.wso2v11</axis2.version>
         <carbon.p2.plugin.version>1.5.3</carbon.p2.plugin.version>
         <gson.version>2.3.1</gson.version>
