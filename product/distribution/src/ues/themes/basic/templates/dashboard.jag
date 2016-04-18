@@ -92,6 +92,7 @@
 
     <!-- Common CSS -->
     <link rel="stylesheet" type="text/css" href="<%=urlPrefix%>css/common.css" />
+    <link rel="stylesheet" type="text/css" href="<%=urlPrefix%>css/analytics.css" />
 
     <!-- Custom theme overrides -->
     <link rel="stylesheet" href="<%=urlPrefix%><%=utils.dashboardStyles(dashboard.theme)%>">
@@ -561,17 +562,6 @@
             });
             
         });
-
-        function toggleHeading(source, show) {
-            if (source.hasClass('ues-no-heading')) {
-                var heading = source.find('.ues-component-heading');
-                if (show) {
-                    heading.slideDown();
-                } else {
-                    heading.slideUp();
-                }
-            }
-        }
         
         function toggleProductLogo(sidebarEventType){
             var logo = $('#product-logo');
