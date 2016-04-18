@@ -92,7 +92,6 @@
 
     <!-- Common CSS -->
     <link rel="stylesheet" type="text/css" href="<%=urlPrefix%>css/common.css" />
-    <link rel="stylesheet" type="text/css" href="<%=urlPrefix%>css/analytics.css" />
 
     <!-- Custom theme overrides -->
     <link rel="stylesheet" href="<%=urlPrefix%><%=utils.dashboardStyles(dashboard.theme)%>">
