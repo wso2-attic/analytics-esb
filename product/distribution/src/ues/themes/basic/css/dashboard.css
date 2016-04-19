@@ -511,3 +511,8 @@ ul.sidebar-messages > li:last-child {
         right: -8%
     }
 }
+/* Hiding menu*/
+.nav.pages a[href*='esb-analytics/message'],
+.nav.pages a[href*='esb-analytics/mediator'] {
+    display: none;
+}
