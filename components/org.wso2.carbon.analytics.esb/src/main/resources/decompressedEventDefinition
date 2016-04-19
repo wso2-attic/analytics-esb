@@ -2,7 +2,7 @@
 
 messageFlowId : string
 host : string
-hashCode : long
+hashCode : integer
 componentName : string
 componentType : string
 componentIndex : integer
@@ -16,6 +16,6 @@ contextPropertyMap : string
 transportPropertyMap : string
 children : string
 entryPoint : string
-entryPointHashcode : long
+entryPointHashcode : integer
 faultCount : integer
 _timestamp : long

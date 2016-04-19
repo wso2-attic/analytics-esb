@@ -10,6 +10,9 @@
         <dependency artifact="ESBStatPerSecondEventSink" version="1.0.0" include="true" serverRole="DataAnalyticsServer"/>
         <dependency artifact="AnalyticsConfigEventReceiver" version="1.0.0" include="true" serverRole="DataAnalyticsServer"/>
         <dependency artifact="Sparkscripts" version="1.0.0" include="true" serverRole="DataAnalyticsServer"/>
+        <dependency artifact="MediatorStatPerSecondStream" version="1.0.0" include="true" serverRole="DataAnalyticsServer"/>
+        <dependency artifact="MediatorStatPerSecondEventSink" version="1.0.0" include="true" serverRole="DataAnalyticsServer"/>
+        <dependency artifact="PerSecondExecutionPlan" version="1.0.0" include="true" serverRole="ComplexEventProcessor"/>
         <!-- Gadgets -->
         <dependency artifact="GadgetCommons" version="1.0.0" include="true" serverRole="DataAnalyticsServer"/>
         <dependency artifact="GadgetDateRangePicker" version="1.0.0" include="true" serverRole="DataAnalyticsServer"/>

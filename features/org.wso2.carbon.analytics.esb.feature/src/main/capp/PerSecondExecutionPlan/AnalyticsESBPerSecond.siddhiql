@@ -7,19 +7,26 @@
 @Import('esb-flow-entry-stream:1.0.0')
 define stream flowEntry(meta_compressed bool, messageId string, flowData string);
 
-@Export('ESB-Stat-per-Second:1.0.0')
-define stream perSecond (year int, month int, day int, hour int, minute int, second int, componentId string, componentName string, componentType string, totalDuration long, minDuration int, maxDuration int, noOfInvocation long, faultCount int, startingTime long, facetStartTime string, entryPoint string, _timestamp long);
+@Export('mediator-stat-per-second:1.0.0')
+define stream mediatorStatPerSec (year int, month int, day int, hour int, minute int, second int, entryPoint string, entryPointHashcode int, componentIndex int, componentId string, hashCode int, componentName string, componentType string, totalDuration long, minDuration int, maxDuration int, noOfInvocation long, faultCount long, startingTime long, facetStartTime string, _timestamp long);
+
+@Export('esb-stat-per-second:1.0.0')
+define stream perSecond (year int, month int, day int, hour int, minute int, second int, componentId string, componentName string, componentType string, totalDuration long, minDuration int, maxDuration int, noOfInvocation long, faultCount long, startingTime long, facetStartTime string, entryPoint string, _timestamp long);
 
 from flowEntry#esbAnalytics:decompress(meta_compressed, flowData, messageId)
 select messageFlowId, host, hashCode, componentName, componentType, componentIndex, componentId, startTime, endTime, duration, beforePayload, afterPayload, contextPropertyMap, transportPropertyMap, children, entryPoint, entryPointHashcode, faultCount, _timestamp
-insert into outputStream;
+insert into tempDecompressedEventStream;
 
-from outputStream[componentType == 'Proxy Service' OR componentType == 'API' OR componentType == 'Inbound EndPoint']#window.externalTimeBatch(startTime, 1 sec)
-select time:extract(startTime, 'year') as year, time:extract(startTime, 'month') as month, time:extract(startTime, 'day') as day, time:extract(startTime, 'hour') as hour, time:extract(startTime, 'minute') as minute, time:extract(startTime, 'second') as second, componentId, componentName, componentType, sum(duration) as totalDuration, min(duration) as minDuration, max(duration) as maxDuration, count(*) as noOfInvocation, 0 as faultCount, esbAnalytics:getSecondStartingTime(startTime) as startingTime, convert(esbAnalytics:getSecondStartingTime(startTime), 'string') as facetStartTime, entryPoint, esbAnalytics:getSecondStartingTime(startTime) as _timestamp
-insert current events into tempPerSecond;
+from tempDecompressedEventStream
+select time:extract(startTime, 'year') as year, time:extract(startTime, 'month') as month, time:extract(startTime, 'day') as day, time:extract(startTime, 'hour') as hour, time:extract(startTime, 'minute') as minute, time:extract(startTime, 'second') as second, entryPoint, entryPointHashcode, componentIndex, componentId, hashCode, componentName, componentType, duration, faultCount, esbAnalytics:getSecondStartingTime(startTime) as startingTime, convert(esbAnalytics:getSecondStartingTime(startTime), 'string') as facetStartTime, esbAnalytics:getSecondStartingTime(startTime) as _timestamp, startTime
+insert into decompressedEventStream;
 
-from tempPerSecond
-select *
+from decompressedEventStream#window.externalTimeBatch(startTime, 1 sec)
+select year, month, day, hour, minute, second, entryPoint, entryPointHashcode, componentIndex, componentId, hashCode, componentName, componentType, sum(duration) as totalDuration, min(duration) as minDuration, max(duration) as maxDuration, count(*) as noOfInvocation, sum(faultCount) as faultCount, startingTime, facetStartTime, _timestamp
+group by year, month, day, hour, minute, second, entryPoint, entryPointHashcode, componentIndex, componentId, hashCode, componentName, componentType
+insert into mediatorStatPerSec;
+
+from decompressedEventStream[componentType == 'Proxy Service' OR componentType == 'API' OR componentType == 'Inbound EndPoint']#window.externalTimeBatch(startTime, 1 sec)
+select year, month, day, hour, minute, second, componentId, componentName, componentType, sum(duration) as totalDuration, min(duration) as minDuration, max(duration) as maxDuration, count(*) as noOfInvocation, sum(faultCount) as faultCount, startingTime, facetStartTime, entryPoint, _timestamp
 group by year, month, day, hour, minute, second, componentId, componentName, componentType, entryPoint
-insert into perSecond;
-
+insert current events into perSecond;
