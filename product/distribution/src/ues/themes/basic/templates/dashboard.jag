@@ -544,7 +544,6 @@
         }, 200);
 
         $(document).ready(function() {
-            
             $('[data-toggle="loading"]').loading('show');
             $('.gadget-body').addClass('loading');
             
@@ -552,14 +551,6 @@
                 $('.grid-stack-item[data-banner=true]')
                     .css("background-image", "url('<%=tenantedUrlPrefix%>banners/<%=dashboard.id%>')");
             }
-
-            // Toggle component box heading
-            $('.ues-component').hover(function() {
-                toggleHeading($(this), true);
-            }, function() {
-                toggleHeading($(this), false);
-            });
-            
         });
         
         function toggleProductLogo(sidebarEventType){
