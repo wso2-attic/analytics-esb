@@ -45,6 +45,22 @@
             <groupId>org.wso2.siddhi</groupId>
             <artifactId>siddhi-query-api</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>commons-logging</groupId>
+            <artifactId>commons-logging</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.json.wso2</groupId>
+            <artifactId>json</artifactId>
+        </dependency>
     </dependencies>
 
     <build>
@@ -66,6 +82,10 @@
                             org.apache.commons.logging.*,
                             org.wso2.carbon.analytics.spark.core.*,
                             org.wso2.orbit.joda-time.*,
+                            org.json.*,
+                            org.apache.commons.io.*,
+                            org.apache.commons.lang3.*, 
+                            org.wso2.siddhi.*,
                             *;resolution:=optional
                         </Import-Package>
                         <Export-Package>
