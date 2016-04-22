@@ -2,17 +2,23 @@
 <artifacts>
     <artifact name="org.wso2.carbon.analytics.esb" version="1.0.0" type="carbon/application">
 	    <dependency artifact="AnalyticsStatEventStream" version="1.0.0" include="true" serverRole="DataAnalyticsServer"/>
-	    <dependency artifact="ESBStatPerSecondStream" version="1.0.0" include="true" serverRole="DataAnalyticsServer"/>
         <dependency artifact="AnalyticsStatEventSink" version="1.0.0" include="true" serverRole="DataAnalyticsServer"/>
         <dependency artifact="AnalyticsStatEventReceiver" version="1.0.0" include="true" serverRole="DataAnalyticsServer"/>
         <dependency artifact="AnalyticsConfigEventStream" version="1.0.0" include="true" serverRole="DataAnalyticsServer"/>
         <dependency artifact="AnalyticsConfigEventSink" version="1.0.0" include="true" serverRole="DataAnalyticsServer"/>
-        <dependency artifact="ESBStatPerSecondEventSink" version="1.0.0" include="true" serverRole="DataAnalyticsServer"/>
         <dependency artifact="AnalyticsConfigEventReceiver" version="1.0.0" include="true" serverRole="DataAnalyticsServer"/>
         <dependency artifact="Sparkscripts" version="1.0.0" include="true" serverRole="DataAnalyticsServer"/>
+        <dependency artifact="ESBStatPerSecondStream" version="1.0.0" include="true" serverRole="DataAnalyticsServer"/>
+        <dependency artifact="ESBStatPerSecondEventSink" version="1.0.0" include="true" serverRole="DataAnalyticsServer"/>
+        <dependency artifact="ESBStatPerMinuteStream" version="1.0.0" include="true" serverRole="DataAnalyticsServer"/>
+        <dependency artifact="ESBStatPerMinuteEventSink" version="1.0.0" include="true" serverRole="DataAnalyticsServer"/>
         <dependency artifact="MediatorStatPerSecondStream" version="1.0.0" include="true" serverRole="DataAnalyticsServer"/>
         <dependency artifact="MediatorStatPerSecondEventSink" version="1.0.0" include="true" serverRole="DataAnalyticsServer"/>
-        <dependency artifact="PerSecondExecutionPlan" version="1.0.0" include="true" serverRole="ComplexEventProcessor"/>
+        <dependency artifact="MediatorStatPerMinuteStream" version="1.0.0" include="true" serverRole="DataAnalyticsServer"/>
+        <dependency artifact="MediatorStatPerMinuteEventSink" version="1.0.0" include="true" serverRole="DataAnalyticsServer"/>
+        <dependency artifact="ESBStatStream" version="1.0.0" include="true" serverRole="DataAnalyticsServer"/>
+        <dependency artifact="ESBStatEventSink" version="1.0.0" include="true" serverRole="DataAnalyticsServer"/>
+        <dependency artifact="ESBAnalyticsExecutionPlan" version="1.0.0" include="true" serverRole="ComplexEventProcessor"/>
         <!-- Gadgets -->
         <dependency artifact="GadgetCommons" version="1.0.0" include="true" serverRole="DataAnalyticsServer"/>
         <dependency artifact="GadgetDateRangePicker" version="1.0.0" include="true" serverRole="DataAnalyticsServer"/>
