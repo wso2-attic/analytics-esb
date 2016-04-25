@@ -89,7 +89,12 @@ public class CompressedEventProcessorUtils {
                     if (event.isNull(fieldName) && payloadsMap != null && payloadsMap.containsKey(eventIndex)) {
                         extendedRowVals.put(fieldName, payloadsMap.get(eventIndex).get(fieldName));
                     } else {
-                        extendedRowVals.put(fieldName, event.get(fieldName));
+                        Object value = event.get(fieldName);
+                        if (value instanceof JSONArray || value instanceof JSONObject) {
+                            extendedRowVals.put(fieldName, value.toString());
+                        } else {
+                            extendedRowVals.put(fieldName, value);
+                        }
                     }
                 } else {
                     extendedRowVals.put(fieldName, null);
@@ -102,7 +107,12 @@ public class CompressedEventProcessorUtils {
                 String fieldName = commonColumns[k];
                 if (!fieldName.equalsIgnoreCase(CompressedEventProcessorConstants.DATA_COLUMN) ||
                     !fieldName.equalsIgnoreCase(CompressedEventProcessorConstants.JSON_FIELD_EVENTS)) {
-                    extendedRowVals.put(fieldName, eventsAggregated.get(fieldName));
+                    Object value = eventsAggregated.getString(fieldName);
+                    if (value instanceof JSONArray || value instanceof JSONObject) {
+                        extendedRowVals.put(fieldName, value.toString());
+                    } else {
+                        extendedRowVals.put(fieldName, value);
+                    }
                 }
             }
             return extendedRowVals.values().toArray();
