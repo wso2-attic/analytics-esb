@@ -726,7 +726,7 @@
                 var componentName = request.getParameter("id");
                 var timeRanges = timeRangeUtil.getDateTimeRanges(timeFrom, timeTo);
                 var table = "ESB-STAT-PER-";
-                var result = esbanalyticsUtils.getStats(connector, loggedInUser, "API", omponentName, null, timeRanges, table);
+                var result = esbanalyticsUtils.getStats(connector, loggedInUser, "API", componentName, null, timeRanges, table);
                 break;
             }
             case TYPE_SEQUENCE_STATS:
