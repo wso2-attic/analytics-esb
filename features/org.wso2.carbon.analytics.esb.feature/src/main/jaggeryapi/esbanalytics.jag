@@ -869,13 +869,20 @@
                 // Add Transport Properties
                 for (var property in allTransportProperties) {
                     var propertyName = allTransportProperties[property];
-                    var beforeValue = transportPropertyMapBefore[propertyName];
-                    if (messageInfoAfter != null) {
-                        afterValue = transportPorpertyMapAfter[propertyName];
+                    if (transportPropertyMapBefore.hasOwnProperty(propertyName)) {
+                        var beforeValue = transportPropertyMapBefore[propertyName];
                     } else {
-                        afterValue = beforeValue;
+                        var beforeValue = "N/A";
+                    } 
+                    if (messageInfoAfter != null) {
+                        if (transportPorpertyMapAfter.hasOwnProperty(propertyName)) {
+                            var afterValue = transportPorpertyMapAfter[propertyName];
+                        } else {
+                            var afterValue = "N/A";
+                        } 
+                    } else {
+                        var afterValue = beforeValue;
                     }
-
                     transportProperties.push({"name": propertyName, "before": beforeValue, "after": afterValue});
                 }
                 result["transportProperties"] = transportProperties;
@@ -883,11 +890,19 @@
                 // Add Context Properties
                 for (var property in allContextProperties) {
                     var propertyName = allContextProperties[property];
-                    var beforeValue = contextPropertyMapBefore[propertyName];
-                    if (messageInfoAfter != null) {
-                        var afterValue = contextPorpertyMapAfter[propertyName];
+                    if (contextPropertyMapBefore.hasOwnProperty(propertyName)) {
+                        var beforeValue = contextPropertyMapBefore[propertyName];
                     } else {
-                        afterValue = beforeValue;
+                        var beforeValue = "N/A";
+                    } 
+                    if (messageInfoAfter != null) {
+                        if (contextPorpertyMapAfter.hasOwnProperty(propertyName)) {
+                            var afterValue = contextPorpertyMapAfter[propertyName];
+                        } else {
+                            var afterValue = "N/A";
+                        } 
+                    } else {
+                        var afterValue = beforeValue;
                     }
                     contextProperties.push({"name": propertyName, "before": beforeValue, "after": afterValue});
                 }
