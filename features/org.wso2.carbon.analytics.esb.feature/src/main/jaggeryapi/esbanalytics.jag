@@ -806,7 +806,7 @@
 
                 // Get Message details of the child component
                 if (messageInfoBefore["children"] != null) {
-                    var childIndex = messageInfoBefore["children"]["myArrayList"][0];
+                    var childIndex = JSON.parse(messageInfoBefore["children"])[0];
                     var query = stringify({
                                               "tableName": tableName,
                                               "query": "_messageFlowId : \"" + messageId + "\" AND componentIndex :" + childIndex,
@@ -826,17 +826,41 @@
                     "after": messageInfoBefore["afterPayload"]
                 };
 
-                transportProperties = [];
-                contextProperties = [];
-                allTransportProperties = Object.keys(messageInfoBefore["transportPropertyMap"]["map"]);
-                allContextProperties = Object.keys(messageInfoBefore["contextPropertyMap"]["map"]);
+                var transportProperties = [];
+                var contextProperties = [];
+
+                if (messageInfoBefore["transportPropertyMap"] != null) {
+                    var transportPropertyMapBefore = JSON.parse(messageInfoBefore["transportPropertyMap"]);
+                } else {
+                    var transportPropertyMapBefore = {};
+                }
+                if (messageInfoBefore["contextPropertyMap"] != null) {
+                    var contextPropertyMapBefore = JSON.parse(messageInfoBefore["contextPropertyMap"]);
+                } else {
+                    var contextPropertyMapBefore = {};
+                }
+                
+                var allTransportProperties = Object.keys(transportPropertyMapBefore);
+                var allContextProperties = Object.keys(contextPropertyMapBefore);
+
                 if (messageInfoAfter != null) {
-                    for (var property in messageInfoAfter["transportPropertyMap"]["map"]) {
+                    if (messageInfoAfter["transportPropertyMap"] != null) {
+                        var transportPorpertyMapAfter = JSON.parse(messageInfoAfter["transportPropertyMap"]);
+                    } else {
+                        var transportPorpertyMapAfter = {};
+                    }
+                    if (messageInfoAfter["contextPropertyMap"] != null) {
+                        var contextPorpertyMapAfter = JSON.parse(messageInfoAfter["contextPropertyMap"]);
+                    } else {
+                        var contextPorpertyMapAfter = {};
+                    }
+
+                    for (var property in transportPorpertyMapAfter) {
                         if (!allTransportProperties.hasOwnProperty(property)) {
                             allTransportProperties.push(property);
                         }
                     }
-                    for (var property in messageInfoAfter["contextPropertyMap"]["map"]) {
+                    for (var property in contextPorpertyMapAfter) {
                         if (!allContextProperties.hasOwnProperty(property)) {
                             allContextProperties.push(property);
                         }
@@ -845,9 +869,9 @@
                 // Add Transport Properties
                 for (var property in allTransportProperties) {
                     var propertyName = allTransportProperties[property];
-                    var beforeValue = messageInfoBefore["transportPropertyMap"]["map"][propertyName];
+                    var beforeValue = transportPropertyMapBefore[propertyName];
                     if (messageInfoAfter != null) {
-                        afterValue = messageInfoAfter["transportPropertyMap"]["map"][propertyName];
+                        afterValue = transportPorpertyMapAfter[propertyName];
                     } else {
                         afterValue = beforeValue;
                     }
@@ -859,9 +883,9 @@
                 // Add Context Properties
                 for (var property in allContextProperties) {
                     var propertyName = allContextProperties[property];
-                    var beforeValue = messageInfoBefore["contextPropertyMap"]["map"][propertyName];
+                    var beforeValue = contextPropertyMapBefore[propertyName];
                     if (messageInfoAfter != null) {
-                        var afterValue = messageInfoAfter["contextPropertyMap"]["map"][propertyName];
+                        var afterValue = contextPorpertyMapAfter[propertyName];
                     } else {
                         afterValue = beforeValue;
                     }
