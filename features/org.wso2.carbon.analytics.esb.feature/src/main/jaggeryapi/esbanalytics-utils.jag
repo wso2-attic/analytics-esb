@@ -181,7 +181,7 @@ function getStats(connector, loggedInUser, componentType, componentName, entryPo
 
 
 /*
-* Get the list of messages arrived to a component
+* Get the list of messages arrived to a component (Proxy/API/Sequnce/Mediator)
 */
 function getComponentMessages(connector, loggedInUser, componentName, componentType, entryPoint, timeRangeUtil) {
     var result = {};
@@ -190,9 +190,11 @@ function getComponentMessages(connector, loggedInUser, componentName, componentT
     var timeTo = request.getParameter("timeTo");
     var start = parseInt(request.getParameter("start"));
     var length = parseInt(request.getParameter("length"));
-    var userQuery = request.getParameter("search[value]");
+    var userQuery = request.getParameter("search[value]");  
     var draw = request.getParameter("draw");
     var timeRanges = timeRangeUtil.getDateTimeRanges(timeFrom, timeTo);
+    var orderBy = request.getParameter("order[0][column]");
+    var order = request.getParameter("order[0][dir]");
 
     if (componentType == "Mediator") {
         tempQuery = "_componentType : \"" + componentType + "\" AND _componentId : \"" + componentName + "\" AND startTime : [" + timeFrom + " TO " + timeTo + "]";
@@ -209,11 +211,18 @@ function getComponentMessages(connector, loggedInUser, componentName, componentT
     if (userQuery != null && userQuery.length > 0) {
         tempQuery = tempQuery + " AND (" + userQuery + ")";
     }
-
+    var columns = ["messageFlowId", "host", "startTime", "faultCount"];
     var query = stringify({
             "query": tempQuery,
             "start": start,
-            "count": length
+            "count": length,
+             "sortBy": [
+                {
+                    "field": columns[orderBy],
+                    "sortType": order.toUpperCase(),
+                    "reversed": "false"
+                }
+            ]
         });
 
     var resp = connector.search(loggedInUser, "ESB-EVENT", query);
@@ -221,7 +230,7 @@ function getComponentMessages(connector, loggedInUser, componentName, componentT
     var limit = count.getMessage();
 
     var dataPoints = JSON.parse(resp.getMessage());
-    var columns = ["messageFlowId", "host", "startTime", "faultCount"];
+    
     for (i = 0; i < dataPoints.length; i++) {
         var temp = [];
         for (j = 0; j < columns.length; j++) {

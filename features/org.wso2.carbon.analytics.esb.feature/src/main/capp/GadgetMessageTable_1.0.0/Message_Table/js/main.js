@@ -44,7 +44,7 @@ $(function() {
         }
     });
 
-    $('#tblMessages').on('click', 'tr', function() {
+    $('#tblMessages').on('click', 'tbody tr', function() {
         var id = $(this).find("td:first").html(); 
         if ($(this).hasClass('selected')) {
             $(this).removeClass('selected');
