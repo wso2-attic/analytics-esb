@@ -14,7 +14,7 @@ function getMostInvokedComponentNames(connector, loggedInUser, componentType) {
     var query = stringify({
                               "fieldName": "componentName",
                               "categoryPath": [],
-                              "query": "startingTime : [" + timeFrom + " TO " + timeTo + "] AND _componentType:\"" + componentType + "\"",
+                              "query": "startingTime : [" + timeFrom + " TO " + timeTo + "} AND _componentType:\"" + componentType + "\"",
                               "scoreFunction": "noOfInvocation"
                           });
     var resp = connector.drillDownCategories(loggedInUser, tableName, query);
@@ -59,9 +59,9 @@ function getLatency(connector, loggedInUser, timeFrom, timeTo, tableName, compon
     var result = [];
     var query;
     if (entryPoint == 'undefined' || entryPoint === null) {
-        query = "_componentName : \"" + componentName + "\" AND startingTime : [" + timeFrom + " TO " + timeTo + "]";
+        query = "_componentName : \"" + componentName + "\" AND startingTime : [" + timeFrom + " TO " + timeTo + "}";
     } else {
-        query = "entryPoint : " + entryPoint + " AND _componentName : \"" + componentName + "\" AND startingTime : [" + timeFrom + " TO " + timeTo + "]";
+        query = "entryPoint : " + entryPoint + " AND _componentName : \"" + componentName + "\" AND startingTime : [" + timeFrom + " TO " + timeTo + "}";
     }
     query = stringify({
                           tableName: tableName,
@@ -93,9 +93,9 @@ function getMessageRate(connector, loggedInUser, timeFrom, timeTo, tableName, co
     var result = [];
     var query;
     if (entryPoint == 'undefined' || entryPoint === null) {
-        query = "_componentName : \"" + componentName + "\" AND startingTime : [" + timeFrom + " TO " + timeTo + "]";
+        query = "_componentName : \"" + componentName + "\" AND startingTime : [" + timeFrom + " TO " + timeTo + "}";
     } else {
-        query = "entryPoint : " + entryPoint + " AND _componentName : \"" + componentName + "\" AND startingTime : [" + timeFrom + " TO " + timeTo + "]";
+        query = "entryPoint : " + entryPoint + " AND _componentName : \"" + componentName + "\" AND startingTime : [" + timeFrom + " TO " + timeTo + "}";
     }
     query = stringify({
                           tableName: tableName,
@@ -197,9 +197,9 @@ function getComponentMessages(connector, loggedInUser, componentName, componentT
     var order = request.getParameter("order[0][dir]");
 
     if (componentType == "Mediator") {
-        tempQuery = "_componentType : \"" + componentType + "\" AND _componentId : \"" + componentName + "\" AND startTime : [" + timeFrom + " TO " + timeTo + "]";
+        tempQuery = "_componentType : \"" + componentType + "\" AND _componentId : \"" + componentName + "\" AND startTime : [" + timeFrom + " TO " + timeTo + "}";
     } else {
-        tempQuery = "_componentType : \"" + componentType + "\" AND _componentName : \"" + componentName + "\" AND startTime : [" + timeFrom + " TO " + timeTo + "]";
+        tempQuery = "_componentType : \"" + componentType + "\" AND _componentName : \"" + componentName + "\" AND startTime : [" + timeFrom + " TO " + timeTo + "}";
     }
 
     // Add the entry point if exists
@@ -276,7 +276,7 @@ function getEntrypointMessageFlow(connector, loggedInUser, timeRanges) {
     // get schema 
     var tableName = "ESB-CONFIG-ENTRY-STREAM";
     var query = stringify({
-            "query": "_entryName : \"" + entryName + "\" AND _timestamp : [" + 0000000000 + " TO " + timeTo + "]",
+            "query": "_entryName : \"" + entryName + "\" AND _timestamp : [" + 0000000000 + " TO " + timeTo + "}",
             "start": 0,
             "count": 100,
             "sortBy": [
