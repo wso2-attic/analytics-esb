@@ -41,7 +41,7 @@
             <EnableIndexing>true</EnableIndexing>
             <IsPrimaryKey>false</IsPrimaryKey>
             <EnableScoreParam>false</EnableScoreParam>
-            <Type>STRING</Type>
+            <Type>FACET</Type>
         </ColumnDefinition>
         <ColumnDefinition>
             <Name>entryPointHashcode</Name>
@@ -62,7 +62,7 @@
             <EnableIndexing>true</EnableIndexing>
             <IsPrimaryKey>true</IsPrimaryKey>
             <EnableScoreParam>false</EnableScoreParam>
-            <Type>STRING</Type>
+            <Type>FACET</Type>
         </ColumnDefinition>
         <ColumnDefinition>
             <Name>hashCode</Name>
@@ -76,14 +76,14 @@
             <EnableIndexing>true</EnableIndexing>
             <IsPrimaryKey>false</IsPrimaryKey>
             <EnableScoreParam>false</EnableScoreParam>
-            <Type>STRING</Type>
+            <Type>FACET</Type>
         </ColumnDefinition>
         <ColumnDefinition>
             <Name>componentType</Name>
             <EnableIndexing>true</EnableIndexing>
             <IsPrimaryKey>true</IsPrimaryKey>
             <EnableScoreParam>false</EnableScoreParam>
-            <Type>STRING</Type>
+            <Type>FACET</Type>
         </ColumnDefinition>
         <ColumnDefinition>
             <Name>totalDuration</Name>
@@ -132,7 +132,7 @@
             <EnableIndexing>true</EnableIndexing>
             <IsPrimaryKey>false</IsPrimaryKey>
             <EnableScoreParam>false</EnableScoreParam>
-            <Type>STRING</Type>
+            <Type>FACET</Type>
         </ColumnDefinition>
     </TableSchema>
     <Source>
