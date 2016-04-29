@@ -455,7 +455,15 @@
             }
             case TYPE_ENDPOINT_NAMES:
             {
-                var result = esbanalyticsUtils.getComponentNames(connector, loggedInUser, "Endpoint");
+                var result = [];
+                var excludeEndpoints = ["AnonymousEndpoint"];
+                var allEndpoints = esbanalyticsUtils.getComponentNames(connector, loggedInUser, "Endpoint");
+                for (key in allEndpoints) {
+                    var endpointName = allEndpoints[key];
+                    if (excludeEndpoints.indexOf(endpointName) == -1) {
+                        result.push(allEndpoints[key]);
+                    }
+                }
                 break;
             }
             case TYPE_ENDPOINT_MESSAGE_RATE:
@@ -766,7 +774,16 @@
             }
             case TYPE_TOP_INVOKED_ENDPOINTS:
             {
-                var result = esbanalyticsUtils.getMostInvokedComponentNames(connector, loggedInUser, "Endpoint");
+                var result = [];
+                var excludeEndpoints = ["AnonymousEndpoint"];
+                var allEndpoints = esbanalyticsUtils.getMostInvokedComponentNames(connector, loggedInUser, "Endpoint");
+                // Remove well-known Endpoints
+                for (key in allEndpoints) {
+                    var endpointName = allEndpoints[key]["name"];
+                    if (excludeEndpoints.indexOf(endpointName) == -1) {
+                        result.push(allEndpoints[key]);
+                    }
+                }
                 break;
             }
             case TYPE_TOP_INVOKED_INBOUNDS:
