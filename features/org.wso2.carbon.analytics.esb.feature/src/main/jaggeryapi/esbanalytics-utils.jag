@@ -161,7 +161,7 @@ function getStats(connector, loggedInUser, componentType, componentName, entryPo
             parentPath: [],
             noOfRecords: 1000
         }
-        if (timeRange.unit == "SECOND" || timeRange.unit == "MINUTE") {
+        if (table != "MEDIATOR-STAT-PER-" && (timeRange.unit == "SECOND" || timeRange.unit == "MINUTE")) {
             searchParam["tableName"] = searchParam["tableName"] + "-ALL"
         }
         searchParam.aggregateFields = aggregateFields;

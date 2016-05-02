@@ -212,5 +212,5 @@
 
         INCREMENTAL_TABLE_COMMIT mediatorStatPerDay;
     </Script>
-    <CronExpression>0 0/5 * * * ?</CronExpression>
+    <CronExpression>0 0/4 * 1/1 * ? *</CronExpression>
 </Analytics>

@@ -139,7 +139,7 @@
 
                 var tableName = "ESB-STAT-PER-" + timeUnit + tableSuffix;
                 query = stringify({
-                                      query: "_componentId : ALL AND startingTime : [" + timeFrom + " TO " + timeTo + "]",
+                                      query: "_componentId : ALL AND startingTime : [" + timeFrom + " TO " + timeTo + "}",
                                       "start": 0,
                                       "count": 200
                                   });
@@ -175,12 +175,13 @@
                 result = [];
                 var timeUnit = timeRangeUtil.getSuitableTimeRangeUnit(timeFrom, timeTo);
                 var tableSuffix = "";
-                if (timeRange == "SECOND" || timeRange == "MINUTE") {
+                if (timeUnit == "SECOND" || timeUnit == "MINUTE") {
                     tableSuffix = "-ALL";
                 }
                 var tableName = "ESB-STAT-PER-" + timeUnit + tableSuffix;
+                log.info(tableName);
                 query = stringify({
-                                      query: "_componentId : ALL AND startingTime : [" + timeFrom + " TO " + timeTo + "]",
+                                      query: "_componentId : ALL AND startingTime : [" + timeFrom + " TO " + timeTo + "}",
                                       "start": 0,
                                       "count": 200
                                   });
@@ -286,7 +287,7 @@
                 var entryPoint = request.getParameter("entryPoint");
                 var timeUnit = timeRangeUtil.getSuitableTimeRangeUnit(timeFrom, timeTo);
                 var tableName = "MEDIATOR-STAT-PER-" + timeUnit;
-                query = "entryPoint : " + entryPoint + " AND _componentId : \"" + componentId + "\" AND startingTime : [" + timeFrom + " TO " + timeTo + "]";
+                query = "entryPoint : " + entryPoint + " AND _componentId : \"" + componentId + "\" AND startingTime : [" + timeFrom + " TO " + timeTo + "}";
                 query = stringify({
                                       tableName: tableName,
                                       groupByField: "facetStartTime",
@@ -327,7 +328,7 @@
                 var entryPoint = request.getParameter("entryPoint");
                 query = stringify({
                                       tableName: tableName,
-                                      query: "entryPoint : " + entryPoint + " AND _componentId : \"" + componentId + "\" AND startingTime : [" + timeFrom + " TO " + timeTo + "]",
+                                      query: "entryPoint : " + entryPoint + " AND _componentId : \"" + componentId + "\" AND startingTime : [" + timeFrom + " TO " + timeTo + "}",
                                       start: 0,
                                       count: 60
                                   });
