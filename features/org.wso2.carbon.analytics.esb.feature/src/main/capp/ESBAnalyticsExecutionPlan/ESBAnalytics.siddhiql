@@ -7,13 +7,13 @@
 @Import('esb-flow-entry-stream:1.0.0')
 define stream flowEntry(meta_compressed bool, messageId string, flowData string);
 
-@Export('esb-stat-per-second:1.0.0')
+@Export('esb-stat-per-second-all:1.0.0')
 define stream perSecondAll (year int, month int, day int, hour int, minute int, second int, componentId string, componentName string, componentType string, totalDuration long, minDuration int, maxDuration int, noOfInvocation long, faultCount long, startingTime long, facetStartTime string, entryPoint string, _timestamp long);
 
 @Export('esb-stat-per-minute:1.0.0')
 define stream esbStatPerMin (year int, month int, day int, hour int, minute int, componentId string, componentName string, componentType string, totalDuration long, minDuration int, maxDuration int, noOfInvocation long, faultCount long, startingTime long, facetStartTime string, entryPoint string, _timestamp long);
 
-@Export('esb-stat-per-minute:1.0.0')
+@Export('esb-stat-per-minute-all:1.0.0')
 define stream esbStatPerMinAll (year int, month int, day int, hour int, minute int, componentId string, componentName string, componentType string, totalDuration long, minDuration int, maxDuration int, noOfInvocation long, faultCount long, startingTime long, facetStartTime string, entryPoint string, _timestamp long);
 
 @Export('mediator-stat-per-minute:1.0.0')

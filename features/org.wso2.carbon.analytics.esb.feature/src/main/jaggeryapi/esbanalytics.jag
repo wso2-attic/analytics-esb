@@ -132,7 +132,12 @@
             {
                 result = [];
                 var timeUnit = timeRangeUtil.getSuitableTimeRangeUnit(timeFrom, timeTo);
-                var tableName = "ESB-STAT-PER-" + timeUnit;
+                var tableSuffix = "";
+                if (timeUnit == "SECOND" || timeUnit == "MINUTE") {
+                    tableSuffix = "-ALL";
+                }
+
+                var tableName = "ESB-STAT-PER-" + timeUnit + tableSuffix;
                 query = stringify({
                                       query: "_componentId : ALL AND startingTime : [" + timeFrom + " TO " + timeTo + "]",
                                       "start": 0,
@@ -169,7 +174,11 @@
             {
                 result = [];
                 var timeUnit = timeRangeUtil.getSuitableTimeRangeUnit(timeFrom, timeTo);
-                var tableName = "ESB-STAT-PER-" + timeUnit;
+                var tableSuffix = "";
+                if (timeRange == "SECOND" || timeRange == "MINUTE") {
+                    tableSuffix = "-ALL";
+                }
+                var tableName = "ESB-STAT-PER-" + timeUnit + tableSuffix;
                 query = stringify({
                                       query: "_componentId : ALL AND startingTime : [" + timeFrom + " TO " + timeTo + "]",
                                       "start": 0,
