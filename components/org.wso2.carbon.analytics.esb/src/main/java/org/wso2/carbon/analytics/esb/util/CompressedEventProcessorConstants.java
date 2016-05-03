@@ -14,4 +14,6 @@ public class CompressedEventProcessorConstants {
     public static final String META_FIELD_COMPRESSED = "meta_compressed"; 
     public static final String TIMESTAMP_FIELD = "_timestamp";
     public static final String MESSAGE_ID = "messageId";
+    public static final String JSON_FIELD_CONTEXT_PROPERTIES = "contextPropertyMap";
+    public static final String JSON_FIELD_TRANSPORT_PROPERTIES = "transportPropertyMap";
 }
