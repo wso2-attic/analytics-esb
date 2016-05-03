@@ -487,7 +487,7 @@
         <orbit.version.disruptor>2.10.4-wso2v2</orbit.version.disruptor>
         <orbit.version.h2>1.2.140.wso2v3</orbit.version.h2>
         <orbit.version.joda-time>2.8.2.wso2v1</orbit.version.joda-time>
-        <orbit.version.json>3.0.0.wso2v1</orbit.version.json>
+        <orbit.version.json>2.0.0.wso2v1</orbit.version.json>
 
         <jacoco.agent.version>0.7.4.201502262128</jacoco.agent.version>
         <testng.version>6.1.1</testng.version>
