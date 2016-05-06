@@ -36,7 +36,7 @@ from decompressedEventStream
 select time:extract(startTime, 'year') as year, time:extract(startTime, 'month') as month, time:extract(startTime, 'day') as day, time:extract(startTime, 'hour') as hour, time:extract(startTime, 'minute') as minute, time:extract(startTime, 'second') as second, entryPoint, entryPointHashcode, componentIndex, componentId, hashCode, componentName, componentType, duration, faultCount, esbAnalytics:getSecondStartingTime(startTime) as startingTime, convert(esbAnalytics:getSecondStartingTime(startTime), 'string') as facetStartTime, esbAnalytics:getSecondStartingTime(startTime) as _timestamp, startTime
 insert into tempDecompressedEventStream;
 
-from decompressedEventStream
+from decompressedEventStream[convert(beforePayload, 'string') != 'null' or convert(transportPropertyMap, 'string') != 'null' or convert(contextPropertyMap, 'string') != 'null']
 select *
 insert into esbEvent;
 
