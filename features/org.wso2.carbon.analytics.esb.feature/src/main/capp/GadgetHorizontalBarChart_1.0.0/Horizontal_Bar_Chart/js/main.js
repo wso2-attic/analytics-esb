@@ -58,7 +58,12 @@ function onData(data) {
             width: $('body').width(),
             height: $('body').height(),
             colorScale: [COLOR_BLUE],
-            padding: { "top": 30, "left": 60, "bottom": 60, "right": 30 }
+            padding: { "top": 30, "left": 60, "bottom": 60, "right": 30 },
+            textColor:"#000000",
+            text:"name",
+            textAlign:"left",
+            xAxisStrokeSize:0,
+            xAxisFontSize:0
         };
 
         data.message.forEach(function(row, i) {
