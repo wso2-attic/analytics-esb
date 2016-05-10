@@ -61,6 +61,10 @@
             <groupId>org.json.wso2</groupId>
             <artifactId>json</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.wso2.orbit.com.esotericsoftware.kryo</groupId>
+            <artifactId>kryo</artifactId>
+        </dependency>
     </dependencies>
 
     <build>
@@ -86,6 +90,7 @@
                             org.apache.commons.io.*,
                             org.apache.commons.lang3.*, 
                             org.wso2.siddhi.*,
+                            com.esotericsoftware.kryo.*,
                             *;resolution:=optional
                         </Import-Package>
                         <Export-Package>
