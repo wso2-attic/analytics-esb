@@ -531,7 +531,7 @@
                     done = false;
                 }
                 else {
-                    if($('iframe').length == (i+1)){
+                    if($('iframe[name^=sandbox-gadget]').length == (i+1)){
                         done = true;
                     }
                 }
