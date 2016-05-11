@@ -7,9 +7,9 @@ function getMostInvokedComponentNames(connector, loggedInUser, componentType) {
     var timeFrom = request.getParameter("timeFrom");
     var timeTo = request.getParameter("timeTo");
     if (componentType == "Proxy Service" || componentType == "API" || componentType == "Inbound EndPoint") {
-        var tableName = "ESB-STAT-PER-SECOND";
+        var tableName = "ESB-STAT-PER-MINUTE";
     } else {
-        var tableName = "MEDIATOR-STAT-PER-SECOND";
+        var tableName = "MEDIATOR-STAT-PER-MINUTE";
     }
     var query = stringify({
                               "fieldName": "componentName",
@@ -161,7 +161,7 @@ function getStats(connector, loggedInUser, componentType, componentName, entryPo
             parentPath: [],
             noOfRecords: 1000
         }
-        if (table != "MEDIATOR-STAT-PER-" && (timeRange.unit == "SECOND" || timeRange.unit == "MINUTE")) {
+        if (table != "MEDIATOR-STAT-PER-" && componentType == "ALL" && (timeRange.unit == "SECOND" || timeRange.unit == "MINUTE")) {
             searchParam["tableName"] = searchParam["tableName"] + "-ALL"
         }
         searchParam.aggregateFields = aggregateFields;
