@@ -16,3 +16,6 @@ hs_err_pid*
 *.settings
 *.classpath
 *.iml
+
+# Mac OSX temp files
+.DS_Store
