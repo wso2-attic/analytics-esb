@@ -88,7 +88,6 @@
         componentType FACET -i, totalDuration LONG, minDuration INT, maxDuration INT, noOfInvocation LONG -sp,
         faultCount LONG, startingTime LONG -i, facetStartTime FACET -i, entryPoint FACET -i, _timestamp LONG -i",
         primaryKeys "year, month, day, componentId, componentType",
-        incrementalParams "esbServiceStatPerDay, 2678400",
         mergeSchema "false");
 
         INSERT INTO TABLE esbServiceStatPerDay
@@ -132,7 +131,6 @@
         LONG, minDuration INT, maxDuration INT, noOfInvocation LONG -sp, faultCount LONG, startingTime LONG -i,
         facetStartTime FACET -i, _timestamp  LONG -i",
         primaryKeys "year, month, day, entryPointHashcode, hashCode, componentId, componentType",
-        incrementalParams "mediatorStatPerDay, 2678400",
         mergeSchema "false");
 
         INSERT INTO TABLE mediatorStatPerDay
@@ -212,5 +210,5 @@
 
         INCREMENTAL_TABLE_COMMIT mediatorStatPerDay;
     </Script>
-    <CronExpression>0 0/4 * 1/1 * ? *</CronExpression>
+    <CronExpression>0 0/2 * * * ? *</CronExpression>
 </Analytics>

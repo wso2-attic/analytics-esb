@@ -179,7 +179,6 @@
                     tableSuffix = "-ALL";
                 }
                 var tableName = "ESB-STAT-PER-" + timeUnit + tableSuffix;
-                log.info(tableName);
                 query = stringify({
                                       query: "_componentId : ALL AND startingTime : [" + timeFrom + " TO " + timeTo + "}",
                                       "start": 0,
