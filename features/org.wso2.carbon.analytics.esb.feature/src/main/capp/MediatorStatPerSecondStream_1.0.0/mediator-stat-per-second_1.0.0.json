@@ -62,11 +62,11 @@
     },
     {
       "name": "minDuration",
-      "type": "INT"
+      "type": "LONG"
     },
     {
       "name": "maxDuration",
-      "type": "INT"
+      "type": "LONG"
     },
     {
       "name": "noOfInvocation",

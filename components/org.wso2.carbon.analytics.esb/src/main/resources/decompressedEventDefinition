@@ -9,7 +9,7 @@ componentIndex : integer
 componentId : string
 startTime : long
 endTime : long
-duration : integer
+duration : long
 beforePayload : string
 afterPayload : string
 contextPropertyMap : string
