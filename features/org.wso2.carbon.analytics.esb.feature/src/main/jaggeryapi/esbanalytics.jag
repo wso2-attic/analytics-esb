@@ -858,12 +858,12 @@
                 var contextProperties = [];
 
                 if (messageInfoBefore["transportPropertyMap"] != null) {
-                    var transportPropertyMapBefore = JSON.parse(messageInfoBefore["transportPropertyMap"]);
+                    var transportPropertyMapBefore = esbanalyticsUtils.processProperties(messageInfoBefore["transportPropertyMap"]);
                 } else {
                     var transportPropertyMapBefore = {};
                 }
                 if (messageInfoBefore["contextPropertyMap"] != null) {
-                    var contextPropertyMapBefore = JSON.parse(messageInfoBefore["contextPropertyMap"]);
+                    var contextPropertyMapBefore = esbanalyticsUtils.processProperties(messageInfoBefore["contextPropertyMap"]);
                 } else {
                     var contextPropertyMapBefore = {};
                 }
@@ -873,12 +873,13 @@
 
                 if (messageInfoAfter != null) {
                     if (messageInfoAfter["transportPropertyMap"] != null) {
-                        var transportPorpertyMapAfter = JSON.parse(messageInfoAfter["transportPropertyMap"]);
+                        var transportPorpertyMapAfter = esbanalyticsUtils.processProperties(messageInfoAfter["transportPropertyMap"]);
+                        log.info(esbanalyticsUtils.processProperties(messageInfoAfter["transportPropertyMap"]));
                     } else {
                         var transportPorpertyMapAfter = {};
                     }
                     if (messageInfoAfter["contextPropertyMap"] != null) {
-                        var contextPorpertyMapAfter = JSON.parse(messageInfoAfter["contextPropertyMap"]);
+                        var contextPorpertyMapAfter = esbanalyticsUtils.processProperties(messageInfoAfter["contextPropertyMap"]);
                     } else {
                         var contextPorpertyMapAfter = {};
                     }
