@@ -14,13 +14,12 @@ $(function() {
 
     var qs = gadgetUtil.getQueryString();
     if (qs.timeFrom != null) {
-        timeFrom = qs.timeFrom;
+        timeFrom = parseInt(qs.timeFrom);
     }
     if (qs.timeTo != null) {
-        timeTo = qs.timeTo;
+        timeTo = parseInt(qs.timeTo);
     }
     var count = 0;
-    console.log("TimeFrom: " + timeFrom + " TimeTo: " + timeTo);
 
     //make the selected time range highlighted
     var timeUnit = qs.timeUnit;
@@ -31,7 +30,7 @@ $(function() {
         $("#btnLastMonth").addClass("active");
     }
 
-    cb(moment().subtract(29, 'days'), moment());
+    cb(moment(timeFrom), moment(timeTo));
 
     function cb(start, end) {
         dateLabel.html(start.format('MMMM D, YYYY hh:mm A') + ' - ' + end.format('MMMM D, YYYY hh:mm A'));

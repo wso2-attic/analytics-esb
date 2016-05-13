@@ -231,3 +231,8 @@ function buildLabel(node) {
 function onError(msg) {
     $("#canvas").html(gadgetUtil.getErrorText(msg));
 };
+
+var maximizeButton = $('#' + gadgets.rpc.RPC_ID, window.parent.document).closest('.grid-stack-item').find('.ues-component-full-handle');
+$('body').on('click', '#btnViewToggle', function(){
+    $(maximizeButton).click();
+});
