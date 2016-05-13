@@ -190,10 +190,10 @@
                     var obj = dataPoints[i];
                     if (obj != null) {
                         result.push({
-                                    "timestamp": obj.values.facetStartTime,
-                                    "success": obj.values.noOfInvocation,
-                                    "faults": obj.values.faultCount
-                                });
+                                        "timestamp": obj.values.facetStartTime,
+                                        "success": obj.values.noOfInvocation,
+                                        "faults": obj.values.faultCount
+                                    });
                     }
                 }
                 break;
@@ -578,7 +578,7 @@
                         var searchParam = {
                             tableName: "MEDIATOR-STAT-PER-" + timeRange.unit,
                             groupByField: "componentId",
-                            query: "hashCode : \"" + entryHashCode + "\" AND startingTime : [" + timeRange.range[0] + " TO " + timeRange.range[1] + "}",
+                            query: "hashCode : [" + entryHashCode + " TO " + entryHashCode + "] AND startingTime : [" + timeRange.range[0] + " TO " + timeRange.range[1] + "}",
                             aggregateLevel: 0,
                             parentPath: [],
                             noOfRecords: 10000
@@ -651,7 +651,9 @@
 
                         // Create hidden attributes
                         var hiddenAttributes = [];
-                        hiddenAttributes.push({"name": "entryPoint", "value": componentMap[componentId]["entryPoint"]});
+                        if (componentInfo != null) {
+                            hiddenAttributes.push({"name": "entryPoint", "value": componentInfo["entryPoint"]});
+                        }
                         if (componentType == "Endpoint" || componentType == "Sequence") {
                             hiddenAttributes.push({"name": "id", "value": componentLabel});
                         } else {
@@ -865,7 +867,7 @@
                 } else {
                     var contextPropertyMapBefore = {};
                 }
-                
+
                 var allTransportProperties = Object.keys(transportPropertyMapBefore);
                 var allContextProperties = Object.keys(contextPropertyMapBefore);
 
@@ -899,13 +901,13 @@
                         var beforeValue = transportPropertyMapBefore[propertyName];
                     } else {
                         var beforeValue = "N/A";
-                    } 
+                    }
                     if (messageInfoAfter != null) {
                         if (transportPorpertyMapAfter.hasOwnProperty(propertyName)) {
                             var afterValue = transportPorpertyMapAfter[propertyName];
                         } else {
                             var afterValue = "N/A";
-                        } 
+                        }
                     } else {
                         var afterValue = beforeValue;
                     }
@@ -920,13 +922,13 @@
                         var beforeValue = contextPropertyMapBefore[propertyName];
                     } else {
                         var beforeValue = "N/A";
-                    } 
+                    }
                     if (messageInfoAfter != null) {
                         if (contextPorpertyMapAfter.hasOwnProperty(propertyName)) {
                             var afterValue = contextPorpertyMapAfter[propertyName];
                         } else {
                             var afterValue = "N/A";
-                        } 
+                        }
                     } else {
                         var afterValue = beforeValue;
                     }
