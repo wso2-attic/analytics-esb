@@ -164,8 +164,6 @@
         FROM esbServiceStatPerDay
         GROUP BY year, month, componentId, componentName, componentType, entryPoint;
 
-        INCREMENTAL_TABLE_COMMIT esbServiceStatPerDay;
-
         CREATE TEMPORARY TABLE esbServiceStatPerMonthAll USING CarbonAnalytics
         OPTIONS (tableName "ESB-Stat-per-Month",
         schema "year INT -i, month INT -i, componentId FACET -i, componentName FACET -i,
@@ -208,7 +206,6 @@
         GROUP BY year, month, entryPoint, entryPointHashcode, componentIndex, componentId, hashCode, componentName,
         componentType;
 
-        INCREMENTAL_TABLE_COMMIT mediatorStatPerDay;
     </Script>
     <CronExpression>0 0/2 * * * ? *</CronExpression>
 </Analytics>
