@@ -436,10 +436,6 @@ body.dark .btn-group > .btn-label {
     white-space: nowrap;
 }
 
-/*
-body[media-screen="xs"] .btn-group > .btn-label {
-    
-    font-size: 90%;
-    line-height: 1.2;
-    padding: 2px 10px;
-}*/
+.btn-dropdown-menu-open > .btn-dropdown-menu {
+    display: block;
+}
