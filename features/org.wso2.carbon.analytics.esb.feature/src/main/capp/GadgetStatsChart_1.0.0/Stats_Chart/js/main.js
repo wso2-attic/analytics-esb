@@ -51,7 +51,7 @@ function onData(response) {
         var data = response.message;
         var total = data.total;
         var failed = data.failed;
-        if(total <= 1) {
+        if(total < 1) {
             $('#gadget-messge').html(gadgetUtil.getEmptyRecordsText());
             $('#gadget-messge').show();
             $('#stats').hide();
