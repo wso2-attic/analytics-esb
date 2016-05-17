@@ -224,3 +224,31 @@ body.dark .pagination > li.active > a:hover {
 .pagination > li > a:hover {
     color: #353C48;
 }
+
+body[media-screen=xs] .hidden-xs,
+body[media-screen=sm] .hidden-sm,
+body[media-screen=md] .hidden-md,
+body[media-screen=lg] .hidden-lg {
+    display: none !important;    
+}
+
+body[media-screen=xs] .visible-xs,
+body[media-screen=sm] .visible-sm,
+body[media-screen=md] .visible-md,
+body[media-screen=lg] .visible-lg {
+    display: block !important;    
+}
+
+body[media-screen=xs] .visible-inline-xs,
+body[media-screen=sm] .visible-inline-sm,
+body[media-screen=md] .visible-inline-md,
+body[media-screen=lg] .visible-inline-lg {
+    display: inline !important;    
+}
+
+body[media-screen=xs] .visible-inline-block-xs,
+body[media-screen=sm] .visible-inline-block-sm,
+body[media-screen=md] .visible-inline-block-md,
+body[media-screen=lg] .visible-inline-block-lg {
+    display: inline-block !important;    
+}
