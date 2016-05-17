@@ -40,7 +40,7 @@ from decompressedEventStream[not(beforePayload is null) or not(transportProperty
 select *
 insert into esbEvent;
 
-from tempDecompressedEventStream[componentType == 'Proxy Service' OR componentType == 'API' OR componentType == 'Inbound EndPoint']#reorder:kslack(startTime)#window.externalTimeBatch(startTime, 1 sec, 0, 5 sec)
+from tempDecompressedEventStream[componentType == 'Proxy Service' OR componentType == 'API' OR componentType == 'Inbound EndPoint']#window.externalTimeBatch(startTime, 1 sec, 0, 5 sec)
 select year, month, day, hour, minute, second, componentId, componentName, componentType, sum(duration) as totalDuration, min(duration) as minDuration, max(duration) as maxDuration, count(*) as noOfInvocation, sum(faultCount) as faultCount, startingTime, facetStartTime, entryPoint, _timestamp
 group by componentId, componentName, componentType, entryPoint
 insert current events into perSecond;
@@ -50,7 +50,7 @@ select year, month, day, hour, minute, second, "ALL" as componentId, "ALL" as co
 group by year, month, day, hour, minute, second
 insert current events into perSecondAll;
 
-from tempDecompressedEventStream[componentType == 'Proxy Service' OR componentType == 'API' OR componentType == 'Inbound EndPoint']#reorder:kslack(startTime)#window.externalTimeBatch(startingTime, 60 sec, 0, 120 sec)
+from tempDecompressedEventStream[componentType == 'Proxy Service' OR componentType == 'API' OR componentType == 'Inbound EndPoint']#window.externalTimeBatch(startingTime, 60 sec, 0, 120 sec)
 select year, month, day, hour, minute, componentId, componentName, componentType, sum(duration) as totalDuration, min(duration) as minDuration, max(duration) as maxDuration, count(*) as noOfInvocation, sum(faultCount) as faultCount, startingTime, facetStartTime, entryPoint, _timestamp
 group by componentId, componentName, componentType, entryPoint
 insert current events into esbStatPerMin;
@@ -60,12 +60,12 @@ select year, month, day, hour, minute, "ALL" as componentId, "ALL" as componentN
 group by year, month, day, hour, minute
 insert current events into esbStatPerMinAll;
 
-from tempDecompressedEventStream#reorder:kslack(startTime)#window.externalTimeBatch(startTime, 1 sec, 0, 5 sec)
+from tempDecompressedEventStream#window.externalTimeBatch(startTime, 1 sec, 0, 5 sec)
 select year, month, day, hour, minute, second, entryPoint, entryPointHashcode, componentIndex, componentId, hashCode, componentName, componentType, sum(duration) as totalDuration, min(duration) as minDuration, max(duration) as maxDuration, count(*) as noOfInvocation, sum(faultCount) as faultCount, startingTime, facetStartTime, _timestamp
 group by entryPoint, entryPointHashcode, componentIndex, componentId, hashCode, componentName, componentType
 insert current events into mediatorStatPerSec;
 
-from tempDecompressedEventStream#reorder:kslack(startTime)#window.externalTimeBatch(startingTime, 60 sec, 0, 120 sec)
+from tempDecompressedEventStream#window.externalTimeBatch(startingTime, 60 sec, 0, 120 sec)
 select year, month, day, hour, minute, entryPoint, entryPointHashcode, componentIndex, componentId, hashCode, componentName, componentType, sum(duration) as totalDuration, min(duration) as minDuration, max(duration) as maxDuration, count(*) as noOfInvocation, sum(faultCount) as faultCount, startingTime, facetStartTime, _timestamp
 group by entryPoint, entryPointHashcode, componentIndex, componentId, hashCode, componentName, componentType
 insert current events into mediatorStatPerMin;

@@ -56,7 +56,18 @@ public class CompressedEventProcessor extends StreamProcessor {
     private Map<String,String> fields = new LinkedHashMap<String,String>();
     private int[] dataColumnIndex;
     private int[] meta_compressedIndex;
-    private Kryo kryo = new Kryo();
+    
+    private static ThreadLocal<Kryo> kryoTL = new ThreadLocal<Kryo>() {
+        protected Kryo initialValue() {
+            Kryo kryo = new Kryo();
+            /* Class registering precedence matters. Hence intentionally giving a registration ID */
+            kryo.register(HashMap.class, 111);
+            kryo.register(ArrayList.class, 222);
+            kryo.register(PublishingPayload.class, 333);
+            kryo.register(PublishingPayloadEvent.class, 444);
+            return kryo;
+        }
+    };
 
     @Override
     protected List<Attribute> init(AbstractDefinition inputDefinition, ExpressionExecutor[] 
@@ -82,11 +93,6 @@ public class CompressedEventProcessor extends StreamProcessor {
             outputAttributes.add(new Attribute(fielname, type));
         }
         
-        /* Class registering precedence matters. Hence intentionally giving a registration ID */
-        kryo.register(HashMap.class, 111);
-        kryo.register(ArrayList.class, 222);
-        kryo.register(PublishingPayload.class, 333);
-        kryo.register(PublishingPayloadEvent.class, 444);
         return outputAttributes;
     }
     
@@ -94,7 +100,7 @@ public class CompressedEventProcessor extends StreamProcessor {
     @Override
     protected void process(ComplexEventChunk<StreamEvent> streamEventChunk, Processor nextProcessor, StreamEventCloner
             streamEventCloner, ComplexEventPopulater complexEventPopulater) {
-        ComplexEventChunk<StreamEvent> decompressedStreamEventChunk = new ComplexEventChunk<StreamEvent>();
+        ComplexEventChunk<StreamEvent> decompressedStreamEventChunk = new ComplexEventChunk<StreamEvent>(false);
         while (streamEventChunk.hasNext()) {
             StreamEvent compressedEvent = streamEventChunk.next();
             String eventString = (String) compressedEvent.getAttribute(this.dataColumnIndex);
@@ -106,7 +112,7 @@ public class CompressedEventProcessor extends StreamProcessor {
                     unzippedByteArray = new ByteArrayInputStream(DatatypeConverter.parseBase64Binary(eventString));
                 }
                 Input input = new Input(unzippedByteArray);
-                Map<String, Object> aggregatedEvent = this.kryo.readObjectOrNull(input, HashMap.class);
+                Map<String, Object> aggregatedEvent = kryoTL.get().readObjectOrNull(input, HashMap.class);
                 
                 ArrayList<Map<String, Object>> eventsList = (ArrayList<Map<String, Object>>) aggregatedEvent.get(
                     AnalyticsConstants.EVENTS_ATTRIBUTE);
