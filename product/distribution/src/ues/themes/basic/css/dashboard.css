@@ -521,7 +521,3 @@ ul.sidebar-messages > li:last-child {
 .gadget-actions .ues-component-full-handle {
     display: none;
 }
-
-.btn-dropdown-menu-open > .btn-dropdown-menu {
-    display: block;
-}
