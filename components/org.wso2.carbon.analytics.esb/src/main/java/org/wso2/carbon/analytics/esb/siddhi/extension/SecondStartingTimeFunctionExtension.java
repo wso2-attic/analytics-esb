@@ -24,14 +24,10 @@ import org.wso2.siddhi.core.executor.ExpressionExecutor;
 import org.wso2.siddhi.core.executor.function.FunctionExecutor;
 import org.wso2.siddhi.query.api.definition.Attribute;
 
-import java.util.Calendar;
-
 /**
  * Created on 4/18/16.
  */
 public class SecondStartingTimeFunctionExtension extends FunctionExecutor {
-
-    private final Calendar cal = Calendar.getInstance();
 
     @Override
     protected void init(ExpressionExecutor[] expressionExecutors, ExecutionPlanContext executionPlanContext) {
@@ -44,11 +40,8 @@ public class SecondStartingTimeFunctionExtension extends FunctionExecutor {
 
     @Override
     protected Object execute(Object o) {
-        synchronized (cal) {
-            cal.setTimeInMillis((long) o);
-            cal.set(Calendar.MILLISECOND, 0);
-        }
-        return cal.getTimeInMillis();
+        long time = (long) o;
+        return (time - time % 1000);
     }
 
     @Override
