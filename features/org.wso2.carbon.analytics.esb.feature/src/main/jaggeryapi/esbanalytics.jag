@@ -874,7 +874,6 @@
                 if (messageInfoAfter != null) {
                     if (messageInfoAfter["transportPropertyMap"] != null) {
                         var transportPorpertyMapAfter = esbanalyticsUtils.processProperties(messageInfoAfter["transportPropertyMap"]);
-                        log.info(esbanalyticsUtils.processProperties(messageInfoAfter["transportPropertyMap"]));
                     } else {
                         var transportPorpertyMapAfter = {};
                     }
@@ -885,12 +884,12 @@
                     }
 
                     for (var property in transportPorpertyMapAfter) {
-                        if (!allTransportProperties.hasOwnProperty(property)) {
+                        if (allTransportProperties.indexOf(property) < 0) {
                             allTransportProperties.push(property);
                         }
                     }
                     for (var property in contextPorpertyMapAfter) {
-                        if (!allContextProperties.hasOwnProperty(property)) {
+                        if (allContextProperties.indexOf(property) < 0) {
                             allContextProperties.push(property);
                         }
                     }
