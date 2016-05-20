@@ -18,4 +18,5 @@
  */
 
 getSecondStartingTime=org.wso2.carbon.analytics.esb.siddhi.extension.SecondStartingTimeFunctionExtension
+getMinuteStartingTime=org.wso2.carbon.analytics.esb.siddhi.extension.MinuteStartingTimeFunctionExtension
 decompress=org.wso2.carbon.analytics.esb.siddhi.extension.CompressedEventProcessor
