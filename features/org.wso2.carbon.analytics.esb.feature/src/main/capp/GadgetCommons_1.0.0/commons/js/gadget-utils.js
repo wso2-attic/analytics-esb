@@ -207,7 +207,7 @@ function GadgetUtil() {
     };
     
     this.getView = function(){
-        if( $('#' + gadgets.rpc.RPC_ID, PARENT_WINDOW).closest('.ues-component-box').hasClass('ues-component-fullview') ){
+        if( $('#' + gadgets.rpc.RPC_ID, PARENT_WINDOW).closest('.grid-stack-item').hasClass('ues-component-fullview') ){
             return 'maximized';
         }
         else{
