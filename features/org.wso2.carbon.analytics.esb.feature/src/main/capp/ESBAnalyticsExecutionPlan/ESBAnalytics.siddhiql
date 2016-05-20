@@ -41,7 +41,7 @@ insert into decompressedHighLevelEventStream;
 
 -- sec
 from decompressedHighLevelEventStream#window.externalTimeBatch(startTime, 1 sec, 0, 5 sec)
-select max(startTime) as startTime, componentId, componentName, componentType, sum(duration) as totalDuration, min(duration) as minDuration, max(duration) as maxDuration, count(*) as noOfInvocation, sum(faultCount) as faultCount, entryPoint, _timestamp
+select max(startTime) as startTime, componentId, componentName, componentType, sum(duration) as totalDuration, min(duration) as minDuration, max(duration) as maxDuration, count(*) as noOfInvocation, sum(ifThenElse(faultCount > 0, 1, 0)) as faultCount, entryPoint, _timestamp
 group by componentId, componentName, componentType, entryPoint
 insert into esbStatPerSecTemp;
 
@@ -50,7 +50,7 @@ select time:extract(startTime, 'year') as year, time:extract(startTime, 'month')
 insert into perSecond;
 
 from decompressedHighLevelEventStream#window.externalTimeBatch(startTime, 1 sec, 0, 5 sec)
-select max(startTime) as startTime, componentId, componentName, componentType, sum(duration) as totalDuration, min(duration) as minDuration, max(duration) as maxDuration, count(*) as noOfInvocation, sum(faultCount) as faultCount, entryPoint, _timestamp
+select max(startTime) as startTime, componentId, componentName, componentType, sum(duration) as totalDuration, min(duration) as minDuration, max(duration) as maxDuration, count(*) as noOfInvocation, sum(ifThenElse(faultCount > 0, 1, 0)) as faultCount, entryPoint, _timestamp
 insert into esbStatPerSecAllTemp;
 
 from esbStatPerSecAllTemp
@@ -59,7 +59,7 @@ insert into perSecondAll;
 
 -- min
 from decompressedHighLevelEventStream#window.externalTimeBatch(startTime, 60 sec, 0, 10 sec)
-select max(startTime) as startTime, componentId, componentName, componentType, sum(duration) as totalDuration, min(duration) as minDuration, max(duration) as maxDuration, count(*) as noOfInvocation, sum(faultCount) as faultCount, entryPoint, _timestamp
+select max(startTime) as startTime, componentId, componentName, componentType, sum(duration) as totalDuration, min(duration) as minDuration, max(duration) as maxDuration, count(*) as noOfInvocation, sum(ifThenElse(faultCount > 0, 1, 0)) as faultCount, entryPoint, _timestamp
 group by componentId, componentName, componentType, entryPoint
 insert into esbStatPerMinTemp;
 
@@ -68,7 +68,7 @@ select time:extract(startTime, 'year') as year, time:extract(startTime, 'month')
 insert into esbStatPerMin;
 
 from decompressedHighLevelEventStream#window.externalTimeBatch(startTime, 60 sec, 0, 10 sec)
-select max(startTime) as startTime, componentId, componentName, componentType, sum(duration) as totalDuration, min(duration) as minDuration, max(duration) as maxDuration, count(*) as noOfInvocation, sum(faultCount) as faultCount, entryPoint, _timestamp
+select max(startTime) as startTime, componentId, componentName, componentType, sum(duration) as totalDuration, min(duration) as minDuration, max(duration) as maxDuration, count(*) as noOfInvocation, sum(ifThenElse(faultCount > 0, 1, 0)) as faultCount, entryPoint, _timestamp
 insert into esbStatPerMinAllTemp;
 
 from esbStatPerMinAllTemp
@@ -77,7 +77,7 @@ insert into esbStatPerMinAll;
 
 -- mediator
 from decompressedEventStream#window.externalTimeBatch(startTime, 1 sec, 0, 5 sec)
-select max(startTime) as startTime, entryPoint, entryPointHashcode, componentIndex, componentId, hashCode, componentName, componentType, sum(duration) as totalDuration, min(duration) as minDuration, max(duration) as maxDuration, count(*) as noOfInvocation, sum(faultCount) as faultCount,  _timestamp
+select max(startTime) as startTime, entryPoint, entryPointHashcode, componentIndex, componentId, hashCode, componentName, componentType, sum(duration) as totalDuration, min(duration) as minDuration, max(duration) as maxDuration, count(*) as noOfInvocation, sum(ifThenElse(faultCount > 0, 1, 0)) as faultCount,  _timestamp
 group by entryPoint, entryPointHashcode, componentIndex, componentId, hashCode, componentName, componentType
 insert into mediatorStatPerSecTemp;
 
@@ -86,7 +86,7 @@ select time:extract(startTime, 'year') as year, time:extract(startTime, 'month')
 insert into mediatorStatPerSec;
 
 from decompressedEventStream#window.externalTimeBatch(startTime, 60 sec, 0, 10 sec)
-select max(startTime) as startTime, entryPoint, entryPointHashcode, componentIndex, componentId, hashCode, componentName, componentType, sum(duration) as totalDuration, min(duration) as minDuration, max(duration) as maxDuration, count(*) as noOfInvocation, sum(faultCount) as faultCount, _timestamp
+select max(startTime) as startTime, entryPoint, entryPointHashcode, componentIndex, componentId, hashCode, componentName, componentType, sum(duration) as totalDuration, min(duration) as minDuration, max(duration) as maxDuration, count(*) as noOfInvocation, sum(ifThenElse(faultCount > 0, 1, 0)) as faultCount, _timestamp
 group by entryPoint, entryPointHashcode, componentIndex, componentId, hashCode, componentName, componentType
 insert into mediatorStatPerMinTemp;
 
