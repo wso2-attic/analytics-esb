@@ -24,8 +24,6 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
-
 import javax.xml.bind.DatatypeConverter;
 
 import org.apache.commons.io.IOUtils;
@@ -33,7 +31,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.wso2.carbon.analytics.spark.core.util.AnalyticsConstants;
 import org.wso2.carbon.analytics.spark.core.util.CompressedEventAnalyticsUtils;
 import org.wso2.carbon.analytics.spark.core.util.PublishingPayload;
-import org.wso2.carbon.analytics.spark.core.util.PublishingPayloadEvent;
 import org.wso2.siddhi.core.config.ExecutionPlanContext;
 import org.wso2.siddhi.core.event.ComplexEventChunk;
 import org.wso2.siddhi.core.event.stream.StreamEvent;
@@ -64,7 +61,6 @@ public class CompressedEventProcessor extends StreamProcessor {
             kryo.register(HashMap.class, 111);
             kryo.register(ArrayList.class, 222);
             kryo.register(PublishingPayload.class, 333);
-            kryo.register(PublishingPayloadEvent.class, 444);
             return kryo;
         }
     };
@@ -114,25 +110,18 @@ public class CompressedEventProcessor extends StreamProcessor {
                 Input input = new Input(unzippedByteArray);
                 Map<String, Object> aggregatedEvent = kryoTL.get().readObjectOrNull(input, HashMap.class);
                 
-                ArrayList<Map<String, Object>> eventsList = (ArrayList<Map<String, Object>>) aggregatedEvent.get(
+                ArrayList<List<Object>> eventsList = (ArrayList<List<Object>>) aggregatedEvent.get(
                     AnalyticsConstants.EVENTS_ATTRIBUTE);
                 ArrayList<PublishingPayload> payloadsList = (ArrayList<PublishingPayload>) aggregatedEvent.get(
                     AnalyticsConstants.PAYLOADS_ATTRIBUTE);
-                Map<Integer, Map<String, String>> payloadsMap = null;
-                if (payloadsList != null) {
-                    payloadsMap =  CompressedEventAnalyticsUtils.getPayloadsAsMap(payloadsList);
-                }
-                
+
                 String host = (String)aggregatedEvent.get(AnalyticsConstants.HOST_ATTRIBUTE);
-                String messageFlowId = (String)aggregatedEvent.get(AnalyticsConstants.MESSAGE_FLOW_ID_ATTRIBUTE);
                 // Iterate over the array of events
                 for (int i = 0; i < eventsList.size(); i++) {
                     StreamEvent decompressedEvent = streamEventCloner.copyStreamEvent(compressedEvent);
                     // Create a new event with decompressed fields
-                    Set<String> outputColumns = this.fields.keySet();
                     Object[] decompressedFields = CompressedEventAnalyticsUtils.getFieldValues(eventsList.get(i),
-                        outputColumns.toArray(new String[outputColumns.size()]), payloadsMap, i, 
-                        compressedEvent.getTimestamp(), host, messageFlowId);
+                        payloadsList, i, compressedEvent.getTimestamp(), host);
                     complexEventPopulater.populateComplexEvent(decompressedEvent, decompressedFields);
                     decompressedStreamEventChunk.add(decompressedEvent);
                 }
