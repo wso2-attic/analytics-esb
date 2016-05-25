@@ -14,6 +14,7 @@
 ~   limitations under the License.
 -->
 <%
+
     // i18n
     var i18n = require("i18n");
     i18n.init(request, utils.getLocaleResourcePath());
@@ -311,7 +312,7 @@
     <!--Footer -->
     <footer class="footer">
         <div class="container-fluid">
-            <p>WSO2 Dashboard Server 2.0.0 | &copy; <script>document.write(new Date().getFullYear());</script> <a href="http://wso2.com/" target="_blank"><i class="icon fw fw-wso2"></i> Inc</a>.</p>
+            <p><!--WSO2 Analytics Server 2.0.0 | -->&copy; <script>document.write(new Date().getFullYear());</script> <a href="http://wso2.com/" target="_blank"><i class="icon fw fw-wso2"></i> Inc</a>.</p>
         </div>
     </footer>
 
@@ -531,7 +532,7 @@
                     done = false;
                 }
                 else {
-                    if($('iframe').length == (i+1)){
+                    if($('iframe[name^=sandbox-gadget]').length == (i+1)){
                         done = true;
                     }
                 }

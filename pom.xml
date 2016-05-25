@@ -416,6 +416,11 @@
                 <artifactId>json</artifactId>
                 <version>${orbit.version.json}</version>
             </dependency>
+            <dependency>
+                <groupId>org.wso2.orbit.com.esotericsoftware.kryo</groupId>
+                <artifactId>kryo</artifactId>
+                <version>${kryo.orbit.version}</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
@@ -511,7 +516,8 @@
         <slf4j.api.version>1.6.1</slf4j.api.version>
         <cipher.tool.version>1.0.0-wso2v3</cipher.tool.version>
         <geoip.api.version>1.2.15</geoip.api.version>
-
+        <kryo.orbit.version>2.24.0.wso2v1</kryo.orbit.version>
+        <kryo.import.version>[2.24.0,3.0)</kryo.import.version>
         <project.scm.id>my-scm-server</project.scm.id>
     </properties>
 

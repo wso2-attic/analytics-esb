@@ -88,7 +88,6 @@
         componentType FACET -i, totalDuration LONG, minDuration INT, maxDuration INT, noOfInvocation LONG -sp,
         faultCount LONG, startingTime LONG -i, facetStartTime FACET -i, entryPoint FACET -i, _timestamp LONG -i",
         primaryKeys "year, month, day, componentId, componentType",
-        incrementalParams "esbServiceStatPerDay, 2678400",
         mergeSchema "false");
 
         INSERT INTO TABLE esbServiceStatPerDay
@@ -132,7 +131,6 @@
         LONG, minDuration INT, maxDuration INT, noOfInvocation LONG -sp, faultCount LONG, startingTime LONG -i,
         facetStartTime FACET -i, _timestamp  LONG -i",
         primaryKeys "year, month, day, entryPointHashcode, hashCode, componentId, componentType",
-        incrementalParams "mediatorStatPerDay, 2678400",
         mergeSchema "false");
 
         INSERT INTO TABLE mediatorStatPerDay
@@ -165,8 +163,6 @@
         month) as _timestamp
         FROM esbServiceStatPerDay
         GROUP BY year, month, componentId, componentName, componentType, entryPoint;
-
-        INCREMENTAL_TABLE_COMMIT esbServiceStatPerDay;
 
         CREATE TEMPORARY TABLE esbServiceStatPerMonthAll USING CarbonAnalytics
         OPTIONS (tableName "ESB-Stat-per-Month",
@@ -210,7 +206,6 @@
         GROUP BY year, month, entryPoint, entryPointHashcode, componentIndex, componentId, hashCode, componentName,
         componentType;
 
-        INCREMENTAL_TABLE_COMMIT mediatorStatPerDay;
     </Script>
-    <CronExpression>0 0/5 * * * ?</CronExpression>
+    <CronExpression>0 0/2 * * * ? *</CronExpression>
 </Analytics>

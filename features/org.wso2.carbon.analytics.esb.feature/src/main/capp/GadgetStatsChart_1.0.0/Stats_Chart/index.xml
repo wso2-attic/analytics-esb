@@ -89,7 +89,7 @@
                             <div class="pull-left arc-chart">
                                 <div id="dChartFalse"></div>
                                 <div class="chart-label-count"><span id="failedCount"></span> Requests</div>
-                                <div class="chart-label">Failed Rate</div>
+                                <div class="chart-label">Failure Rate</div>
                             </div>
                         </div>
                     </div>

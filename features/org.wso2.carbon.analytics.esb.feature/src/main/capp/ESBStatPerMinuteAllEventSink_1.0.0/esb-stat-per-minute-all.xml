@@ -37,27 +37,6 @@
             <Type>INTEGER</Type>
         </ColumnDefinition>
         <ColumnDefinition>
-            <Name>entryPoint</Name>
-            <EnableIndexing>true</EnableIndexing>
-            <IsPrimaryKey>true</IsPrimaryKey>
-            <EnableScoreParam>false</EnableScoreParam>
-            <Type>FACET</Type>
-        </ColumnDefinition>
-        <ColumnDefinition>
-            <Name>entryPointHashcode</Name>
-            <EnableIndexing>true</EnableIndexing>
-            <IsPrimaryKey>true</IsPrimaryKey>
-            <EnableScoreParam>false</EnableScoreParam>
-            <Type>INTEGER</Type>
-        </ColumnDefinition>
-        <ColumnDefinition>
-            <Name>componentIndex</Name>
-            <EnableIndexing>true</EnableIndexing>
-            <IsPrimaryKey>true</IsPrimaryKey>
-            <EnableScoreParam>false</EnableScoreParam>
-            <Type>INTEGER</Type>
-        </ColumnDefinition>
-        <ColumnDefinition>
             <Name>componentId</Name>
             <EnableIndexing>true</EnableIndexing>
             <IsPrimaryKey>true</IsPrimaryKey>
@@ -65,16 +44,9 @@
             <Type>FACET</Type>
         </ColumnDefinition>
         <ColumnDefinition>
-            <Name>hashCode</Name>
-            <EnableIndexing>true</EnableIndexing>
-            <IsPrimaryKey>true</IsPrimaryKey>
-            <EnableScoreParam>false</EnableScoreParam>
-            <Type>INTEGER</Type>
-        </ColumnDefinition>
-        <ColumnDefinition>
             <Name>componentName</Name>
             <EnableIndexing>true</EnableIndexing>
-            <IsPrimaryKey>true</IsPrimaryKey>
+            <IsPrimaryKey>false</IsPrimaryKey>
             <EnableScoreParam>false</EnableScoreParam>
             <Type>FACET</Type>
         </ColumnDefinition>
@@ -115,7 +87,7 @@
         </ColumnDefinition>
         <ColumnDefinition>
             <Name>faultCount</Name>
-            <EnableIndexing>true</EnableIndexing>
+            <EnableIndexing>false</EnableIndexing>
             <IsPrimaryKey>false</IsPrimaryKey>
             <EnableScoreParam>false</EnableScoreParam>
             <Type>LONG</Type>
@@ -134,9 +106,16 @@
             <EnableScoreParam>false</EnableScoreParam>
             <Type>FACET</Type>
         </ColumnDefinition>
+        <ColumnDefinition>
+            <Name>entryPoint</Name>
+            <EnableIndexing>true</EnableIndexing>
+            <IsPrimaryKey>false</IsPrimaryKey>
+            <EnableScoreParam>false</EnableScoreParam>
+            <Type>FACET</Type>
+        </ColumnDefinition>
     </TableSchema>
     <Source>
-        <StreamId>mediator-stat-per-minute:1.0.0</StreamId>
+        <StreamId>esb-stat-per-minute-all:1.0.0</StreamId>
     </Source>
     <MergeSchema>false</MergeSchema>
     <RecordStoreName>EVENT_STORE</RecordStoreName>

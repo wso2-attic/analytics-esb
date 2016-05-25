@@ -1,5 +1,5 @@
 {
-  "name": "mediator-stat-per-minute",
+  "name": "esb-stat-per-minute-all",
   "version": "1.0.0",
   "nickName": "",
   "description": "",
@@ -25,24 +25,8 @@
       "type": "INT"
     },
     {
-      "name": "entryPoint",
-      "type": "STRING"
-    },
-    {
-      "name": "entryPointHashcode",
-      "type": "INT"
-    },
-    {
-      "name": "componentIndex",
-      "type": "INT"
-    },
-    {
       "name": "componentId",
       "type": "STRING"
-    },
-    {
-      "name": "hashCode",
-      "type": "INT"
     },
     {
       "name": "componentName",
@@ -78,6 +62,10 @@
     },
     {
       "name": "facetStartTime",
+      "type": "STRING"
+    },
+    {
+      "name": "entryPoint",
       "type": "STRING"
     },
     {

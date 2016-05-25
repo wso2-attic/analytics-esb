@@ -134,10 +134,11 @@ function onData(response) {
 
             if (nodes[i].group != null) {
                 g.setParent(nodes[i].id, nodes[i].group);
-                if (nodes[i].type != "group" && nodes[i].parents.length == 0) {
+                if (nodes[i].type != "group" && !isParent(nodes, nodes[i])) {
                     g.setEdge(nodes[i].group + "-s", nodes[i].id, { style: 'stroke-width: 0px; ' });
                     g.setEdge(nodes[i].id, nodes[i].group + "-e", { style: 'stroke-width: 0px; ' });
                 }
+
 
             }
 
@@ -187,6 +188,15 @@ function onData(response) {
 
 };
 
+function isParent(searchNodes, id) {
+   for (var x = 0; x < searchNodes.length; x++) { 
+        if (searchNodes[x].parent == id) {
+            return true;
+        }
+   }
+   return false;
+}
+
 function buildLabel(node) {
     var pageUrl = MEDIATOR_PAGE_URL;
     if (node.type === "Sequence") {
@@ -221,3 +231,8 @@ function buildLabel(node) {
 function onError(msg) {
     $("#canvas").html(gadgetUtil.getErrorText(msg));
 };
+
+var maximizeButton = $('#' + gadgets.rpc.RPC_ID, window.parent.document).closest('.grid-stack-item').find('.ues-component-full-handle');
+$('body').on('click', '#btnViewToggle', function(){
+    $(maximizeButton).click();
+});

@@ -1,8 +1,8 @@
 {
-  "name": "mediator-stat-per-minute",
+  "name": "esb-stat-per-second-all",
   "version": "1.0.0",
-  "nickName": "",
-  "description": "",
+  "nickName": "per-second",
+  "description": "Proxy,API,Endpoint stat per second based",
   "payloadData": [
     {
       "name": "year",
@@ -25,24 +25,12 @@
       "type": "INT"
     },
     {
-      "name": "entryPoint",
-      "type": "STRING"
-    },
-    {
-      "name": "entryPointHashcode",
-      "type": "INT"
-    },
-    {
-      "name": "componentIndex",
+      "name": "second",
       "type": "INT"
     },
     {
       "name": "componentId",
       "type": "STRING"
-    },
-    {
-      "name": "hashCode",
-      "type": "INT"
     },
     {
       "name": "componentName",
@@ -78,6 +66,10 @@
     },
     {
       "name": "facetStartTime",
+      "type": "STRING"
+    },
+    {
+      "name": "entryPoint",
       "type": "STRING"
     },
     {

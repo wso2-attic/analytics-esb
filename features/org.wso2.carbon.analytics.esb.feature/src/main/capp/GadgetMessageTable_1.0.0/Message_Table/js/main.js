@@ -44,6 +44,14 @@ $(function() {
         }
     });
 
+    //Binding custom searching on Enter key press
+    $('#tblMessages_filter input').unbind();
+    $('#tblMessages_filter input').bind('keyup', function(e) {
+    if(e.keyCode == 13) {
+        oTable.search( this.value).draw();
+    }
+    });
+
     $('#tblMessages').on('click', 'tbody tr', function() {
         var id = $(this).find("td:first").html(); 
         if ($(this).hasClass('selected')) {

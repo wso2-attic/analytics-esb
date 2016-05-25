@@ -7,9 +7,9 @@ function getMostInvokedComponentNames(connector, loggedInUser, componentType) {
     var timeFrom = request.getParameter("timeFrom");
     var timeTo = request.getParameter("timeTo");
     if (componentType == "Proxy Service" || componentType == "API" || componentType == "Inbound EndPoint") {
-        var tableName = "ESB-STAT-PER-SECOND";
+        var tableName = "ESB-STAT-PER-MINUTE";
     } else {
-        var tableName = "MEDIATOR-STAT-PER-SECOND";
+        var tableName = "MEDIATOR-STAT-PER-MINUTE";
     }
     var query = stringify({
                               "fieldName": "componentName",
@@ -161,6 +161,9 @@ function getStats(connector, loggedInUser, componentType, componentName, entryPo
             parentPath: [],
             noOfRecords: 1000
         }
+        if (table != "MEDIATOR-STAT-PER-" && componentType == "ALL" && (timeRange.unit == "SECOND" || timeRange.unit == "MINUTE")) {
+            searchParam["tableName"] = searchParam["tableName"] + "-ALL"
+        }
         searchParam.aggregateFields = aggregateFields;
         searchParams.push(searchParam);
     }
@@ -263,6 +266,37 @@ function getComponentMessages(connector, loggedInUser, componentName, componentT
     return result;
 };
 
+/*
+ * Split and process elements in any map of properties, if given in "{name1=value1, name2=value2 }" format.
+ * TODO: Outrageous string processing. Need to find a proper way to fix once the delimiters are fixed properly
+ * in the publisher-end.
+ */
+function processProperties(propertyMap) {
+    var output = {};
+    if (propertyMap) {
+        var properties = propertyMap.slice(1, -1).split(",");
+        for (i = 0; i < properties.length; i++) {
+            var property = properties[i];
+            if ((i + 1 < properties.length) && (properties[i+1].indexOf('=') === -1)){
+                property = property + "," + properties[i+1];
+            }
+            if (property.indexOf('=') === -1) {
+                continue;
+            } else {
+                var nameValuePair = property.split("=");
+                output[nameValuePair[0]] = nameValuePair[1];
+                for (j = 2; j < nameValuePair.length; j++) {
+                    if (nameValuePair[j]) {
+                        output[nameValuePair[0]] += "=" + nameValuePair[j];
+                    }
+                }
+            }
+        }
+        return output;
+    } else {
+        return {};
+    }
+}
 
 /*
 * Get message flow of a component (Proxy/API)

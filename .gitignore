@@ -16,3 +16,7 @@ hs_err_pid*
 *.settings
 *.classpath
 *.iml
+*.iws
+*.ipr
+.idea
+.DS_Store

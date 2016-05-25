@@ -42,7 +42,7 @@
     },
     {
       "name": "duration",
-      "type": "INT"
+      "type": "LONG"
     },
     {
       "name": "beforePayload",

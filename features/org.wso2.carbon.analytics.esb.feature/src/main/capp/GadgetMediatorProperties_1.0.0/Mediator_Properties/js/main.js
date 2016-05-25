@@ -74,11 +74,33 @@ function drawPropertyTable(properties,tbody,side) {
         var tdKey = jQuery('<td/>');
         var tdValue = jQuery('<td/>');
         tr.append(tdKey.append(property.name));
+        var value;
         if(side === BEFORE) {
-            tr.append(tdValue.append(property.before));
+            value = property.before;
         } else {
-            tr.append(tdValue.append(property.after));
+            value = property.after;
         }
+        tr.append(tdValue.append(truncateText(value)));
         tr.appendTo(tbody);
     });
 }
+
+/**
+* Break up a line into multiple pieces and insert <br/> tags in between them.
+*/
+function truncateText(text) {
+    var finalValue = "";
+    var tokens = text.match(/.{1,60}/g);
+    if(tokens.length > 1) {
+        tokens.forEach(function(token,i) {
+            if(i == 0) {
+                finalValue = finalValue + token;
+            } else {
+                finalValue = finalValue + "<br/>" + token;
+            }
+        });
+    } else {
+        finalValue = text;
+    }
+    return finalValue;
+};

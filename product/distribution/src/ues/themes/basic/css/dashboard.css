@@ -149,6 +149,10 @@ body.dashboard .body-wrapper > .nano.has-scrollbar > .nano-content {
     border: none;
 }
 
+.dashboard .ues-component-fullview {
+    z-index: 10000;
+}
+
 .dashboard .ues-component-fullview .gadget-wrapper {
     background: #fff;
 }
@@ -513,6 +517,7 @@ ul.sidebar-messages > li:last-child {
 }
 /* Hiding menu*/
 .nav.pages a[href*='esb-analytics/message'],
-.nav.pages a[href*='esb-analytics/mediator'] {
+.nav.pages a[href*='esb-analytics/mediator'],
+.gadget-actions .ues-component-full-handle {
     display: none;
 }

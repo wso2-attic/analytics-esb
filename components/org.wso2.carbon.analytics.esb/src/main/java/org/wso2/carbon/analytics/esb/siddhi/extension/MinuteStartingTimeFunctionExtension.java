@@ -27,7 +27,7 @@ import org.wso2.siddhi.query.api.definition.Attribute;
 /**
  * Created on 4/18/16.
  */
-public class SecondStartingTimeFunctionExtension extends FunctionExecutor {
+public class MinuteStartingTimeFunctionExtension extends FunctionExecutor {
 
     @Override
     protected void init(ExpressionExecutor[] expressionExecutors, ExecutionPlanContext executionPlanContext) {
@@ -41,7 +41,7 @@ public class SecondStartingTimeFunctionExtension extends FunctionExecutor {
     @Override
     protected Object execute(Object o) {
         long time = (long) o;
-        return (time - time % 1000);
+        return (time - time % 60000);
     }
 
     @Override
