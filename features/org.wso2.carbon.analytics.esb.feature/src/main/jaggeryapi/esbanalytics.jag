@@ -197,6 +197,7 @@
                     log.error(error);
                 }
                 for (var i = 0; i < dataPoints.length; i++) {
+                    var obj = dataPoints[i];
                     var success = obj.values.noOfInvocation - obj.values.faultCount;
                     if (success < 0) {
                         success = 0;
