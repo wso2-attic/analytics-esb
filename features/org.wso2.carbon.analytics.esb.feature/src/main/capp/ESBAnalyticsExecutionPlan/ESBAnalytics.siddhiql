@@ -8,28 +8,32 @@
 define stream flowEntry(meta_compressed bool, messageId string, flowData string);
 
 @Export('esb-stat-per-second-all:1.0.0')
-define stream perSecondAll (year int, month int, day int, hour int, minute int, second int, componentId string, componentName string, componentType string, totalDuration long, minDuration long, maxDuration long, noOfInvocation long, faultCount long, startingTime long, facetStartTime string, entryPoint string, _timestamp long);
+define stream perSecondAll (year int, month int, day int, hour int, minute int, second int, componentId string, componentName string, componentType string, totalDuration long, minDuration long, maxDuration long, noOfInvocation long, faultCount long, startTime long, facetStartTime string, entryPoint string, _timestamp long);
 
 @Export('esb-stat-per-minute:1.0.0')
-define stream esbStatPerMin (year int, month int, day int, hour int, minute int, componentId string, componentName string, componentType string, totalDuration long, minDuration long, maxDuration long, noOfInvocation long, faultCount long, startingTime long, facetStartTime string, entryPoint string, _timestamp long);
+define stream esbStatPerMin (year int, month int, day int, hour int, minute int, componentId string, componentName string, componentType string, totalDuration long, minDuration long, maxDuration long, noOfInvocation long, faultCount long, startTime long, facetStartTime string, entryPoint string, _timestamp long);
 
 @Export('esb-stat-per-minute-all:1.0.0')
-define stream esbStatPerMinAll (year int, month int, day int, hour int, minute int, componentId string, componentName string, componentType string, totalDuration long, minDuration long, maxDuration long, noOfInvocation long, faultCount long, startingTime long, facetStartTime string, entryPoint string, _timestamp long);
+define stream esbStatPerMinAll (year int, month int, day int, hour int, minute int, componentId string, componentName string, componentType string, totalDuration long, minDuration long, maxDuration long, noOfInvocation long, faultCount long, startTime long, facetStartTime string, entryPoint string, _timestamp long);
 
 @Export('mediator-stat-per-minute:1.0.0')
-define stream mediatorStatPerMin (year int, month int, day int, hour int, minute int, entryPoint string, entryPointHashcode int, componentIndex int, componentId string, hashCode int, componentName string, componentType string, totalDuration long, minDuration long, maxDuration long, noOfInvocation long, faultCount long, startingTime long, facetStartTime string, _timestamp long);
+define stream mediatorStatPerMin (year int, month int, day int, hour int, minute int, entryPoint string, entryPointHashcode int, componentId string, hashCode int, componentName string, componentType string, totalDuration long, minDuration long, maxDuration long, noOfInvocation long, faultCount long, startTime long, facetStartTime string, _timestamp long);
 
 @Export('esb-event:1.0.0')
 define stream esbEvent (messageFlowId string, host string, hashCode int, componentName string, componentType string, componentIndex int, componentId string, startTime long, endTime long, duration long, beforePayload string, afterPayload string, contextPropertyMap string, transportPropertyMap string, children string, entryPoint string, entryPointHashcode int, faultCount int, _timestamp long);
 
 @Export('mediator-stat-per-second:1.0.0')
-define stream mediatorStatPerSec (year int, month int, day int, hour int, minute int, second int, entryPoint string, entryPointHashcode int, componentIndex int, componentId string, hashCode int, componentName string, componentType string, totalDuration long, minDuration long, maxDuration long, noOfInvocation long, faultCount long, startingTime long, facetStartTime string, _timestamp long);
+define stream mediatorStatPerSec (year int, month int, day int, hour int, minute int, second int, entryPoint string, entryPointHashcode int, componentId string, hashCode int, componentName string, componentType string, totalDuration long, minDuration long, maxDuration long, noOfInvocation long, faultCount long, startTime long, facetStartTime string, _timestamp long);
 
 @Export('esb-stat-per-second:1.0.0')
-define stream perSecond (year int, month int, day int, hour int, minute int, second int, componentId string, componentName string, componentType string, totalDuration long, minDuration long, maxDuration long, noOfInvocation long, faultCount long, startingTime long, facetStartTime string, entryPoint string, _timestamp long);
+define stream perSecond (year int, month int, day int, hour int, minute int, second int, componentId string, componentName string, componentType string, totalDuration long, minDuration long, maxDuration long, noOfInvocation long, faultCount long, startTime long, facetStartTime string, entryPoint string, _timestamp long);
 
 from flowEntry#esbAnalytics:decompress(meta_compressed, flowData, messageId)
-select messageFlowId, host, hashCode, componentName, componentType, componentIndex, componentId, startTime, endTime, duration, beforePayload, afterPayload, contextPropertyMap, transportPropertyMap, children, entryPoint, entryPointHashcode, faultCount, _timestamp
+select messageFlowId, host, hashCode, componentName, componentType, componentIndex, componentId,  startTime, endTime, duration, beforePayload, afterPayload, contextPropertyMap, transportPropertyMap, children, entryPoint, entryPointHashcode, faultCount, _timestamp
+insert into decompressedEventStreamTemp;
+
+from decompressedEventStreamTemp
+select messageFlowId, host, hashCode, componentName, componentType, componentIndex, componentId,  maxForever(startTime) as startTime, endTime, duration, beforePayload, afterPayload, contextPropertyMap, transportPropertyMap, children, entryPoint, entryPointHashcode, faultCount, _timestamp
 insert into decompressedEventStream;
 
 from decompressedEventStream[not(beforePayload is null) or not(transportPropertyMap is null) or not(contextPropertyMap is null)]
@@ -40,56 +44,60 @@ from decompressedEventStream[componentType == 'Proxy Service' OR componentType =
 insert into decompressedHighLevelEventStream;
 
 -- sec
-from decompressedHighLevelEventStream#window.externalTimeBatch(startTime, 1 sec, 0, 5 sec)
-select max(startTime) as startTime, componentId, componentName, componentType, sum(duration) as totalDuration, min(duration) as minDuration, max(duration) as maxDuration, count(*) as noOfInvocation, sum(ifThenElse(faultCount > 0, 1, 0)) as faultCount, entryPoint, _timestamp
+from decompressedHighLevelEventStream#window.externalTimeBatch(startTime, 1 sec, 0, 10 sec)
+select startTime, componentId, componentName, componentType, sum(duration) as totalDuration, min(duration) as minDuration, max(duration) as maxDuration, count(*) as noOfInvocation, sum(ifThenElse(faultCount > 0, 1, 0)) as faultCount, entryPoint, _timestamp
 group by componentId, componentName, componentType, entryPoint
 insert into esbStatPerSecTemp;
 
 from esbStatPerSecTemp
-select time:extract(startTime, 'year') as year, time:extract(startTime, 'month') as month, time:extract(startTime, 'day') as day, time:extract(startTime, 'hour') as hour, time:extract(startTime, 'minute') as minute, time:extract(startTime, 'second') as second, componentId, componentName, componentType, totalDuration, minDuration, maxDuration, noOfInvocation, faultCount,  esbAnalytics:getSecondStartingTime(startTime) as startingTime, convert(esbAnalytics:getSecondStartingTime(startTime), 'string') as facetStartTime, entryPoint, _timestamp
+select time:extract(startTime, 'year') as year, time:extract(startTime, 'month') as month, time:extract(startTime, 'day') as day, time:extract(startTime, 'hour') as hour, time:extract(startTime, 'minute') as minute, time:extract(startTime, 'second') as second, componentId, componentName, componentType, totalDuration, minDuration, maxDuration, noOfInvocation, faultCount,  esbAnalytics:getSecondStartingTime(startTime) as startTime, convert(esbAnalytics:getSecondStartingTime(startTime), 'string') as facetStartTime, entryPoint, _timestamp
 insert into perSecond;
 
-from decompressedHighLevelEventStream#window.externalTimeBatch(startTime, 1 sec, 0, 5 sec)
-select max(startTime) as startTime, componentId, componentName, componentType, sum(duration) as totalDuration, min(duration) as minDuration, max(duration) as maxDuration, count(*) as noOfInvocation, sum(ifThenElse(faultCount > 0, 1, 0)) as faultCount, entryPoint, _timestamp
+from decompressedHighLevelEventStream#window.externalTimeBatch(startTime, 1 sec, 0, 10 sec)
+select startTime, componentId, componentName, componentType, sum(duration) as totalDuration, min(duration) as minDuration, max(duration) as maxDuration, count(*) as noOfInvocation, sum(ifThenElse(faultCount > 0, 1, 0)) as faultCount, entryPoint, _timestamp
 insert into esbStatPerSecAllTemp;
 
 from esbStatPerSecAllTemp
-select time:extract(startTime, 'year') as year, time:extract(startTime, 'month') as month, time:extract(startTime, 'day') as day, time:extract(startTime, 'hour') as hour, time:extract(startTime, 'minute') as minute, time:extract(startTime, 'second') as second, "ALL" as componentId, "ALL" as componentName, "ALL" as componentType, totalDuration, minDuration, maxDuration, noOfInvocation, faultCount,  esbAnalytics:getSecondStartingTime(startTime) as startingTime, convert(esbAnalytics:getSecondStartingTime(startTime), 'string') as facetStartTime, entryPoint, _timestamp
+select time:extract(startTime, 'year') as year, time:extract(startTime, 'month') as month, time:extract(startTime, 'day') as day, time:extract(startTime, 'hour') as hour, time:extract(startTime, 'minute') as minute, time:extract(startTime, 'second') as second, "ALL" as componentId, "ALL" as componentName, "ALL" as componentType, totalDuration, minDuration, maxDuration, noOfInvocation, faultCount,  esbAnalytics:getSecondStartingTime(startTime) as startTime, convert(esbAnalytics:getSecondStartingTime(startTime), 'string') as facetStartTime, entryPoint, _timestamp
 insert into perSecondAll;
 
 -- min
+from perSecond
+select str:concat(facetStartTime, '_', componentId, '_', componentName, '_', componentType, '_', entryPoint) as uniqueId, year, month, day, hour, minute, second, componentId, componentName, componentType, totalDuration, minDuration, maxDuration, noOfInvocation, faultCount, startTime, facetStartTime, entryPoint, _timestamp
+insert into perSecondWithUniqueId;
+
 from decompressedHighLevelEventStream#window.externalTimeBatch(startTime, 60 sec, 0, 10 sec)
-select max(startTime) as startTime, componentId, componentName, componentType, sum(duration) as totalDuration, min(duration) as minDuration, max(duration) as maxDuration, count(*) as noOfInvocation, sum(ifThenElse(faultCount > 0, 1, 0)) as faultCount, entryPoint, _timestamp
+select startTime, componentId, componentName, componentType, sum(duration) as totalDuration, min(duration) as minDuration, max(duration) as maxDuration, count(*) as noOfInvocation, sum(ifThenElse(faultCount > 0, 1, 0)) as faultCount, entryPoint, _timestamp
 group by componentId, componentName, componentType, entryPoint
 insert into esbStatPerMinTemp;
 
 from esbStatPerMinTemp
-select time:extract(startTime, 'year') as year, time:extract(startTime, 'month') as month, time:extract(startTime, 'day') as day, time:extract(startTime, 'hour') as hour, time:extract(startTime, 'minute') as minute, componentId, componentName, componentType, totalDuration, minDuration, maxDuration, noOfInvocation, faultCount, esbAnalytics:getMinuteStartingTime(startTime) as startingTime, convert(esbAnalytics:getMinuteStartingTime(startTime), 'string') as facetStartTime, entryPoint, _timestamp
+select time:extract(startTime, 'year') as year, time:extract(startTime, 'month') as month, time:extract(startTime, 'day') as day, time:extract(startTime, 'hour') as hour, time:extract(startTime, 'minute') as minute, componentId, componentName, componentType, totalDuration, minDuration, maxDuration, noOfInvocation, faultCount, esbAnalytics:getMinuteStartingTime(startTime) as startTime, convert(esbAnalytics:getMinuteStartingTime(startTime), 'string') as facetStartTime, entryPoint, _timestamp
 insert into esbStatPerMin;
 
-from decompressedHighLevelEventStream#window.externalTimeBatch(startTime, 60 sec, 0, 10 sec)
-select max(startTime) as startTime, componentId, componentName, componentType, sum(duration) as totalDuration, min(duration) as minDuration, max(duration) as maxDuration, count(*) as noOfInvocation, sum(ifThenElse(faultCount > 0, 1, 0)) as faultCount, entryPoint, _timestamp
+from perSecondAll#window.uniqueExternalTimeBatch(facetStartTime, startTime, 60 sec, 0, 10 sec)
+select startTime, componentId, componentName, componentType, sum(totalDuration) as totalDuration, min(minDuration) as minDuration, max(maxDuration) as maxDuration, sum(noOfInvocation) as noOfInvocation, sum(ifThenElse(faultCount > 0, 1, 0)) as faultCount, entryPoint, _timestamp
 insert into esbStatPerMinAllTemp;
 
 from esbStatPerMinAllTemp
-select time:extract(startTime, 'year') as year, time:extract(startTime, 'month') as month, time:extract(startTime, 'day') as day, time:extract(startTime, 'hour') as hour, time:extract(startTime, 'minute') as minute, "ALL" as componentId, "ALL" as componentName, "ALL" as componentType, totalDuration, minDuration, maxDuration, noOfInvocation, faultCount,  esbAnalytics:getMinuteStartingTime(startTime) as startingTime, convert(esbAnalytics:getMinuteStartingTime(startTime), 'string') as facetStartTime, entryPoint, _timestamp
+select time:extract(startTime, 'year') as year, time:extract(startTime, 'month') as month, time:extract(startTime, 'day') as day, time:extract(startTime, 'hour') as hour, time:extract(startTime, 'minute') as minute, "ALL" as componentId, "ALL" as componentName, "ALL" as componentType, totalDuration, minDuration, maxDuration, noOfInvocation, faultCount,  esbAnalytics:getMinuteStartingTime(startTime) as startTime, convert(esbAnalytics:getMinuteStartingTime(startTime), 'string') as facetStartTime, entryPoint, _timestamp
 insert into esbStatPerMinAll;
 
 -- mediator
-from decompressedEventStream#window.externalTimeBatch(startTime, 1 sec, 0, 5 sec)
-select max(startTime) as startTime, entryPoint, entryPointHashcode, componentIndex, componentId, hashCode, componentName, componentType, sum(duration) as totalDuration, min(duration) as minDuration, max(duration) as maxDuration, count(*) as noOfInvocation, sum(ifThenElse(faultCount > 0, 1, 0)) as faultCount,  _timestamp
-group by entryPoint, entryPointHashcode, componentIndex, componentId, hashCode, componentName, componentType
+from decompressedEventStream#window.externalTimeBatch(startTime, 1 sec, 0, 10 sec)
+select startTime, entryPoint, entryPointHashcode, componentId, hashCode, componentName, componentType, sum(duration) as totalDuration, min(duration) as minDuration, max(duration) as maxDuration, sum(1) as noOfInvocation, sum(ifThenElse(faultCount > 0, 1, 0)) as faultCount,  _timestamp
+group by componentId, componentName, componentType, entryPoint, entryPointHashcode, hashCode
 insert into mediatorStatPerSecTemp;
 
 from mediatorStatPerSecTemp
-select time:extract(startTime, 'year') as year, time:extract(startTime, 'month') as month, time:extract(startTime, 'day') as day, time:extract(startTime, 'hour') as hour, time:extract(startTime, 'minute') as minute, time:extract(startTime, 'second') as second,  entryPoint, entryPointHashcode, componentIndex, componentId, hashCode, componentName, componentType, totalDuration, minDuration, maxDuration, noOfInvocation, faultCount, esbAnalytics:getSecondStartingTime(startTime) as startingTime, convert(esbAnalytics:getSecondStartingTime(startTime), 'string') as facetStartTime, _timestamp
+select time:extract(startTime, 'year') as year, time:extract(startTime, 'month') as month, time:extract(startTime, 'day') as day, time:extract(startTime, 'hour') as hour, time:extract(startTime, 'minute') as minute, time:extract(startTime, 'second') as second,  entryPoint, entryPointHashcode, componentId, hashCode, componentName, componentType, totalDuration, minDuration, maxDuration, noOfInvocation, faultCount, esbAnalytics:getSecondStartingTime(startTime) as startTime, convert(esbAnalytics:getSecondStartingTime(startTime), 'string') as facetStartTime, _timestamp
 insert into mediatorStatPerSec;
 
 from decompressedEventStream#window.externalTimeBatch(startTime, 60 sec, 0, 10 sec)
-select max(startTime) as startTime, entryPoint, entryPointHashcode, componentIndex, componentId, hashCode, componentName, componentType, sum(duration) as totalDuration, min(duration) as minDuration, max(duration) as maxDuration, count(*) as noOfInvocation, sum(ifThenElse(faultCount > 0, 1, 0)) as faultCount, _timestamp
-group by entryPoint, entryPointHashcode, componentIndex, componentId, hashCode, componentName, componentType
+select startTime, entryPoint, entryPointHashcode, componentId, hashCode, componentName, componentType, sum(duration) as totalDuration, min(duration) as minDuration, max(duration) as maxDuration, count(*) as noOfInvocation, sum(ifThenElse(faultCount > 0, 1, 0)) as faultCount, _timestamp
+group by componentId, componentName, componentType, entryPoint, entryPointHashcode, hashCode
 insert into mediatorStatPerMinTemp;
 
 from mediatorStatPerMinTemp
-select time:extract(startTime, 'year') as year, time:extract(startTime, 'month') as month, time:extract(startTime, 'day') as day, time:extract(startTime, 'hour') as hour, time:extract(startTime, 'minute') as minute,  entryPoint, entryPointHashcode, componentIndex, componentId, hashCode, componentName, componentType, totalDuration, minDuration, maxDuration, noOfInvocation, faultCount, esbAnalytics:getMinuteStartingTime(startTime) as startingTime, convert(esbAnalytics:getMinuteStartingTime(startTime), 'string') as facetStartTime, _timestamp
+select time:extract(startTime, 'year') as year, time:extract(startTime, 'month') as month, time:extract(startTime, 'day') as day, time:extract(startTime, 'hour') as hour, time:extract(startTime, 'minute') as minute,  entryPoint, entryPointHashcode, componentId, hashCode, componentName, componentType, totalDuration, minDuration, maxDuration, noOfInvocation, faultCount, esbAnalytics:getMinuteStartingTime(startTime) as startTime, convert(esbAnalytics:getMinuteStartingTime(startTime), 'string') as facetStartTime, _timestamp
 insert into mediatorStatPerMin;

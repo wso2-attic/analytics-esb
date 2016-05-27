@@ -14,7 +14,7 @@ function getMostInvokedComponentNames(connector, loggedInUser, componentType) {
     var query = stringify({
                               "fieldName": "componentName",
                               "categoryPath": [],
-                              "query": "startingTime : [" + timeFrom + " TO " + timeTo + "} AND _componentType:\"" + componentType + "\"",
+                              "query": "startTime : [" + timeFrom + " TO " + timeTo + "} AND _componentType:\"" + componentType + "\"",
                               "scoreFunction": "noOfInvocation"
                           });
     var resp = connector.drillDownCategories(loggedInUser, tableName, query);
@@ -59,9 +59,9 @@ function getLatency(connector, loggedInUser, timeFrom, timeTo, tableName, compon
     var result = [];
     var query;
     if (entryPoint == 'undefined' || entryPoint === null) {
-        query = "_componentName : \"" + componentName + "\" AND startingTime : [" + timeFrom + " TO " + timeTo + "}";
+        query = "_componentName : \"" + componentName + "\" AND startTime : [" + timeFrom + " TO " + timeTo + "}";
     } else {
-        query = "entryPoint : " + entryPoint + " AND _componentName : \"" + componentName + "\" AND startingTime : [" + timeFrom + " TO " + timeTo + "}";
+        query = "entryPoint : " + entryPoint + " AND _componentName : \"" + componentName + "\" AND startTime : [" + timeFrom + " TO " + timeTo + "}";
     }
     query = stringify({
                           tableName: tableName,
@@ -93,9 +93,9 @@ function getMessageRate(connector, loggedInUser, timeFrom, timeTo, tableName, co
     var result = [];
     var query;
     if (entryPoint == 'undefined' || entryPoint === null) {
-        query = "_componentName : \"" + componentName + "\" AND startingTime : [" + timeFrom + " TO " + timeTo + "}";
+        query = "_componentName : \"" + componentName + "\" AND startTime : [" + timeFrom + " TO " + timeTo + "}";
     } else {
-        query = "entryPoint : " + entryPoint + " AND _componentName : \"" + componentName + "\" AND startingTime : [" + timeFrom + " TO " + timeTo + "}";
+        query = "entryPoint : " + entryPoint + " AND _componentName : \"" + componentName + "\" AND startTime : [" + timeFrom + " TO " + timeTo + "}";
     }
     query = stringify({
                           tableName: tableName,
@@ -150,9 +150,9 @@ function getStats(connector, loggedInUser, componentType, componentName, entryPo
     for (var i = 0; i < timeRanges.size(); i++) {
         timeRange = timeRanges.get(i);
         if (entryPoint == 'undefined' || entryPoint === null) {
-            query = "_" + componentIdentifier + " : \"" + componentName + "\" AND startingTime : [" + timeRange.range[0] + " TO " + timeRange.range[1] + "}";
+            query = "_" + componentIdentifier + " : \"" + componentName + "\" AND startTime : [" + timeRange.range[0] + " TO " + timeRange.range[1] + "}";
         } else {
-            query = "entryPoint : " + entryPoint + " AND _" + componentIdentifier + " : \"" + componentName + "\" AND startingTime : [" + timeRange.range[0] + " TO " + timeRange.range[1] + "}";
+            query = "entryPoint : " + entryPoint + " AND _" + componentIdentifier + " : \"" + componentName + "\" AND startTime : [" + timeRange.range[0] + " TO " + timeRange.range[1] + "}";
         }
         var searchParam = {
             tableName: table + timeRange.unit,
@@ -341,7 +341,7 @@ function getEntrypointMessageFlow(connector, loggedInUser, timeRanges) {
             var searchParam = {
                 tableName: "MEDIATOR-STAT-PER-" + timeRange.unit,
                 groupByField: "componentId",
-                query: "entryPointHashcode : \"" + entryHashCode + "\" AND startingTime : [" + timeRange.range[0] + " TO " + timeRange.range[1] + "}",
+                query: "entryPointHashcode : \"" + entryHashCode + "\" AND startTime : [" + timeRange.range[0] + " TO " + timeRange.range[1] + "}",
                 aggregateLevel: 0,
                 parentPath: [],
                 noOfRecords: 10000

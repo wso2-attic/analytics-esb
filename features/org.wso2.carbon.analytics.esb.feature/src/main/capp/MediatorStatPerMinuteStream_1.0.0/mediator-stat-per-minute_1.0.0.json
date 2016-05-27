@@ -73,7 +73,7 @@
       "type": "LONG"
     },
     {
-      "name": "startingTime",
+      "name": "startTime",
       "type": "LONG"
     },
     {
