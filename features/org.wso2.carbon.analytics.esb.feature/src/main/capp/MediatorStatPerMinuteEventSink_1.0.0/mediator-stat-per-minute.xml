@@ -51,13 +51,6 @@
             <Type>INTEGER</Type>
         </ColumnDefinition>
         <ColumnDefinition>
-            <Name>componentIndex</Name>
-            <EnableIndexing>true</EnableIndexing>
-            <IsPrimaryKey>true</IsPrimaryKey>
-            <EnableScoreParam>false</EnableScoreParam>
-            <Type>INTEGER</Type>
-        </ColumnDefinition>
-        <ColumnDefinition>
             <Name>componentId</Name>
             <EnableIndexing>true</EnableIndexing>
             <IsPrimaryKey>true</IsPrimaryKey>

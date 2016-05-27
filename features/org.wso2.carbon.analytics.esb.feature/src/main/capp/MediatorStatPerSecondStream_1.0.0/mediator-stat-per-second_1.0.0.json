@@ -37,10 +37,6 @@
       "type": "INT"
     },
     {
-      "name": "componentIndex",
-      "type": "INT"
-    },
-    {
       "name": "componentId",
       "type": "STRING"
     },
