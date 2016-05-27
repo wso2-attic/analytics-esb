@@ -197,14 +197,15 @@
                     log.error(error);
                 }
                 for (var i = 0; i < dataPoints.length; i++) {
-                    var obj = dataPoints[i];
-                    if (obj != null) {
-                        result.push({
-                                        "timestamp": obj.values.facetStartTime,
-                                        "success": obj.values.noOfInvocation,
-                                        "faults": obj.values.faultCount
-                                    });
+                    var success = obj.values.noOfInvocation - obj.values.faultCount;
+                    if (success < 0) {
+                        success = 0;
                     }
+                    result.push({
+                        "timestamp": obj.values.facetStartTime,
+                        "success": success,
+                        "faults": obj.values.faultCount
+                    });
                 }
                 break;
             }
