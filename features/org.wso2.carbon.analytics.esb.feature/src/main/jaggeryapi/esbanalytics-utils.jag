@@ -170,7 +170,13 @@ function getStats(connector, loggedInUser, componentType, componentName, entryPo
     resp = connector.searchMultiTablesWithAggregates(loggedInUser, JSON.stringify(searchParams));
     var totalInvocation = 0;
     var totalFault = 0;
-    var dataPoints = JSON.parse(resp.getMessage());
+    var dataPoints = [];
+    try {
+        dataPoints = JSON.parse(resp.getMessage());
+    } catch (error) {
+        var log = new Log();
+        log.error(error);
+    }
     for (var i = 0; i < dataPoints.length; i++) {
         var obj = dataPoints[i];
         if (obj.length != 0) {

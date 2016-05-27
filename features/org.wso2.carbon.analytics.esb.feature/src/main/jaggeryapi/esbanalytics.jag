@@ -144,7 +144,12 @@
                                       "count": 200
                                   });
                 resp = connector.search(loggedInUser, tableName, query);
-                var dataPoints = JSON.parse(resp.getMessage());
+                var dataPoints = [];
+                try {
+                    dataPoints = JSON.parse(resp.getMessage());
+                } catch (error) {
+                    log.error(error);
+                }
 
                 var divider = 1;
                 if (timeUnit == 'MONTH') {
@@ -185,7 +190,12 @@
                                       "count": 200
                                   });
                 resp = connector.search(loggedInUser, tableName, query);
-                var dataPoints = JSON.parse(resp.getMessage());
+                var dataPoints = [];
+                try {
+                    dataPoints = JSON.parse(resp.getMessage());
+                } catch (error) {
+                    log.error(error);
+                }
                 for (var i = 0; i < dataPoints.length; i++) {
                     var obj = dataPoints[i];
                     if (obj != null) {
@@ -307,7 +317,12 @@
                                       parentPath: []
                                   });
                 resp = connector.searchWithAggregates(loggedInUser, tableName, query);
-                var dataPoints = JSON.parse(resp.getMessage());
+                var dataPoints = [];
+                try {
+                    dataPoints = JSON.parse(resp.getMessage());
+                } catch (error) {
+                    log.error(error);
+                }
                 for (var i = 0; i < dataPoints.length; i++) {
                     var obj = dataPoints[i];
                     result.push({
@@ -332,7 +347,12 @@
                                       count: 60
                                   });
                 resp = connector.search(loggedInUser, tableName, query);
-                var dataPoints = JSON.parse(resp.getMessage());
+                var dataPoints = [];
+                try {
+                    dataPoints = JSON.parse(resp.getMessage());
+                } catch (error) {
+                    log.error(error);
+                }
                 for (var i = 0; i < dataPoints.length; i++) {
                     var obj = dataPoints[i];
                     result.push({
