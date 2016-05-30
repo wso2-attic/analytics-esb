@@ -67,7 +67,8 @@ public class CompressedEventProcessor extends StreamProcessor {
 
     @Override
     protected List<Attribute> init(AbstractDefinition inputDefinition, ExpressionExecutor[] 
-            attributeExpressionExecutors, ExecutionPlanContext executionPlanContext) {
+            attributeExpressionExecutors, ExecutionPlanContext executionPlanContext, 
+            boolean outputExpectsExpiredEvents) {
         this.fields = getOutputFields();
         List<Attribute> outputAttributes = new ArrayList<Attribute>();
         for (String fielname : this.fields.keySet()) {
