@@ -77,7 +77,7 @@ public class TimeRangeUtils {
         MutableDateTime tempToTime = toDate.copy();
 
         if (log.isDebugEnabled()) {
-            log.debug("Time range: " + formatter.format(fromDate.toDate()) + "->" + formatter.format(toDate.toDate()));
+            log.debug("Time range: " + formatter.format(fromDate.toDate()) + " -> " + formatter.format(toDate.toDate()));
         }
 
         if (toDate.getMillis() - fromDate.getMillis() < DateTimeConstants.MILLIS_PER_MINUTE) {
