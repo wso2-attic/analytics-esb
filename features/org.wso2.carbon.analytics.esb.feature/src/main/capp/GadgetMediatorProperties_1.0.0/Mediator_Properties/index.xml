@@ -13,7 +13,7 @@
           <link rel="stylesheet" type="text/css" href="/portal/libs/font-wso2_1.0.0/css/font-wso2.min.css" />
           <link rel="stylesheet" type="text/css" href="/portal/libs/theme-wso2_1.0/css/theme-wso2.css" />
           <link rel="stylesheet" type="text/css" href="../commons/css/gadget.css" />
-          
+
           <!-- jQuery -->
           <script src="../commons/js/jquery-1.10.2.js"></script>
           <script src="../commons/js/moment.min.js"></script>
@@ -25,51 +25,62 @@
           <script src="js/gadgetconf.js"></script>
           <script src="js/main.js"></script>
 
+          <style>
+            .table .table {
+              background-color: transparent;
+            }
+          </style>
+
         </head>
         <body>
            <div id="gadget-message"></div>
            <div id="props" class="container-fluid" >
              <div class="row" style="padding:10px">
 
-               <div class="col-6">
-                  <h3>Before</h3></br>
+               <table class="table table-condensed table-responsive">
+              	<thead>
+              		<tr>
+              			<th></th>
+              			<th><h3>Before</h3></th>
+              			<th><h3>After</h3></th>
+              		</tr>
+              	</thead>
+              	<tbody>
+              		<tr>
+              			<td><h4>Payload</h4></td>
+              			<td><div id="payloadBfr">N/A</div></td>
+              			<td><div id="payloadAftr">N/A</div></td>
+              		</tr>
+                  <tr>
+                    <td><h4>Transport Properties</h4></td>
+              			<td>
+                      <table id="tblTransportBfr" class="table table-condensed">
+                        <tbody></tbody>
+                      </table>
+                    </td>
+              			<td>
+                      <table id="tblTransportAftr" class="table table-condensed">
+                        <tbody></tbody>
+                      </table>
+                    </td>
+              		</tr>
+                  <tr>
+                    <td><h4>Context Properties</h4></td>
+              			<td>
+                      <table id="tblCtxtBfr" class="table table-condensed">
+                        <tbody></tbody>
+                      </table>
+                    </td>
+              			<td>
+                      <table id="tblCtxtAftr" class="table table-condensed">
+                        <tbody></tbody>
+                      </table>
+                    </td>
+              		</tr>
+              	</tbody>
+              </table>
 
-                  <h4>Payload</h4>
-                  <div id="payloadBfr">N/A</div>
-                  <br/>
 
-                  <h4>Transport Properties</h4>
-                  <table id="tblTransportBfr" class="table  table-condensed">
-                    <tbody></tbody>
-                  </table>
-                  <br/>
-
-                  <h4>Context Properties</h4>
-                  <table id="tblCtxtBfr" class="table  table-condensed">
-                    <tbody></tbody>
-                  </table>
-
-               </div>
-
-               <div class="col-6">
-                  <h3>After</h3></br>
-
-                  <h4>Payload</h4>
-                  <div id="payloadAftr">N/A</div>
-                  <br/>
-
-                  <h4>Transport Properties</h4>
-                  <table id="tblTransportAftr" class="table  table-condensed">
-                    <tbody></tbody>
-                  </table>
-                  <br/>
-                  
-                  <h4>Context Properties</h4>
-                  <table id="tblCtxtAftr" class="table  table-condensed">
-                    <tbody></tbody>
-                  </table>
-
-               </div>
              </div>
            </div>
         </body>
