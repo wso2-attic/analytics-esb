@@ -18,7 +18,7 @@
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
-    <groupId>org.wso2.carbon.analytics.esb</groupId>
+    <groupId>org.wso2.analytics.esb</groupId>
     <artifactId>wso2analytics-esb-parent</artifactId>
     <packaging>pom</packaging>
     <version>5.0.0-SNAPSHOT</version>
@@ -106,17 +106,17 @@
                 <version>2.0.0.v200706191603</version>
             </dependency>
             <dependency>
-                <groupId>org.wso2.carbon.analytics.esb</groupId>
+                <groupId>org.wso2.analytics.esb</groupId>
                 <artifactId>org.wso2.das4esb.styles</artifactId>
                 <version>${esb.analytics.version}</version>
             </dependency>
             <dependency>
-                <groupId>org.wso2.carbon.analytics.esb</groupId>
+                <groupId>org.wso2.analytics.esb</groupId>
                 <artifactId>org.wso2.das4esb.multitenancy.styles</artifactId>
                 <version>${esb.analytics.version}</version>
             </dependency>
             <dependency>
-                <groupId>org.wso2.carbon.analytics.esb</groupId>
+                <groupId>org.wso2.analytics.esb</groupId>
                 <artifactId>org.wso2.das4esb.multitenancy.dashboard.ui</artifactId>
                 <version>${esb.analytics.version}</version>
             </dependency>
@@ -124,12 +124,12 @@
 
             <!-- START - Integration test dependencies -->
             <dependency>
-                <groupId>org.wso2.carbon.analytics.esb</groupId>
+                <groupId>org.wso2.analytics.esb</groupId>
                 <artifactId>org.wso2.das4esb.integration.common.utils</artifactId>
                 <version>${esb.analytics.version}</version>
             </dependency>
             <dependency>
-                <groupId>org.wso2.carbon.analytics.esb</groupId>
+                <groupId>org.wso2.analytics.esb</groupId>
                 <artifactId>org.wso2.das4esb.integration.common.clients</artifactId>
                 <version>${esb.analytics.version}</version>
             </dependency>
