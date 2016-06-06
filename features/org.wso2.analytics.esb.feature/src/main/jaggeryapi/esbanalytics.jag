@@ -543,7 +543,7 @@
             case TYPE_SEQUENCE_NAMES:
             {
                 var result = [];
-                var excludeSequences = ["PROXY_INSEQ", "PROXY_OUTSEQ", "PROXY_FAULTSEQ", "API_OUTSEQ", "API_INSEQ", "API_FAULTSEQ", "AnonymousSequence", "fault"];
+                var excludeSequences = ["PROXY_INSEQ", "PROXY_OUTSEQ", "PROXY_FAULTSEQ", "API_OUTSEQ", "API_INSEQ", "API_FAULTSEQ", "AnonymousSequence"];
                 var allSequences = esbanalyticsUtils.getComponentNames(connector, loggedInUser, "Sequence");
                 // Remove well-known sequences
                 for (key in allSequences) {
@@ -846,7 +846,7 @@
             {
                 var result = [];
                 var allSequences = esbanalyticsUtils.getMostInvokedComponentNames(connector, loggedInUser, "Sequence");
-                var excludeSequences = ["PROXY_INSEQ", "PROXY_OUTSEQ", "PROXY_FAULTSEQ", "API_OUTSEQ", "API_INSEQ", "API_FAULTSEQ", "AnonymousSequence"];
+                var excludeSequences = ["PROXY_INSEQ", "PROXY_OUTSEQ", "PROXY_FAULTSEQ", "API_OUTSEQ", "API_INSEQ", "API_FAULTSEQ", "AnonymousSequence", "fault"];
                 // Remove well-known sequences
                 for (key in allSequences) {
                     var sequenceName = allSequences[key]["name"];
