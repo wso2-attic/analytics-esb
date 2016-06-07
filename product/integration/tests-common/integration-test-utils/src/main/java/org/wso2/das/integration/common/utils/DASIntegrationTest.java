@@ -19,6 +19,10 @@ package org.wso2.das.integration.common.utils;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.wso2.carbon.analytics.dataservice.commons.AggregateField;
+import org.wso2.carbon.analytics.dataservice.commons.AggregateRequest;
+import org.wso2.carbon.analytics.datasource.commons.AnalyticsIterator;
+import org.wso2.carbon.analytics.datasource.commons.Record;
 import org.wso2.carbon.automation.engine.context.AutomationContext;
 import org.wso2.carbon.automation.engine.context.TestUserMode;
 import org.wso2.carbon.automation.engine.context.beans.User;
@@ -28,17 +32,20 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 
 import static junit.framework.Assert.fail;
 
 public class DASIntegrationTest {
 
-    private static final Log log = LogFactory.getLog(DASIntegrationTest.class);
+    protected static final Log log = LogFactory.getLog(DASIntegrationTest.class);
     protected AutomationContext dasServer;
     protected String backendURL;
     protected String webAppURL;
     protected LoginLogoutClient loginLogoutClient;
     protected User userInfo;
+    protected String thriftURL;
 
     protected void init() throws Exception {
         init(TestUserMode.SUPER_TENANT_ADMIN);

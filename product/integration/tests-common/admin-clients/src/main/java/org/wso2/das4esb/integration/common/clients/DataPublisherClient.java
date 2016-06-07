@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2015, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+* Copyright (c) 2016, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
 *
 * WSO2 Inc. licenses this file to you under the Apache License,
 * Version 2.0 (the "License"); you may not use this file except
@@ -31,7 +31,8 @@ public class DataPublisherClient {
 
     private static final String USERNAME = "admin";
     private static final String PASSWORD = "admin";
-    private static final String URL = "tcp://localhost:7611";
+    //FIXME: remove hardcoding
+    private static final String URL = "tcp://localhost:8311";
     private DataPublisher dataPublisher;
 
     public DataPublisherClient(String url) throws Exception {

@@ -12,4 +12,10 @@
             <package name="org.wso2.das.integration.tests.globalpurging"/>
         </packages>
     </test>
+    
+    <test name="analytics-esb-tests" preserve-order="true" parallel="false">
+        <packages>
+            <package name="org.wso2.das.integration.tests.esb"/>
+        </packages>
+    </test>
 </suite>

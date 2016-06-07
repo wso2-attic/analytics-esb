@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2015, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+* Copyright (c) 2016, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
 *
 * WSO2 Inc. licenses this file to you under the Apache License,
 * Version 2.0 (the "License"); you may not use this file except
@@ -23,4 +23,18 @@ public class TestConstants {
 	public static final String BASE64_ADMIN_ADMIN = "Basic YWRtaW46YWRtaW4=";
     public static final String BASE64_TENANT_ADMIN_ADMIN = "Basic YWRtaW5Ad3NvMi5jb206YWRtaW4=";
     public static final String ANALYTICS_JS_ENDPOINT = "https://localhost:10143/portal/apis/analytics";
+    public static final String ESB_FLOW_ENTRY_STREAM_NAME = "esb-flow-entry-stream";
+    public static final String REQUEST_COUNT = "requestCount";
+    
+    // Table fields
+    public static final String COMPONENT_ID = "componentId";
+    public static final String NUMBER_OF_INVOCATION = "noOfInvocation";
+    
+    // Event streams
+    public static final String MEDIATOR_STAT_PER_SECOND_TABLE = "MEDIATOR-STAT-PER-SECOND";
+    public static final String MEDIATOR_STAT_PER_MINUTE_TABLE = "MEDIATOR-STAT-PER-MINUTE";
+    public static final String ESB_STAT_PER_SECOND_TABLE = "ESB-STAT-PER-SECOND";
+    public static final String ESB_STAT_PER_MINUTE_TABLE = "ESB-STAT-PER-MINUTE";
+    public static final String ESB_STAT_PER_SECOND_ALL_TABLE = "ESB-STAT-PER-SECOND-ALL";
+    public static final String ESB_STAT_PER_MINUTE_ALL_TABLE = "ESB-STAT-PER-MINUTE-ALL";
 }

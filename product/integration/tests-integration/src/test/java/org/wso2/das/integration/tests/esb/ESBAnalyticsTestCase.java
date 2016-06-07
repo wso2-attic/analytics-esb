@@ -24,10 +24,8 @@ import org.wso2.carbon.databridge.commons.Event;
 import org.wso2.das.integration.common.utils.DASIntegrationTest;
 import org.wso2.das4esb.integration.common.clients.DataPublisherClient;
 
-import java.util.UUID;
-
 /**
- * Created on 4/7/16.
+ * Class contains basic test cases for analytics-esb
  */
 public class ESBAnalyticsTestCase extends DASIntegrationTest {
     private DataPublisherClient dataPublisherClient;
@@ -38,15 +36,25 @@ public class ESBAnalyticsTestCase extends DASIntegrationTest {
         dataPublisherClient = new DataPublisherClient();
     }
 
-    @Test(groups = "wso2.das4esb.config", description = "Publish config")
-    public void publishData() throws Exception {
+    @Test(groups = "wso2.das4esb.publishing", description = "Test Publishing configs")
+    public void testPublishingConfigs() throws Exception {
+        // FIXME
+        Object[] metaData = null;
+        String[] payloadData = new String[1];
         Event event = new Event();
-        /*Object[] payload = new Object[3];
-        payload[0] = UUID.randomUUID();
-        payload[1] = "LicenseServiceProxy";
-        payload[2] = ""
-        event.setPayloadData();
-        dataPublisherClient.publish("esb-config-entry-stream", "1.0.0", event);*/
+        event.setPayloadData(payloadData);
+        event.setMetaData(metaData);
+        this.dataPublisherClient.publish("esb-config-entry-stream", "1.0.0", event);
+        
     }
-
+    
+    
+    @Test(groups = "wso2.das4esb.publishing", description = "Test Publishing esb events")
+    public void testPublishingEsbEvents() throws Exception {
+        // TODO
+        /*Object[] metaData = { true };
+        String[] payloadData = new String[1];
+        Event event = new Event();
+        this.dataPublisherClient.publish("esb-config-entry-stream", "1.0.0", event);*/
+    }
 }
