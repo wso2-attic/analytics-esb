@@ -63,7 +63,7 @@ select str:concat(facetStartTime, '_', componentId, '_', componentName, '_', com
 insert into perSecondWithUniqueId;
 
 from perSecondWithUniqueId#uniqueExternalTimeBatch(uniqueId, startTime, 60 sec, 0, 10 sec)
-select batchEndTime as startTime, componentId, componentName, componentType, sum(totalDuration) as totalDuration, min(minDuration) as minDuration, max(maxDuration) as maxDuration, sum(noOfInvocation) as noOfInvocation, sum(ifThenElse(faultCount > 0, 1, 0)) as faultCount, entryPoint, _timestamp
+select batchEndTime as startTime, componentId, componentName, componentType, sum(totalDuration) as totalDuration, min(minDuration) as minDuration, max(maxDuration) as maxDuration, sum(noOfInvocation) as noOfInvocation, sum(faultCount) as faultCount, entryPoint, _timestamp
 group by componentId, componentName, componentType, entryPoint
 insert into esbStatPerMinTemp;
 
@@ -72,7 +72,7 @@ select time:extract(startTime, 'year') as year, time:extract(startTime, 'month')
 insert into esbStatPerMin;
 
 from perSecondAll#uniqueExternalTimeBatch(facetStartTime, startTime, 60 sec, 0, 10 sec)
-select batchEndTime as startTime, componentId, componentName, componentType, sum(totalDuration) as totalDuration, min(minDuration) as minDuration, max(maxDuration) as maxDuration, sum(noOfInvocation) as noOfInvocation, sum(ifThenElse(faultCount > 0, 1, 0)) as faultCount, entryPoint, _timestamp
+select batchEndTime as startTime, componentId, componentName, componentType, sum(totalDuration) as totalDuration, min(minDuration) as minDuration, max(maxDuration) as maxDuration, sum(noOfInvocation) as noOfInvocation, sum(faultCount) as faultCount, entryPoint, _timestamp
 insert into esbStatPerMinAllTemp;
 
 from esbStatPerMinAllTemp
@@ -94,7 +94,7 @@ select str:concat(facetStartTime, '_', componentId, '_', componentName, '_', com
 insert into mediatorStatPerSecWithUniqueId;
 
 from mediatorStatPerSecWithUniqueId#uniqueExternalTimeBatch(uniqueId, startTime, 60 sec, 0, 10 sec)
-select batchEndTime as startTime, entryPoint, entryPointHashcode, componentId, hashCode, componentName, componentType, sum(totalDuration) as totalDuration, min(minDuration) as minDuration, max(maxDuration) as maxDuration, sum(noOfInvocation) as noOfInvocation, sum(ifThenElse(faultCount > 0, 1, 0)) as faultCount, _timestamp
+select batchEndTime as startTime, entryPoint, entryPointHashcode, componentId, hashCode, componentName, componentType, sum(totalDuration) as totalDuration, min(minDuration) as minDuration, max(maxDuration) as maxDuration, sum(noOfInvocation) as noOfInvocation, sum(faultCount) as faultCount, _timestamp
 group by componentId, componentName, componentType, entryPoint, entryPointHashcode, hashCode
 insert into mediatorStatPerMinTemp;
 
