@@ -85,7 +85,7 @@ public class ESBAnalyticsTestCase extends DASIntegrationTest {
         Assert.assertEquals(esbEventsCount, noOfMediators + 1, "ESB event has not correctly published.");
     }
     
-    @AfterClass(groups = "wso2.das4esb.publishing")
+    @AfterClass(alwaysRun = true, groups = "wso2.das4esb.publishing")
     public void cleanUpTables() throws AnalyticsException {
         cleanUpAllTables();
     }

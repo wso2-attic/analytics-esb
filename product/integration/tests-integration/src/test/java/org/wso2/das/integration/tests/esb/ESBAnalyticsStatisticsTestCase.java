@@ -216,7 +216,7 @@ public class ESBAnalyticsStatisticsTestCase extends DASIntegrationTest {
     }
     
     
-    @AfterClass(groups = "wso2.das4esb.publishing")
+    @AfterClass(alwaysRun = true, groups = "wso2.das4esb.publishing")
     public void cleanUpTables() throws AnalyticsException {
         cleanUpAllTables();
     }
