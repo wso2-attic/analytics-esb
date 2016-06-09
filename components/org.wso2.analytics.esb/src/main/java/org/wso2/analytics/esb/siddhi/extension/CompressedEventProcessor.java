@@ -110,7 +110,7 @@ public class CompressedEventProcessor extends StreamProcessor {
                     AnalyticsConstants.EVENTS_ATTRIBUTE);
                 ArrayList<PublishingPayload> payloadsList = (ArrayList<PublishingPayload>) aggregatedEvent.get(
                     AnalyticsConstants.PAYLOADS_ATTRIBUTE);
-
+                
                 String host = (String)aggregatedEvent.get(AnalyticsConstants.HOST_ATTRIBUTE);
                 // Iterate over the array of events
                 for (int i = 0; i < eventsList.size(); i++) {

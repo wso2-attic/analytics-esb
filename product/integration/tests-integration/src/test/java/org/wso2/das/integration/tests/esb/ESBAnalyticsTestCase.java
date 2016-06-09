@@ -18,43 +18,75 @@
 
 package org.wso2.das.integration.tests.esb;
 
+import java.util.UUID;
+
+import org.testng.Assert;
+import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
+import org.wso2.carbon.analytics.datasource.commons.exception.AnalyticsException;
 import org.wso2.carbon.databridge.commons.Event;
 import org.wso2.das.integration.common.utils.DASIntegrationTest;
+import org.wso2.das.integration.common.utils.TestConstants;
+import org.wso2.das.integration.common.utils.Utils;
 import org.wso2.das4esb.integration.common.clients.DataPublisherClient;
 
 /**
  * Class contains basic test cases for analytics-esb
  */
 public class ESBAnalyticsTestCase extends DASIntegrationTest {
+    
     private DataPublisherClient dataPublisherClient;
-
-    @BeforeClass(alwaysRun = true, dependsOnGroups = "wso2.das")
+    
+    @BeforeClass(groups = "wso2.das4esb.publishing", dependsOnGroups = "wso2.das", alwaysRun = true)
     protected void init() throws Exception {
         super.init();
-        dataPublisherClient = new DataPublisherClient();
+        this.dataPublisherClient = new DataPublisherClient();
     }
 
     @Test(groups = "wso2.das4esb.publishing", description = "Test Publishing configs")
     public void testPublishingConfigs() throws Exception {
-        // FIXME
-        Object[] metaData = null;
-        String[] payloadData = new String[1];
+        String[] payloadData = new String[3];
+        payloadData[0] = "1243212601";
+        payloadData[1] = "PublishingTestProxy1";
+        payloadData[2] = "[{\"id\":\"PublishingTestProxy1@0:PublishingTestProxy1\",\"parentId\":null,\"group\":null}" +
+            ",{\"id\":\"PublishingTestProxy1@1:PROXY_INSEQ\",\"parentId\":\"PublishingTestProxy1@0:" +
+            "PublishingTestProxy1\",\"group\":\"PublishingTestProxy1@0:PublishingTestProxy1\"},{\"id\":\"" +
+            "PublishingTestProxy1@2:PropertyMediator:prop1\",\"parentId\":\"PublishingTestProxy1@1:PROXY_INSEQ\"," +
+            "\"group\":\"PublishingTestProxy1@1:PROXY_INSEQ\"},{\"id\":\"PublishingTestProxy1@3:LogMediator\",\"" +
+            "parentId\":\"PublishingTestProxy1@2:PropertyMediator:prop1\",\"group\":\"PublishingTestProxy1@1:" +
+            "PROXY_INSEQ\"},{\"id\":\"PublishingTestProxy1@4:PayloadFactoryMediator\",\"parentId\":\"" +
+            "PublishingTestProxy1@3:LogMediator\",\"group\":\"PublishingTestProxy1@1:PROXY_INSEQ\"},{\"id\":\"" +
+            "PublishingTestProxy1@5:PropertyMediator:prop2\",\"parentId\":\"PublishingTestProxy1@4:" +
+            "PayloadFactoryMediator\",\"group\":\"PublishingTestProxy1@1:PROXY_INSEQ\"},{\"id\":\"" +
+            "PublishingTestProxy1@6:RespondMediator\",\"parentId\":\"PublishingTestProxy1@5:PropertyMediator:prop2\"" +
+            ",\"group\":\"PublishingTestProxy1@1:PROXY_INSEQ\"}]";
         Event event = new Event();
         event.setPayloadData(payloadData);
-        event.setMetaData(metaData);
-        this.dataPublisherClient.publish("esb-config-entry-stream", "1.0.0", event);
-        
+        this.dataPublisherClient.publish(TestConstants.ESB_CONFIGS_TABLE, "1.0.0", event);
+        Thread.sleep(5000);
+        int configsCount = this.analyticsDataAPI.searchCount(-1234, TestConstants.ESB_CONFIGS_TABLE, "*:*");
+        Assert.assertEquals(configsCount, 1, "ESB congigs has not correctly published.");
     }
     
     
     @Test(groups = "wso2.das4esb.publishing", description = "Test Publishing esb events")
     public void testPublishingEsbEvents() throws Exception {
-        // TODO
-        /*Object[] metaData = { true };
-        String[] payloadData = new String[1];
-        Event event = new Event();
-        this.dataPublisherClient.publish("esb-config-entry-stream", "1.0.0", event);*/
+        String messageId = "urn_uuid_" + UUID.randomUUID();
+        int noOfMediators = 10;
+        String[] payloadData = new String[2];
+        payloadData[0] = messageId;
+        payloadData[1] = Utils.getESBCompressedEventString(messageId,"PublishingTestProxy2", noOfMediators, true, true, false);
+        Object[] metaData = { true };
+        Event event = new Event(null, System.currentTimeMillis(), metaData, null, payloadData);
+        this.dataPublisherClient.publish(TestConstants.ESB_FLOW_ENTRY_STREAM_NAME, "1.0.0", event);
+        Thread.sleep(5000);
+        int esbEventsCount = this.analyticsDataAPI.searchCount(-1234, TestConstants.ESB_EVENTS_TABLE, "*:*");
+        Assert.assertEquals(esbEventsCount, noOfMediators + 1, "ESB event has not correctly published.");
+    }
+    
+    @AfterClass(groups = "wso2.das4esb.publishing")
+    public void cleanUpTables() throws AnalyticsException {
+        cleanUpAllTables();
     }
 }

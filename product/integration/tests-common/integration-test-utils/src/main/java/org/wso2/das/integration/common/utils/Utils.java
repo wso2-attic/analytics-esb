@@ -175,7 +175,12 @@ public class Utils {
             //entry point hash code
             singleEvent.add(1241186573);
             //fault count
-            singleEvent.add(0);
+            if (isFault && (i == 0 || i == noOfMediators)) {
+                singleEvent.add(1);
+            } else {
+                singleEvent.add(0);
+            }
+            
             //hash code
             singleEvent.add(1241186573 + i);
             
@@ -186,12 +191,6 @@ public class Utils {
             eventList.put(i , attributeIndices);
         }
        
-        // mark it as failed 
-        if (isFault) {
-            eventsList.get(0).set(16, 1);
-            eventsList.get(noOfMediators).set(16, 1);
-        }
-        
         // Add payloads, if enabled
         if (payloadsEnabled) {
             PublishingPayload publishingPayload = new PublishingPayload();
@@ -216,13 +215,19 @@ public class Utils {
      * @return          Bye array stream of the serialized object
      */
     private static ByteArrayOutputStream kryoSerialize(Map <String, Object> esbEevent) {
-        Kryo kryo = new Kryo();
+        ThreadLocal<Kryo> kryoTL = new ThreadLocal<Kryo>() {
+            protected Kryo initialValue() {
+                Kryo kryo = new Kryo();
+                /* Class registering precedence matters. Hence intentionally giving a registration ID */
+                kryo.register(HashMap.class, 111);
+                kryo.register(ArrayList.class, 222);
+                kryo.register(PublishingPayload.class, 333);
+                return kryo;
+            }
+        };
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         Output output = new Output(out);
-        kryo.register(HashMap.class, 111);
-        kryo.register(ArrayList.class, 222);
-        kryo.register(PublishingPayload.class, 333);
-        kryo.writeObject(output, esbEevent);
+        kryoTL.get().writeObject(output, esbEevent);
         output.flush();
         return out;
     }

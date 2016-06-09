@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2015, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+* Copyright (c) 2016, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
 *
 * WSO2 Inc. licenses this file to you under the Apache License,
 * Version 2.0 (the "License"); you may not use this file except
@@ -17,38 +17,40 @@
 */
 package org.wso2.das.integration.common.utils;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.wso2.carbon.analytics.dataservice.commons.AggregateField;
-import org.wso2.carbon.analytics.dataservice.commons.AggregateRequest;
-import org.wso2.carbon.analytics.datasource.commons.AnalyticsIterator;
-import org.wso2.carbon.analytics.datasource.commons.Record;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.net.URL;
+
+import org.apache.axis2.client.Options;
+import org.apache.axis2.client.ServiceClient;
+import org.apache.axis2.context.ConfigurationContext;
+import org.apache.axis2.context.ConfigurationContextFactory;
+import org.wso2.carbon.analytics.api.AnalyticsDataAPI;
+import org.wso2.carbon.analytics.api.CarbonAnalyticsAPI;
+import org.wso2.carbon.analytics.datasource.commons.exception.AnalyticsException;
+import org.wso2.carbon.analytics.spark.admin.stub.AnalyticsProcessorAdminServiceStub;
 import org.wso2.carbon.automation.engine.context.AutomationContext;
 import org.wso2.carbon.automation.engine.context.TestUserMode;
 import org.wso2.carbon.automation.engine.context.beans.User;
 import org.wso2.carbon.integration.common.utils.LoginLogoutClient;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
-
-import static junit.framework.Assert.fail;
-
 public class DASIntegrationTest {
 
-    protected static final Log log = LogFactory.getLog(DASIntegrationTest.class);
+    private static final String ANALYTICS_SERVICE_NAME = "AnalyticsProcessorAdminService";
     protected AutomationContext dasServer;
     protected String backendURL;
     protected String webAppURL;
     protected LoginLogoutClient loginLogoutClient;
     protected User userInfo;
     protected String thriftURL;
+    protected AnalyticsDataAPI analyticsDataAPI;
 
     protected void init() throws Exception {
         init(TestUserMode.SUPER_TENANT_ADMIN);
+        String apiConf = new File(this.getClass().getClassLoader().getResource("dasconfig" + File.separator + "api" +
+                File.separator + "analytics-data-config.xml").toURI()).getAbsolutePath();
+        this.analyticsDataAPI = new CarbonAnalyticsAPI(apiConf);
     }
 
     protected void init(TestUserMode testUserMode) throws Exception {
@@ -91,6 +93,36 @@ public class DASIntegrationTest {
         }else {
             throw new Exception("No resource found in the given path : "+ resourcePath);
         }
+    }
+    
+    protected AnalyticsProcessorAdminServiceStub getAnalyticsProcessorStub() throws Exception {
+        ConfigurationContext configContext = ConfigurationContextFactory.
+                createConfigurationContextFromFileSystem(null);
+        String loggedInSessionCookie = getSessionCookie();
+        AnalyticsProcessorAdminServiceStub analyticsStub = new AnalyticsProcessorAdminServiceStub(configContext,
+                backendURL + "/services/" + ANALYTICS_SERVICE_NAME);
+        ServiceClient client = analyticsStub._getServiceClient();
+        Options option = client.getOptions();
+        option.setManageSession(true);
+        option.setProperty(org.apache.axis2.transport.http.HTTPConstants.COOKIE_STRING,
+                loggedInSessionCookie);
+        return analyticsStub;
+    }
+    
+    protected void cleanUpAllTables() throws AnalyticsException {
+        this.analyticsDataAPI.delete(-1234, TestConstants.ESB_EVENTS_TABLE, Long.MAX_VALUE, System.currentTimeMillis());
+        this.analyticsDataAPI.delete(-1234, TestConstants.ESB_STAT_PER_SECOND_TABLE, Long.MAX_VALUE, System.currentTimeMillis());
+        this.analyticsDataAPI.delete(-1234, TestConstants.ESB_STAT_PER_SECOND_ALL_TABLE, Long.MAX_VALUE, System.currentTimeMillis());
+        this.analyticsDataAPI.delete(-1234, TestConstants.ESB_STAT_PER_MINUTE_TABLE, Long.MAX_VALUE, System.currentTimeMillis());
+        this.analyticsDataAPI.delete(-1234, TestConstants.ESB_STAT_PER_MINUTE_ALL_TABLE, Long.MAX_VALUE, System.currentTimeMillis());
+        this.analyticsDataAPI.delete(-1234, TestConstants.ESB_STAT_PER_HOUR_TABLE, Long.MAX_VALUE, System.currentTimeMillis());
+        this.analyticsDataAPI.delete(-1234, TestConstants.ESB_STAT_PER_DAY_TABLE, Long.MAX_VALUE, System.currentTimeMillis());
+        this.analyticsDataAPI.delete(-1234, TestConstants.ESB_STAT_PER_MONTH_TABLE, Long.MAX_VALUE, System.currentTimeMillis());
+        this.analyticsDataAPI.delete(-1234, TestConstants.MEDIATOR_STAT_PER_SECOND_TABLE, Long.MAX_VALUE, System.currentTimeMillis());
+        this.analyticsDataAPI.delete(-1234, TestConstants.MEDIATOR_STAT_PER_MINUTE_TABLE, Long.MAX_VALUE, System.currentTimeMillis());
+        this.analyticsDataAPI.delete(-1234, TestConstants.MEDIATOR_STAT_PER_HOUR_TABLE, Long.MAX_VALUE, System.currentTimeMillis());
+        this.analyticsDataAPI.delete(-1234, TestConstants.MEDIATOR_STAT_PER_DAY_TABLE, Long.MAX_VALUE, System.currentTimeMillis());
+        this.analyticsDataAPI.delete(-1234, TestConstants.MEDIATOR_STAT_PER_MONTH_TABLE, Long.MAX_VALUE, System.currentTimeMillis());
     }
 }
 

@@ -51,26 +51,22 @@ public class ConcurrentEventsPublisher implements Runnable {
     @Override
     public void run() {
         Object[] metaData = { true };
-        String[] payloadData = new String[2];
-        Event event;
         int sentFaults = 0;
-        boolean isFault;
         // Publish events
         try {
             for (int j = 0 ; j < this.noOfRequests ; j++) {
-                if (sentFaults < noOfFaults) {
-                    isFault = true;
-                    sentFaults++;
-                } else {
-                    isFault = false;
-                }
+                boolean isFault = sentFaults < this.noOfFaults;
                 String messageId = "urn_uuid_" + UUID.randomUUID();
+                String[] payloadData = new String[2];
+                Event event;
                 payloadData[0] = messageId;
                 payloadData[1] = Utils.getESBCompressedEventString(messageId, this.entryPointName, this.noOfMediators,
                     this.payloadsEnabled, this.propertiesEnabled, isFault);
                 event = new Event(null, System.currentTimeMillis(), metaData, null, payloadData);
                 this.dataPublisherClient.publish(TestConstants.ESB_FLOW_ENTRY_STREAM_NAME, "1.0.0", event);
-                
+                if (isFault) {
+                    sentFaults++;
+                }
                 // sleep to control the throughput
                 Thread.sleep(this.sleepBetweenRequests);
             }
