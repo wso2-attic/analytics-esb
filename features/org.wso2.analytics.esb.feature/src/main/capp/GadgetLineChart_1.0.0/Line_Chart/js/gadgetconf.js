@@ -85,7 +85,7 @@ var charts = [{
     }],
     chartConfig: {
         x: "Time",
-        charts: [{ type: "line", y: "Value (ms)", color: "Type" }],
+        charts: [{ type: "line", y: "Value", color: "Type" }],
         padding: { "top": 30, "left": 60, "bottom": 60, "right": 110 },
         range: true
     },
