@@ -18,10 +18,9 @@
 
 package org.wso2.das4esb.integration.common.clients;
 
-import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.util.UUID;
 
+import org.joda.time.DateTime;
 import org.wso2.carbon.databridge.agent.exception.DataEndpointException;
 import org.wso2.carbon.databridge.commons.Event;
 import org.wso2.das.integration.common.utils.TestConstants;
@@ -64,7 +63,7 @@ public class ConcurrentEventsPublisher implements Runnable {
                 payloadData[0] = messageId;
                 
                 // Negative time offset in milliseconds, to add to the event's timestamp.
-                LocalDateTime time = LocalDateTime.now();
+                DateTime time = new DateTime();
                 if (j < this.noOfRequests/20) {
                     time = time.minusMonths(3).minusDays(1).minusHours(1);
                 } else if (j < this.noOfRequests/20*2) {
@@ -93,7 +92,7 @@ public class ConcurrentEventsPublisher implements Runnable {
                     isFault = sentFaults < this.noOfFaults;
                 }
                 
-                long timeInMilliSec = time.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
+                long timeInMilliSec = time.getMillis();
                 payloadData[1] = Utils.getESBCompressedEventString(messageId, this.entryPointName, this.noOfMediators,
                     this.payloadsEnabled, this.propertiesEnabled, isFault, timeInMilliSec);
                 event = new Event(null, System.currentTimeMillis(), metaData, null, payloadData);
