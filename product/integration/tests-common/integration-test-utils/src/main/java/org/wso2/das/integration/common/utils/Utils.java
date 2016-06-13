@@ -106,7 +106,7 @@ public class Utils {
      * @param propertiesEnabled     Flag indicating whether to include synapse properties
      */
     public static String getESBCompressedEventString(String messageId, String proxyName, int noOfMediators, boolean payloadsEnabled, 
-            boolean propertiesEnabled, boolean isFault) {
+            boolean propertiesEnabled, boolean isFault, long time) {
         Map <String, Object> flowMap = new HashMap <String, Object>();
         ArrayList<List<Object>> eventsList = new ArrayList<List<Object>>();
         ArrayList<PublishingPayload> payloadsList = new ArrayList<PublishingPayload>();
@@ -128,10 +128,10 @@ public class Utils {
             singleEvent.add(i);
             //component ID. Having format: 'ProxyName@ComponentIndex:ComponentName'
             singleEvent.add(proxyName + "@" + i +  ":" + singleEvent.get(2));
-            long start = System.currentTimeMillis();
+            long start = time;
             //startTime
             singleEvent.add(start);
-            long end = System.currentTimeMillis() + 15;
+            long end = time + 15;
             //endTime
             singleEvent.add(end);
             //duration

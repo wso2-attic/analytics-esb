@@ -18,6 +18,8 @@
 
 package org.wso2.das4esb.integration.common.clients;
 
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.UUID;
 
 import org.wso2.carbon.databridge.agent.exception.DataEndpointException;
@@ -55,13 +57,45 @@ public class ConcurrentEventsPublisher implements Runnable {
         // Publish events
         try {
             for (int j = 0 ; j < this.noOfRequests ; j++) {
-                boolean isFault = sentFaults < this.noOfFaults;
+                boolean isFault = false;
                 String messageId = "urn_uuid_" + UUID.randomUUID();
                 String[] payloadData = new String[2];
                 Event event;
                 payloadData[0] = messageId;
+                
+                // Negative time offset in milliseconds, to add to the event's timestamp.
+                LocalDateTime time = LocalDateTime.now();
+                if (j < this.noOfRequests/20) {
+                    time = time.minusMonths(3).minusDays(1).minusHours(1);
+                } else if (j < this.noOfRequests/20*2) {
+                    time = time.minusMonths(3).minusDays(1);
+                } else if (j < this.noOfRequests/20*3) {
+                    time = time.minusMonths(3);
+                } else if (j < this.noOfRequests/20*4) {
+                    time = time.minusMonths(2).minusDays(1).minusHours(1);
+                } else if (j < this.noOfRequests/20*5) {
+                    time = time.minusMonths(2).minusDays(1);
+                } else if (j < this.noOfRequests/20*6) {
+                    time = time.minusMonths(2);
+                } else if (j < this.noOfRequests/20*7) {
+                    time = time.minusMonths(1).minusDays(1).minusHours(1);
+                } else if (j < this.noOfRequests/20*8) {
+                    time = time.minusMonths(1).minusDays(1);
+                } else if (j < this.noOfRequests/20*9) {
+                    time = time.minusMonths(1);
+                } else if (j < this.noOfRequests/20*10) {
+                    time = time.minusHours(3);
+                } else if (j < this.noOfRequests/20*11) {
+                    time = time.minusHours(2);
+                } else if (j < this.noOfRequests/20*12) {
+                    time = time.minusHours(1);
+                } else {
+                    isFault = sentFaults < this.noOfFaults;
+                }
+                
+                long timeInMilliSec = time.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
                 payloadData[1] = Utils.getESBCompressedEventString(messageId, this.entryPointName, this.noOfMediators,
-                    this.payloadsEnabled, this.propertiesEnabled, isFault);
+                    this.payloadsEnabled, this.propertiesEnabled, isFault, timeInMilliSec);
                 event = new Event(null, System.currentTimeMillis(), metaData, null, payloadData);
                 this.dataPublisherClient.publish(TestConstants.ESB_FLOW_ENTRY_STREAM_NAME, "1.0.0", event);
                 if (isFault) {

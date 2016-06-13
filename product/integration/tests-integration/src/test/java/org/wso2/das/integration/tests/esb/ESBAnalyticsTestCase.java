@@ -76,7 +76,7 @@ public class ESBAnalyticsTestCase extends DASIntegrationTest {
         int noOfMediators = 10;
         String[] payloadData = new String[2];
         payloadData[0] = messageId;
-        payloadData[1] = Utils.getESBCompressedEventString(messageId,"PublishingTestProxy2", noOfMediators, true, true, false);
+        payloadData[1] = Utils.getESBCompressedEventString(messageId,"PublishingTestProxy2", noOfMediators, true, true, false, 0);
         Object[] metaData = { true };
         Event event = new Event(null, System.currentTimeMillis(), metaData, null, payloadData);
         this.dataPublisherClient.publish(TestConstants.ESB_FLOW_ENTRY_STREAM_NAME, "1.0.0", event);
@@ -86,7 +86,7 @@ public class ESBAnalyticsTestCase extends DASIntegrationTest {
     }
     
     @AfterClass(alwaysRun = true, groups = "wso2.das4esb.publishing")
-    public void cleanUpTables() throws AnalyticsException {
-        cleanUpAllTables();
+    public void cleanUpTables() throws AnalyticsException, InterruptedException {
+        cleanUpAllTables(120000);
     }
 }

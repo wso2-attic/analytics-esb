@@ -109,20 +109,41 @@ public class DASIntegrationTest {
         return analyticsStub;
     }
     
-    protected void cleanUpAllTables() throws AnalyticsException {
-        this.analyticsDataAPI.delete(-1234, TestConstants.ESB_EVENTS_TABLE, Long.MAX_VALUE, System.currentTimeMillis());
-        this.analyticsDataAPI.delete(-1234, TestConstants.ESB_STAT_PER_SECOND_TABLE, Long.MAX_VALUE, System.currentTimeMillis());
-        this.analyticsDataAPI.delete(-1234, TestConstants.ESB_STAT_PER_SECOND_ALL_TABLE, Long.MAX_VALUE, System.currentTimeMillis());
-        this.analyticsDataAPI.delete(-1234, TestConstants.ESB_STAT_PER_MINUTE_TABLE, Long.MAX_VALUE, System.currentTimeMillis());
-        this.analyticsDataAPI.delete(-1234, TestConstants.ESB_STAT_PER_MINUTE_ALL_TABLE, Long.MAX_VALUE, System.currentTimeMillis());
-        this.analyticsDataAPI.delete(-1234, TestConstants.ESB_STAT_PER_HOUR_TABLE, Long.MAX_VALUE, System.currentTimeMillis());
-        this.analyticsDataAPI.delete(-1234, TestConstants.ESB_STAT_PER_DAY_TABLE, Long.MAX_VALUE, System.currentTimeMillis());
-        this.analyticsDataAPI.delete(-1234, TestConstants.ESB_STAT_PER_MONTH_TABLE, Long.MAX_VALUE, System.currentTimeMillis());
-        this.analyticsDataAPI.delete(-1234, TestConstants.MEDIATOR_STAT_PER_SECOND_TABLE, Long.MAX_VALUE, System.currentTimeMillis());
-        this.analyticsDataAPI.delete(-1234, TestConstants.MEDIATOR_STAT_PER_MINUTE_TABLE, Long.MAX_VALUE, System.currentTimeMillis());
-        this.analyticsDataAPI.delete(-1234, TestConstants.MEDIATOR_STAT_PER_HOUR_TABLE, Long.MAX_VALUE, System.currentTimeMillis());
-        this.analyticsDataAPI.delete(-1234, TestConstants.MEDIATOR_STAT_PER_DAY_TABLE, Long.MAX_VALUE, System.currentTimeMillis());
-        this.analyticsDataAPI.delete(-1234, TestConstants.MEDIATOR_STAT_PER_MONTH_TABLE, Long.MAX_VALUE, System.currentTimeMillis());
+    /**
+     * 
+     * @param maxWaitTime   Maximum time in seconds, to wait polling to check if the tables are cleaned-up.
+     * 
+     * @throws AnalyticsException
+     * @throws InterruptedException
+     */
+    protected void cleanUpAllTables(int maxWaitTime) throws AnalyticsException, InterruptedException {
+        long startTime = System.currentTimeMillis();
+        String [] tables =  new String[] {TestConstants.ESB_EVENTS_TABLE, TestConstants.ESB_STAT_PER_SECOND_TABLE,
+                TestConstants.ESB_STAT_PER_SECOND_ALL_TABLE, TestConstants.ESB_STAT_PER_MINUTE_TABLE,
+                TestConstants.ESB_STAT_PER_MINUTE_ALL_TABLE, TestConstants.ESB_STAT_PER_HOUR_TABLE, 
+                TestConstants.ESB_STAT_PER_DAY_TABLE, TestConstants.ESB_STAT_PER_MONTH_TABLE,
+                TestConstants.MEDIATOR_STAT_PER_SECOND_TABLE, TestConstants.MEDIATOR_STAT_PER_MINUTE_TABLE,
+                TestConstants.MEDIATOR_STAT_PER_HOUR_TABLE, TestConstants.MEDIATOR_STAT_PER_DAY_TABLE, 
+                TestConstants.MEDIATOR_STAT_PER_MONTH_TABLE};
+        for (String table : tables){
+            this.analyticsDataAPI.delete(-1234, table, Long.MIN_VALUE, Long.MAX_VALUE);
+        }
+        long currentTime = System.currentTimeMillis();
+        while ((currentTime - startTime) < maxWaitTime) {
+            boolean isCleaned = true;
+            for (String table : tables){
+                int recordsCount = this.analyticsDataAPI.searchCount(-1234, table, "*:*");
+                if (recordsCount > 0) {
+                    isCleaned = false;
+                    Thread.sleep(5000);
+                    currentTime = System.currentTimeMillis();
+                    break;
+                }
+            }
+            if (isCleaned) {
+                break;
+            }
+        }
     }
 }
 
