@@ -217,8 +217,8 @@ public class ESBAnalyticsStatisticsTestCase extends DASIntegrationTest {
     
     
     @AfterClass(alwaysRun = true, groups = "wso2.das4esb.publishing")
-    public void cleanUpTables() throws AnalyticsException, InterruptedException {
-        cleanUpAllTables(120000);
+    public void cleanUpTables() throws Exception {
+        restartAndCleanUpTables(120000);
     }
     
     
@@ -260,7 +260,7 @@ public class ESBAnalyticsStatisticsTestCase extends DASIntegrationTest {
                         mediatorNumber;
                 int count = getCounts(table, TestConstants.NUMBER_OF_INVOCATION, mediatorId);
                 Assert.assertEquals(count, TOTAL_REQUESTS_PER_PROXY, "Invocation count is incorrect for mediator: " +
-                        mediatorId + "in " + table + " table.");
+                        mediatorId + " in " + table + " table.");
             }
             log.info("AccuracyTestProxy_" + proxyNumber + ": All mediators: Ok");
         }

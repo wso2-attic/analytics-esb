@@ -100,10 +100,14 @@ public class Utils {
     /**
      * Create a compressed event string.
      * 
+     * @param messageId             Message Id of the esb event
      * @param proxyName             Name of the proxy of the event
      * @param noOfMediators         Number of mediators to be inlcuded in the event
      * @param payloadsEnabled       Flag indicating whether to include payloads
      * @param propertiesEnabled     Flag indicating whether to include synapse properties
+     * @param isFault               Flag to indicate whether this event is faulty
+     * @param time                  Timestamps for the event
+     * @return                      Event string 
      */
     public static String getESBCompressedEventString(String messageId, String proxyName, int noOfMediators, boolean payloadsEnabled, 
             boolean propertiesEnabled, boolean isFault, long time) {

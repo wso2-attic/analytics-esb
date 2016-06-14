@@ -26,6 +26,8 @@ import org.apache.axis2.client.Options;
 import org.apache.axis2.client.ServiceClient;
 import org.apache.axis2.context.ConfigurationContext;
 import org.apache.axis2.context.ConfigurationContextFactory;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.analytics.api.AnalyticsDataAPI;
 import org.wso2.carbon.analytics.api.CarbonAnalyticsAPI;
 import org.wso2.carbon.analytics.datasource.commons.exception.AnalyticsException;
@@ -33,10 +35,13 @@ import org.wso2.carbon.analytics.spark.admin.stub.AnalyticsProcessorAdminService
 import org.wso2.carbon.automation.engine.context.AutomationContext;
 import org.wso2.carbon.automation.engine.context.TestUserMode;
 import org.wso2.carbon.automation.engine.context.beans.User;
+import org.wso2.carbon.integration.common.utils.ClientConnectionUtil;
 import org.wso2.carbon.integration.common.utils.LoginLogoutClient;
+import org.wso2.carbon.integration.common.utils.mgt.ServerConfigurationManager;
 
 public class DASIntegrationTest {
 
+    protected static final Log log = LogFactory.getLog(DASIntegrationTest.class);
     private static final String ANALYTICS_SERVICE_NAME = "AnalyticsProcessorAdminService";
     protected AutomationContext dasServer;
     protected String backendURL;
@@ -100,7 +105,7 @@ public class DASIntegrationTest {
                 createConfigurationContextFromFileSystem(null);
         String loggedInSessionCookie = getSessionCookie();
         AnalyticsProcessorAdminServiceStub analyticsStub = new AnalyticsProcessorAdminServiceStub(configContext,
-                backendURL + "/services/" + ANALYTICS_SERVICE_NAME);
+                backendURL + ANALYTICS_SERVICE_NAME);
         ServiceClient client = analyticsStub._getServiceClient();
         Options option = client.getOptions();
         option.setManageSession(true);
@@ -110,14 +115,21 @@ public class DASIntegrationTest {
     }
     
     /**
+     * Cleanup all Analytics Tables and restart the server to clean in memory events.
      * 
      * @param maxWaitTime   Maximum time in seconds, to wait polling to check if the tables are cleaned-up.
-     * 
+     * @throws Exception 
      * @throws AnalyticsException
-     * @throws InterruptedException
      */
-    protected void cleanUpAllTables(int maxWaitTime) throws AnalyticsException, InterruptedException {
+    protected void restartAndCleanUpTables(int maxWaitTime) throws Exception {
         long startTime = System.currentTimeMillis();
+        // first restart the server to clear any in memory events and to clear timebatchWindows
+        log.info("Restarting server..");
+        ServerConfigurationManager serverManager = new ServerConfigurationManager(dasServer);
+        serverManager.restartGracefully();
+        ClientConnectionUtil.waitForLogin(dasServer);
+        log.info("Restarting complete.");
+        
         String [] tables =  new String[] {TestConstants.ESB_EVENTS_TABLE, TestConstants.ESB_STAT_PER_SECOND_TABLE,
                 TestConstants.ESB_STAT_PER_SECOND_ALL_TABLE, TestConstants.ESB_STAT_PER_MINUTE_TABLE,
                 TestConstants.ESB_STAT_PER_MINUTE_ALL_TABLE, TestConstants.ESB_STAT_PER_HOUR_TABLE, 
@@ -125,24 +137,28 @@ public class DASIntegrationTest {
                 TestConstants.MEDIATOR_STAT_PER_SECOND_TABLE, TestConstants.MEDIATOR_STAT_PER_MINUTE_TABLE,
                 TestConstants.MEDIATOR_STAT_PER_HOUR_TABLE, TestConstants.MEDIATOR_STAT_PER_DAY_TABLE, 
                 TestConstants.MEDIATOR_STAT_PER_MONTH_TABLE};
-        for (String table : tables){
-            this.analyticsDataAPI.delete(-1234, table, Long.MIN_VALUE, Long.MAX_VALUE);
-        }
         long currentTime = System.currentTimeMillis();
         while ((currentTime - startTime) < maxWaitTime) {
             boolean isCleaned = true;
             for (String table : tables){
-                int recordsCount = this.analyticsDataAPI.searchCount(-1234, table, "*:*");
+                int recordsCount = 0;
+                try {
+                    recordsCount = this.analyticsDataAPI.searchCount(-1234, table, "*:*");
+                } catch (Exception ignoredException) {
+                }
                 if (recordsCount > 0) {
                     isCleaned = false;
-                    Thread.sleep(5000);
-                    currentTime = System.currentTimeMillis();
-                    break;
+                    try {
+                        this.analyticsDataAPI.delete(-1234, table, Long.MIN_VALUE, Long.MAX_VALUE);
+                    } catch (Exception ignoredException) {
+                    }
                 }
             }
             if (isCleaned) {
                 break;
             }
+            Thread.sleep(5000);
+            currentTime = System.currentTimeMillis();
         }
     }
 }

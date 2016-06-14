@@ -24,7 +24,6 @@ import org.testng.Assert;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
-import org.wso2.carbon.analytics.datasource.commons.exception.AnalyticsException;
 import org.wso2.carbon.databridge.commons.Event;
 import org.wso2.das.integration.common.utils.DASIntegrationTest;
 import org.wso2.das.integration.common.utils.TestConstants;
@@ -34,7 +33,7 @@ import org.wso2.das4esb.integration.common.clients.DataPublisherClient;
 /**
  * Class contains basic test cases for analytics-esb
  */
-public class ESBAnalyticsTestCase extends DASIntegrationTest {
+public class ESBAnalyticsPublishingTestCase extends DASIntegrationTest {
     
     private DataPublisherClient dataPublisherClient;
     
@@ -76,7 +75,8 @@ public class ESBAnalyticsTestCase extends DASIntegrationTest {
         int noOfMediators = 10;
         String[] payloadData = new String[2];
         payloadData[0] = messageId;
-        payloadData[1] = Utils.getESBCompressedEventString(messageId,"PublishingTestProxy2", noOfMediators, true, true, false, 0);
+        payloadData[1] = Utils.getESBCompressedEventString(messageId,"PublishingTestProxy2", noOfMediators, true, true,
+                false, System.currentTimeMillis());
         Object[] metaData = { true };
         Event event = new Event(null, System.currentTimeMillis(), metaData, null, payloadData);
         this.dataPublisherClient.publish(TestConstants.ESB_FLOW_ENTRY_STREAM_NAME, "1.0.0", event);
@@ -86,7 +86,7 @@ public class ESBAnalyticsTestCase extends DASIntegrationTest {
     }
     
     @AfterClass(alwaysRun = true, groups = "wso2.das4esb.publishing")
-    public void cleanUpTables() throws AnalyticsException, InterruptedException {
-        cleanUpAllTables(120000);
+    public void cleanUpTables() throws Exception {
+        restartAndCleanUpTables(120000);
     }
 }
