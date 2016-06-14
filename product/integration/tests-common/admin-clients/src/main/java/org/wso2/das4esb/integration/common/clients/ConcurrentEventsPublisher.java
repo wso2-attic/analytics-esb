@@ -109,7 +109,7 @@ public class ConcurrentEventsPublisher implements Runnable {
         } finally {
             try {
                 if (this.dataPublisherClient != null) {
-                    Thread.sleep(10000);
+                    Thread.sleep(60000);
                     this.dataPublisherClient.shutdown();
                 }
             } catch (Exception ignored) {
