@@ -48,13 +48,13 @@ public class ESBAnalyticsStatisticsTestCase extends DASIntegrationTest {
     
     protected static final Log log = LogFactory.getLog(ESBAnalyticsStatisticsTestCase.class);
     private DataPublisherClient dataPublisherClient;
-    private static final int TOTAL_REQUESTS_PER_PROXY = 100000;
+    private static final int TOTAL_REQUESTS_PER_PROXY = 50000;
     private static final int NUMBER_OF_PROXIES = 5;
     private static final int NUMBER_OF_MEDIATORS = 10;
     private static final int NUMBER_OF_FAULTS = 20;
     private static final boolean ENABLE_PAYLOADS = false;
     private static final boolean ENABLE_PROPERTIES = false;
-    private static final int SLEEP_BETWEEN_REQUESTS = 6;
+    private static final int SLEEP_BETWEEN_REQUESTS = 12;
     private static final int WAIT_FOR_PUBLISHING_IN_MINUTES = 12;
     private static final int WAIT_FOR_INDEXING = 120000;
     private static final int WAIT_FOR_SPARK_SCRIPT = 60000;
