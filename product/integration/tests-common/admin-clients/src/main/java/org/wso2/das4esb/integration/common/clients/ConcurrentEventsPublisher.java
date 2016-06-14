@@ -106,6 +106,14 @@ public class ConcurrentEventsPublisher implements Runnable {
         } catch (DataEndpointException e) {
             throw new RuntimeException("Falied to publish event: " + e.getMessage(), e);
         } catch (InterruptedException ignored) {
+        } finally {
+            try {
+                if (this.dataPublisherClient != null) {
+                    Thread.sleep(10000);
+                    this.dataPublisherClient.shutdown();
+                }
+            } catch (Exception ignored) {
+            }
         }
     }
 
