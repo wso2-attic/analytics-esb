@@ -4,12 +4,12 @@
     <Script>
         CREATE TEMPORARY TABLE esbServiceStatPerMinute USING CarbonAnalytics
         OPTIONS (tableName "ESB-Stat-per-Minute",
-        incrementalParams "esbServiceStatPerMinute, 3600",
+        incrementalParams "esbServiceStatPerMinute, HOUR",
         mergeSchema "false");
 
         CREATE TEMPORARY TABLE mediatorStatPerMinute USING CarbonAnalytics
         OPTIONS (tableName "mediator-stat-per-minute",
-        incrementalParams "mediatorStatPerMinute, 3600",
+        incrementalParams "mediatorStatPerMinute, HOUR",
         mergeSchema "false");
 
         CREATE TEMPORARY TABLE esbServiceStatPerHour USING CarbonAnalytics
@@ -19,7 +19,7 @@
         noOfInvocation LONG -sp, faultCount LONG, startTime LONG -i, facetStartTime FACET -i, entryPoint FACET -i,
         _timestamp LONG -i",
         primaryKeys "year, month, day, hour, componentId, componentType",
-        incrementalParams "esbServiceStatPerHour, 86400",
+        incrementalParams "esbServiceStatPerHour, DAY",
         mergeSchema "false");
 
         INSERT INTO TABLE esbServiceStatPerHour
@@ -65,7 +65,7 @@
         minDuration INT, maxDuration INT, noOfInvocation LONG -sp, faultCount LONG, startTime LONG -i,
         facetStartTime FACET -i, _timestamp LONG -i",
         primaryKeys "year, month, day, hour, entryPointHashcode, hashCode, componentId, componentType",
-        incrementalParams "mediatorStatPerHour, 86400",
+        incrementalParams "mediatorStatPerHour, DAY",
         mergeSchema "false");
 
         INSERT INTO TABLE mediatorStatPerHour
