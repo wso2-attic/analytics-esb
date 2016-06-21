@@ -176,6 +176,8 @@
                             }
                         }
                     }
+                } else {
+                    log.error(resp.getMessage());
                 }
                 break;
             }
@@ -215,6 +217,8 @@
                             });
                         }
                     }
+                } else {
+                    log.error(resp.getMessage());
                 }
                 break;
             }
@@ -344,6 +348,8 @@
                                     });
                         }
                     }
+                } else {
+                    log.error(resp.getMessage());
                 }
                 break;
             }
@@ -379,6 +385,8 @@
                                         });
                         }
                     }
+                } else {
+                    log.error(resp.getMessage());
                 }
                 break;
             }
@@ -410,6 +418,8 @@
                         var entryPointHashCode = components[0]["values"]["entryPointHashcode"];
                         var entryPoint = components[0]["values"]["entryPoint"];
                     }
+                } else {
+                    log.error(resp.getMessage());
                 }
 
                 // Get schema 
@@ -424,6 +434,8 @@
                 var resp = connector.search(loggedInUser, tableName, query);
                 if (resp.status == "success") {
                     config = JSON.parse(resp.getMessage())[0];
+                } else {
+                    log.error(resp.getMessage());
                 }
 
                 if (config != null) {
@@ -638,7 +650,10 @@
                 var resp = connector.search(loggedInUser, tableName, query);
                 if (resp.status == "success") {
                     config = JSON.parse(resp.getMessage())[0];
+                } else {
+                    log.error(resp.getMessage());
                 }
+
                 if (config != null) {
                     var schema = null;
                     var entryHashCode = null;
@@ -671,29 +686,33 @@
                         searchParams.push(searchParam);
                     }
                     var resp = connector.searchMultiTablesWithAggregates(loggedInUser, JSON.stringify(searchParams));
-                    var allTables = JSON.parse(resp.getMessage());
-
-                    // Aggregate all tables and prepare component map
                     var componentMap = {};
-                    var fields = ["Invocations", "TotalDuration", "MaxDuration", "Faults"];
-                    for (var i = 0; i < allTables.length; i++) {
-                        var table = allTables[i];
-                        if (table != null && table.length != 0) {
-                            for (var j = 0; j < table.length; j++) {
-                                var componentInfo = table[j]["values"];
-                                if (componentInfo != null && componentInfo["componentId"] != null){
-                                    var componentId = componentInfo["componentId"][0];
-                                    if (componentMap[componentId] == null) {
-                                        componentMap[componentId] = componentInfo;
-                                    } else {
-                                        for (field in fields) {
-                                            fieldName = fields[field];
-                                            componentMap[componentId][fieldName] = componentMap[componentId][fieldName] + componentInfo[fieldName];
+                    if (resp.status == "success") {
+                        var allTables = JSON.parse(resp.getMessage());
+
+                        // Aggregate all tables and prepare component map
+                        var fields = ["Invocations", "TotalDuration", "MaxDuration", "Faults"];
+                        for (var i = 0; i < allTables.length; i++) {
+                            var table = allTables[i];
+                            if (table != null && table.length != 0) {
+                                for (var j = 0; j < table.length; j++) {
+                                    var componentInfo = table[j]["values"];
+                                    if (componentInfo != null && componentInfo["componentId"] != null){
+                                        var componentId = componentInfo["componentId"][0];
+                                        if (componentMap[componentId] == null) {
+                                            componentMap[componentId] = componentInfo;
+                                        } else {
+                                            for (field in fields) {
+                                                fieldName = fields[field];
+                                                componentMap[componentId][fieldName] = componentMap[componentId][fieldName] + componentInfo[fieldName];
+                                            }
                                         }
                                     }
                                 }
                             }
                         }
+                    } else {
+                        log.error(resp.getMessage());
                     }
 
                     // Populate tabel data
@@ -1024,6 +1043,8 @@
                         contextProperties.push({"name": propertyName, "before": beforeValue, "after": afterValue});
                     }
                     result["contextProperties"] = contextProperties;
+                } else {
+                    log.error(resp.getMessage());
                 }
                 break;
             }

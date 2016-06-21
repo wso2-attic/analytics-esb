@@ -26,6 +26,9 @@ function getMostInvokedComponentNames(connector, loggedInUser, componentType) {
             }
         }
         result = result.slice(0, 5);
+    } else {
+        var log = new Log();
+        log.error(resp.getMessage());
     }
     return result;
 };
@@ -51,6 +54,9 @@ function getComponentNames(connector, loggedInUser, componentType) {
         for (var name in proxyNames["categories"]) {
             result.push(name);
         }
+    } else {
+        var log = new Log();
+        log.error(resp.getMessage());
     }
     return result;
 };
@@ -87,6 +93,9 @@ function getLatency(connector, loggedInUser, timeFrom, timeTo, tableName, compon
                             });
             }
         }
+    } else {
+        var log = new Log();
+        log.error(resp.getMessage());
     }
     return result;
 };
@@ -123,6 +132,9 @@ function getMessageRate(connector, loggedInUser, timeFrom, timeTo, tableName, co
                             });
             }
         }
+    } else {
+        var log = new Log();
+        log.error(resp.getMessage());
     }
     return result;
 };
@@ -194,6 +206,9 @@ function getStats(connector, loggedInUser, componentType, componentName, entryPo
             }
         }
         result = {total: totalInvocation, failed: totalFault};
+    } else {
+        var log = new Log();
+        log.error(resp.getMessage());
     }
     return result;
 };
@@ -277,6 +292,9 @@ function getComponentMessages(connector, loggedInUser, componentName, componentT
             }
             data.push(temp);
         }
+    } else {
+        var log = new Log();
+        log.error(resp.getMessage());
     }
     
     result["draw"] = draw;
@@ -478,6 +496,9 @@ function getEntrypointMessageFlow(connector, loggedInUser, timeRanges) {
                 }
             }
         }
+    } else {
+        var log = new Log();
+        log.error(resp.getMessage());
     }
     return result;
 };
