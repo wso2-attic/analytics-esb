@@ -144,33 +144,37 @@
                                       "count": 200
                                   });
                 resp = connector.search(loggedInUser, tableName, query);
-                var dataPoints = [];
-                try {
-                    dataPoints = JSON.parse(resp.getMessage());
-                } catch (error) {
-                    log.error(error);
-                }
-
-                var divider = 1;
-                if (timeUnit == 'MONTH') {
-                    divider = 3600 * 24 * 30;
-                } else if (timeUnit == 'DAY') {
-                    divider = 3600 * 24;
-                } else if (timeUnit == 'HOUR') {
-                    divider = 3600;
-                } else if (timeUnit == 'MINUTE') {
-                    divider = 60;
-                }
-                for (var i = 0; i < dataPoints.length; i++) {
-                    var obj = dataPoints[i];
-                    if (timeUnit == 'MONTH') {
-                        divider = timeRangeUtil.getNoOfSecondForMonthInGivenTimestamp(obj.values.facetStartTime[0]);
+                if (resp.status == "success") {
+                    var dataPoints = [];
+                    try {
+                        dataPoints = JSON.parse(resp.getMessage());
+                    } catch (error) {
+                        log.error(error);
                     }
-                    if (obj != null) {
-                        result.push({
-                                        "timestamp": obj.values.facetStartTime,
-                                        "tps": obj.values.noOfInvocation / divider
-                                    });
+
+                    var divider = 1;
+                    if (timeUnit == 'MONTH') {
+                        divider = 3600 * 24 * 30;
+                    } else if (timeUnit == 'DAY') {
+                        divider = 3600 * 24;
+                    } else if (timeUnit == 'HOUR') {
+                        divider = 3600;
+                    } else if (timeUnit == 'MINUTE') {
+                        divider = 60;
+                    }
+                    for (var i = 0; i < dataPoints.length; i++) {
+                        var obj = dataPoints[i];
+                        if (obj != null && obj.values != null) {
+                            if (timeUnit == 'MONTH') {
+                                divider = timeRangeUtil.getNoOfSecondForMonthInGivenTimestamp(obj.values.facetStartTime[0]);
+                            }
+                            if (obj != null) {
+                                result.push({
+                                                "timestamp": obj.values.facetStartTime,
+                                                "tps": obj.values.noOfInvocation / divider
+                                            });
+                            }
+                        }
                     }
                 }
                 break;
@@ -191,22 +195,26 @@
                                   });
                 resp = connector.search(loggedInUser, tableName, query);
                 var dataPoints = [];
-                try {
-                    dataPoints = JSON.parse(resp.getMessage());
-                } catch (error) {
-                    log.error(error);
-                }
-                for (var i = 0; i < dataPoints.length; i++) {
-                    var obj = dataPoints[i];
-                    var success = obj.values.noOfInvocation - obj.values.faultCount;
-                    if (success < 0) {
-                        success = 0;
+                if (resp.status == "success") {
+                    try {
+                        dataPoints = JSON.parse(resp.getMessage());
+                    } catch (error) {
+                        log.error(error);
                     }
-                    result.push({
-                        "timestamp": obj.values.facetStartTime,
-                        "success": success,
-                        "faults": obj.values.faultCount
-                    });
+                    for (var i = 0; i < dataPoints.length; i++) {
+                        var obj = dataPoints[i];
+                        if (obj != null && obj.values != null) {
+                            var success = obj.values.noOfInvocation - obj.values.faultCount;
+                            if (success < 0) {
+                                success = 0;
+                            }
+                            result.push({
+                                "timestamp": obj.values.facetStartTime,
+                                "success": success,
+                                "faults": obj.values.faultCount
+                            });
+                        }
+                    }
                 }
                 break;
             }
@@ -320,18 +328,22 @@
                                   });
                 resp = connector.searchWithAggregates(loggedInUser, tableName, query);
                 var dataPoints = [];
-                try {
-                    dataPoints = JSON.parse(resp.getMessage());
-                } catch (error) {
-                    log.error(error);
-                }
-                for (var i = 0; i < dataPoints.length; i++) {
-                    var obj = dataPoints[i];
-                    result.push({
-                                    "timestamp": obj.values.facetStartTime[0],
-                                    "success": obj.values.total_invocation_sum,
-                                    "faults": obj.values.total_fault_count
-                                });
+                if (resp.status == "success") {
+                    try {
+                        dataPoints = JSON.parse(resp.getMessage());
+                    } catch (error) {
+                        log.error(error);
+                    }
+                    for (var i = 0; i < dataPoints.length; i++) {
+                        var obj = dataPoints[i];
+                        if (obj != null && obj.values != null) {
+                            result.push({
+                                        "timestamp": obj.values.facetStartTime[0],
+                                        "success": obj.values.total_invocation_sum,
+                                        "faults": obj.values.total_fault_count
+                                    });
+                        }
+                    }
                 }
                 break;
             }
@@ -350,19 +362,23 @@
                                   });
                 resp = connector.search(loggedInUser, tableName, query);
                 var dataPoints = [];
-                try {
-                    dataPoints = JSON.parse(resp.getMessage());
-                } catch (error) {
-                    log.error(error);
-                }
-                for (var i = 0; i < dataPoints.length; i++) {
-                    var obj = dataPoints[i];
-                    result.push({
-                                    "timestamp": obj.values.facetStartTime,
-                                    "min": obj.values.minDuration,
-                                    "max": obj.values.maxDuration,
-                                    "avg": obj.values.totalDuration / obj.values.noOfInvocation
-                                });
+                if (resp.status == "success") {
+                    try {
+                        dataPoints = JSON.parse(resp.getMessage());
+                    } catch (error) {
+                        log.error(error);
+                    }
+                    for (var i = 0; i < dataPoints.length; i++) {
+                        var obj = dataPoints[i];
+                        if (obj != null && obj.values != null) {
+                            result.push({
+                                            "timestamp": obj.values.facetStartTime,
+                                            "min": obj.values.minDuration,
+                                            "max": obj.values.maxDuration,
+                                            "avg": obj.values.totalDuration / obj.values.noOfInvocation
+                                        });
+                        }
+                    }
                 }
                 break;
             }
@@ -385,10 +401,16 @@
                                           "start": 0,
                                           "count": 10000
                                       });
+                var components = null;
                 var resp = connector.search(loggedInUser, tableName, query);
-                var components = JSON.parse(resp.getMessage());
-                var entryPointHashCode = components[0]["values"]["entryPointHashcode"];
-                var entryPoint = components[0]["values"]["entryPoint"];
+                if (resp.status == "success") {
+                    components = JSON.parse(resp.getMessage());
+
+                    if (components[0] != null && components[0]["values"] != null) {
+                        var entryPointHashCode = components[0]["values"]["entryPointHashcode"];
+                        var entryPoint = components[0]["values"]["entryPoint"];
+                    }
+                }
 
                 // Get schema 
                 var tableName = "ESB-CONFIG-ENTRY-STREAM";
@@ -397,35 +419,45 @@
                                           "start": 0,
                                           "count": 1
                                       });
+
+                var config =  null;
                 var resp = connector.search(loggedInUser, tableName, query);
-                var config = JSON.parse(resp.getMessage())[0];
+                if (resp.status == "success") {
+                    config = JSON.parse(resp.getMessage())[0];
+                }
+
                 if (config != null) {
                     var schema = JSON.parse(config["values"]["configData"]);
 
                     // Prepare component map
                     var componentMap = {};
-                    for (var i = 0; i < components.length; i++) {
-                        var component = components[i];
-                        var componentInfo = component["values"];
-                        var componentId = componentInfo["componentId"];
+                    if (components != null) {
+                        for (var i = 0; i < components.length; i++) {
+                            var component = components[i];
+                            var componentInfo = component["values"];
 
-                        // get schema of referenced sequences and add it to the overall schema
-                        if("Sequence" == componentInfo["componentType"]) {
-                            var query = stringify({
-                                          "query": "_hashcode : \"" + componentInfo["hashCode"] + "\"",
-                                          "start": 0,
-                                          "count": 1
-                                      });
-                            var seqConfigResp = connector.search(loggedInUser, tableName, query);
-                            var seqConfig = JSON.parse(seqConfigResp.getMessage())[0];
-                            if (seqConfig != null) {
-                                var seqSchema = JSON.parse(seqConfig["values"]["configData"]);
-                                for (var j = 0; j < seqSchema.length; j++) {
-                                    schema.push(seqSchema[j]);
+                            if (componentInfo != null) {
+                                var componentId = componentInfo["componentId"];
+
+                                // get schema of referenced sequences and add it to the overall schema
+                                if("Sequence" == componentInfo["componentType"]) {
+                                    var query = stringify({
+                                                  "query": "_hashcode : \"" + componentInfo["hashCode"] + "\"",
+                                                  "start": 0,
+                                                  "count": 1
+                                              });
+                                    var seqConfigResp = connector.search(loggedInUser, tableName, query);
+                                    var seqConfig = JSON.parse(seqConfigResp.getMessage())[0];
+                                    if (seqConfig != null) {
+                                        var seqSchema = JSON.parse(seqConfig["values"]["configData"]);
+                                        for (var j = 0; j < seqSchema.length; j++) {
+                                            schema.push(seqSchema[j]);
+                                        }
+                                    }
                                 }
+                                componentMap[componentId] = componentInfo;
                             }
                         }
-                        componentMap[componentId] = componentInfo;
                     }
 
                     // Populate tabel data
@@ -433,64 +465,69 @@
                     var groups = [];
                     for (var i = 0; i < schema.length; i++) {
                         var groupLabel;
-                        var groupId = schema[i]["group"];
-                        var componentId = schema[i]["id"];
-                        var componentInfo = componentMap[componentId];
-                        var dataAttributes = [];
-                        var hiddenAttributes = [];
-                        var componentLabel = componentNameRegex.exec(componentId)[1];
-
-                        // Find unique groups
-                        if (schema[i]["group"] != null && groups.indexOf(schema[i]["group"]) == -1) {
-                            groups.push(schema[i]["group"]);
-                        }
-
-                        // Create data attributes
-                        if (componentInfo != null) {
-                            dataAttributes.push({"name": "Duration", "value": componentInfo["duration"]});
-                            if (componentInfo["faultCount"] == 0) {
-                                dataAttributes.push({"name": "Status", "value": "Success"});
-                            } else {
-                                dataAttributes.push({"name": "Status", "value": "Failed"});
+                        if (schema[i] != null) {
+                            var groupId = schema[i]["group"];
+                            var componentId = schema[i]["id"];
+                            var componentInfo  = null;
+                            if (componentId != null) {
+                                componentInfo = componentMap[componentId];
                             }
-                            componentType = componentInfo["componentType"];
-                            hashCode = componentInfo["hashCode"];
+                            var dataAttributes = [];
+                            var hiddenAttributes = [];
+                            var componentLabel = componentNameRegex.exec(componentId)[1];
 
-                            hiddenAttributes.push({"name": "entryPoint", "value": entryPoint});
-                            hiddenAttributes.push({"name": "hashCode", "value": hashCode});
-                        } else {
-                            dataAttributes.push({"name": "Duration", "value": "n/a"});
-                            dataAttributes.push({"name": "Status", "value": "n/a"});
-                            componentType = "UNKNOWN";
-                        }
+                            // Find unique groups
+                            if (schema[i]["group"] != null && groups.indexOf(schema[i]["group"]) == -1) {
+                                groups.push(schema[i]["group"]);
+                            }
 
-                        // for Sequences and Endpoints, id should be the "name", since name is used for drill down searches
-                        if (componentType == "Endpoint" || componentType == "Sequence") {
-                            hiddenAttributes.push({"name": "id", "value": componentLabel});
-                        } else {
-                            hiddenAttributes.push({"name": "id", "value": componentId});
-                        }
+                            // Create data attributes
+                            if (componentInfo != null) {
+                                dataAttributes.push({"name": "Duration", "value": componentInfo["duration"]});
+                                if (componentInfo["faultCount"] == 0) {
+                                    dataAttributes.push({"name": "Status", "value": "Success"});
+                                } else {
+                                    dataAttributes.push({"name": "Status", "value": "Failed"});
+                                }
+                                componentType = componentInfo["componentType"];
+                                hashCode = componentInfo["hashCode"];
 
-                        if (schema[i]["parentId"] == schema[i]["group"]) {
-                            result.push({
-                                            "id": componentId,
-                                            "label": componentLabel,
-                                            "parents": [],
-                                            "group": schema[i]["group"],
-                                            "type": componentType,
-                                            "dataAttributes": dataAttributes,
-                                            "hiddenAttributes": hiddenAttributes
-                                        });
-                        } else {
-                            result.push({
-                                            "id": componentId,
-                                            "label": componentLabel,
-                                            "parents": [schema[i]["parentId"]],
-                                            "group": schema[i]["group"],
-                                            "type": componentType,
-                                            "dataAttributes": dataAttributes,
-                                            "hiddenAttributes": hiddenAttributes
-                                        });
+                                hiddenAttributes.push({"name": "entryPoint", "value": entryPoint});
+                                hiddenAttributes.push({"name": "hashCode", "value": hashCode});
+                            } else {
+                                dataAttributes.push({"name": "Duration", "value": "n/a"});
+                                dataAttributes.push({"name": "Status", "value": "n/a"});
+                                componentType = "UNKNOWN";
+                            }
+
+                            // for Sequences and Endpoints, id should be the "name", since name is used for drill down searches
+                            if (componentType == "Endpoint" || componentType == "Sequence") {
+                                hiddenAttributes.push({"name": "id", "value": componentLabel});
+                            } else {
+                                hiddenAttributes.push({"name": "id", "value": componentId});
+                            }
+
+                            if (schema[i]["parentId"] == schema[i]["group"]) {
+                                result.push({
+                                                "id": componentId,
+                                                "label": componentLabel,
+                                                "parents": [],
+                                                "group": schema[i]["group"],
+                                                "type": componentType,
+                                                "dataAttributes": dataAttributes,
+                                                "hiddenAttributes": hiddenAttributes
+                                            });
+                            } else {
+                                result.push({
+                                                "id": componentId,
+                                                "label": componentLabel,
+                                                "parents": [schema[i]["parentId"]],
+                                                "group": schema[i]["group"],
+                                                "type": componentType,
+                                                "dataAttributes": dataAttributes,
+                                                "hiddenAttributes": hiddenAttributes
+                                            });
+                            }
                         }
                     }
                     // Defining groups
@@ -597,11 +634,18 @@
                                               }
                                           ]
                                       });
+                var config = null;
                 var resp = connector.search(loggedInUser, tableName, query);
-                var config = JSON.parse(resp.getMessage())[0];
+                if (resp.status == "success") {
+                    config = JSON.parse(resp.getMessage())[0];
+                }
                 if (config != null) {
-                    var schema = JSON.parse(config["values"]["configData"]);
-                    var entryHashCode = config["values"]["hashcode"];
+                    var schema = null;
+                    var entryHashCode = null;
+                    if (config["values"] != null) {
+                        schema = JSON.parse(config["values"]["configData"]);
+                        entryHashCode = config["values"]["hashcode"];
+                    }
 
                     // get components info from different tables
                     var timeRanges = timeRangeUtil.getDateTimeRanges(timeFrom, timeTo);
@@ -637,13 +681,15 @@
                         if (table != null && table.length != 0) {
                             for (var j = 0; j < table.length; j++) {
                                 var componentInfo = table[j]["values"];
-                                var componentId = componentInfo["componentId"][0];
-                                if (componentMap[componentId] == null) {
-                                    componentMap[componentId] = componentInfo;
-                                } else {
-                                    for (field in fields) {
-                                        fieldName = fields[field];
-                                        componentMap[componentId][fieldName] = componentMap[componentId][fieldName] + componentInfo[fieldName];
+                                if (componentInfo != null && componentInfo["componentId"] != null){
+                                    var componentId = componentInfo["componentId"][0];
+                                    if (componentMap[componentId] == null) {
+                                        componentMap[componentId] = componentInfo;
+                                    } else {
+                                        for (field in fields) {
+                                            fieldName = fields[field];
+                                            componentMap[componentId][fieldName] = componentMap[componentId][fieldName] + componentInfo[fieldName];
+                                        }
                                     }
                                 }
                             }
@@ -870,111 +916,115 @@
                                           "count": 10000
                                       });
                 var resp = connector.search(loggedInUser, tableName, query);
-                var messageInfoBefore = JSON.parse(resp.getMessage())[0]["values"];
+                if (resp.status == "success") {
+                    var messageInfoBefore = JSON.parse(resp.getMessage())[0]["values"];
 
-                // Get Message details of the child component
-                if (messageInfoBefore["children"] != null && messageInfoBefore["children"] != "null") {
-                    var childIndex = JSON.parse(messageInfoBefore["children"])[0];
-                    var query = stringify({
-                                              "tableName": tableName,
-                                              "query": "_messageFlowId : \"" + messageId + "\" AND componentIndex :" + childIndex,
-                                              "start": 0,
-                                              "count": 10000
-                                          });
-                    var resp = connector.search(loggedInUser, tableName, query);
-                    var component = JSON.parse(resp.getMessage())[0];
-                    if (component != null) {
-                        var messageInfoAfter = component["values"];
-                    }
-                }
-
-                // add payloads
-                result["payload"] = {
-                    "before": messageInfoBefore["beforePayload"],
-                    "after": messageInfoBefore["afterPayload"]
-                };
-
-                var transportProperties = [];
-                var contextProperties = [];
-
-                if (messageInfoBefore["transportPropertyMap"] != null) {
-                    var transportPropertyMapBefore = esbanalyticsUtils.processProperties(messageInfoBefore["transportPropertyMap"]);
-                } else {
-                    var transportPropertyMapBefore = {};
-                }
-                if (messageInfoBefore["contextPropertyMap"] != null) {
-                    var contextPropertyMapBefore = esbanalyticsUtils.processProperties(messageInfoBefore["contextPropertyMap"]);
-                } else {
-                    var contextPropertyMapBefore = {};
-                }
-
-                var allTransportProperties = Object.keys(transportPropertyMapBefore);
-                var allContextProperties = Object.keys(contextPropertyMapBefore);
-
-                if (messageInfoAfter != null) {
-                    if (messageInfoAfter["transportPropertyMap"] != null) {
-                        var transportPorpertyMapAfter = esbanalyticsUtils.processProperties(messageInfoAfter["transportPropertyMap"]);
-                    } else {
-                        var transportPorpertyMapAfter = {};
-                    }
-                    if (messageInfoAfter["contextPropertyMap"] != null) {
-                        var contextPorpertyMapAfter = esbanalyticsUtils.processProperties(messageInfoAfter["contextPropertyMap"]);
-                    } else {
-                        var contextPorpertyMapAfter = {};
-                    }
-
-                    for (var property in transportPorpertyMapAfter) {
-                        if (allTransportProperties.indexOf(property) < 0) {
-                            allTransportProperties.push(property);
+                    // Get Message details of the child component
+                    if (messageInfoBefore["children"] != null && messageInfoBefore["children"] != "null") {
+                        var childIndex = JSON.parse(messageInfoBefore["children"])[0];
+                        var query = stringify({
+                                                  "tableName": tableName,
+                                                  "query": "_messageFlowId : \"" + messageId + "\" AND componentIndex :" + childIndex,
+                                                  "start": 0,
+                                                  "count": 10000
+                                              });
+                        var resp = connector.search(loggedInUser, tableName, query);
+                        if (resp.status == "success") {
+                            var component = JSON.parse(resp.getMessage())[0];
+                            if (component != null) {
+                                var messageInfoAfter = component["values"];
+                            }
                         }
                     }
-                    for (var property in contextPorpertyMapAfter) {
-                        if (allContextProperties.indexOf(property) < 0) {
-                            allContextProperties.push(property);
-                        }
-                    }
-                }
-                // Add Transport Properties
-                for (var property in allTransportProperties) {
-                    var propertyName = allTransportProperties[property];
-                    if (transportPropertyMapBefore.hasOwnProperty(propertyName)) {
-                        var beforeValue = transportPropertyMapBefore[propertyName];
+
+                    // add payloads
+                    result["payload"] = {
+                        "before": messageInfoBefore["beforePayload"],
+                        "after": messageInfoBefore["afterPayload"]
+                    };
+
+                    var transportProperties = [];
+                    var contextProperties = [];
+
+                    if (messageInfoBefore["transportPropertyMap"] != null) {
+                        var transportPropertyMapBefore = esbanalyticsUtils.processProperties(messageInfoBefore["transportPropertyMap"]);
                     } else {
-                        var beforeValue = "N/A";
+                        var transportPropertyMapBefore = {};
                     }
+                    if (messageInfoBefore["contextPropertyMap"] != null) {
+                        var contextPropertyMapBefore = esbanalyticsUtils.processProperties(messageInfoBefore["contextPropertyMap"]);
+                    } else {
+                        var contextPropertyMapBefore = {};
+                    }
+
+                    var allTransportProperties = Object.keys(transportPropertyMapBefore);
+                    var allContextProperties = Object.keys(contextPropertyMapBefore);
+
                     if (messageInfoAfter != null) {
-                        if (transportPorpertyMapAfter.hasOwnProperty(propertyName)) {
-                            var afterValue = transportPorpertyMapAfter[propertyName];
+                        if (messageInfoAfter["transportPropertyMap"] != null) {
+                            var transportPorpertyMapAfter = esbanalyticsUtils.processProperties(messageInfoAfter["transportPropertyMap"]);
                         } else {
-                            var afterValue = "N/A";
+                            var transportPorpertyMapAfter = {};
                         }
-                    } else {
-                        var afterValue = beforeValue;
-                    }
-                    transportProperties.push({"name": propertyName, "before": beforeValue, "after": afterValue});
-                }
-                result["transportProperties"] = transportProperties;
+                        if (messageInfoAfter["contextPropertyMap"] != null) {
+                            var contextPorpertyMapAfter = esbanalyticsUtils.processProperties(messageInfoAfter["contextPropertyMap"]);
+                        } else {
+                            var contextPorpertyMapAfter = {};
+                        }
 
-                // Add Context Properties
-                for (var property in allContextProperties) {
-                    var propertyName = allContextProperties[property];
-                    if (contextPropertyMapBefore.hasOwnProperty(propertyName)) {
-                        var beforeValue = contextPropertyMapBefore[propertyName];
-                    } else {
-                        var beforeValue = "N/A";
-                    }
-                    if (messageInfoAfter != null) {
-                        if (contextPorpertyMapAfter.hasOwnProperty(propertyName)) {
-                            var afterValue = contextPorpertyMapAfter[propertyName];
-                        } else {
-                            var afterValue = "N/A";
+                        for (var property in transportPorpertyMapAfter) {
+                            if (allTransportProperties.indexOf(property) < 0) {
+                                allTransportProperties.push(property);
+                            }
                         }
-                    } else {
-                        var afterValue = beforeValue;
+                        for (var property in contextPorpertyMapAfter) {
+                            if (allContextProperties.indexOf(property) < 0) {
+                                allContextProperties.push(property);
+                            }
+                        }
                     }
-                    contextProperties.push({"name": propertyName, "before": beforeValue, "after": afterValue});
+                    // Add Transport Properties
+                    for (var property in allTransportProperties) {
+                        var propertyName = allTransportProperties[property];
+                        if (transportPropertyMapBefore.hasOwnProperty(propertyName)) {
+                            var beforeValue = transportPropertyMapBefore[propertyName];
+                        } else {
+                            var beforeValue = "N/A";
+                        }
+                        if (messageInfoAfter != null) {
+                            if (transportPorpertyMapAfter.hasOwnProperty(propertyName)) {
+                                var afterValue = transportPorpertyMapAfter[propertyName];
+                            } else {
+                                var afterValue = "N/A";
+                            }
+                        } else {
+                            var afterValue = beforeValue;
+                        }
+                        transportProperties.push({"name": propertyName, "before": beforeValue, "after": afterValue});
+                    }
+                    result["transportProperties"] = transportProperties;
+
+                    // Add Context Properties
+                    for (var property in allContextProperties) {
+                        var propertyName = allContextProperties[property];
+                        if (contextPropertyMapBefore.hasOwnProperty(propertyName)) {
+                            var beforeValue = contextPropertyMapBefore[propertyName];
+                        } else {
+                            var beforeValue = "N/A";
+                        }
+                        if (messageInfoAfter != null) {
+                            if (contextPorpertyMapAfter.hasOwnProperty(propertyName)) {
+                                var afterValue = contextPorpertyMapAfter[propertyName];
+                            } else {
+                                var afterValue = "N/A";
+                            }
+                        } else {
+                            var afterValue = beforeValue;
+                        }
+                        contextProperties.push({"name": propertyName, "before": beforeValue, "after": afterValue});
+                    }
+                    result["contextProperties"] = contextProperties;
                 }
-                result["contextProperties"] = contextProperties;
                 break;
             }
             default:
