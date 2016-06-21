@@ -45,7 +45,7 @@
                             <li><a href="javascript:void(0)" role="date-update" data-value="LastHour">Last Hour</a></li>
                             <li><a href="javascript:void(0)" role="date-update" data-value="LastDay">Last 24 Hours</a></li>
                             <li><a href="javascript:void(0)" role="date-update" data-value="LastMonth"s>Last 30 Days</a></li>
-                            <li><a href="javascript:void(0)" role="date-update" data-value="LastYear">Last 24 Year</a></li>
+                            <li><a href="javascript:void(0)" role="date-update" data-value="LastYear">Last Year</a></li>
                         </ul>
                         <button id="btnCustomRange" type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                             <i class="glyphicon glyphicon-calendar fa fa-calendar"></i> Custom
