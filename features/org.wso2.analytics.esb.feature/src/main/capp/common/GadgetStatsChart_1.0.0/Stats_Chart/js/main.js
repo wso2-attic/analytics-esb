@@ -4,7 +4,7 @@ var qs = gadgetUtil.getQueryString();
 var type = 38;
 
 $(function() {
-    
+
     if (page && qs[PARAM_ID] == null) {
         $("body").html(gadgetUtil.getDefaultText());
         return;
@@ -65,16 +65,16 @@ function onData(response) {
         var failedPct = (failed / total) * 100;
         var successPct = 100 - failedPct;
 
-        $("#totalCount").html(total);
-        $("#failedCount").html(failed);
+        $("#totalCount").html(Number(total).toLocaleString('en'));
+        $("#failedCount").html(Number(failed).toLocaleString('en'));
         $("#failedPercent").html(parseFloat(failedPct).toFixed(2));
-        $("#successCount").html(success);
+        $("#successCount").html(Number(success).toLocaleString('en'));
         $("#successPercent").html(parseFloat(successPct).toFixed(2));
-        
+
         var successColor = function(){
             return parseFloat(successPct) > 0 ? '#5CB85C' : '#353B48';
         };
-        
+
         var failColor = function(){
             return parseFloat(failedPct) > 0 ? '#D9534F' : '#353B48';
         };
