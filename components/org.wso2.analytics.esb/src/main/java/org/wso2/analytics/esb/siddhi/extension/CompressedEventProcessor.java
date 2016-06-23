@@ -115,8 +115,9 @@ public class CompressedEventProcessor extends StreamProcessor {
                 for (int i = 0; i < eventsList.size(); i++) {
                     StreamEvent decompressedEvent = streamEventCloner.copyStreamEvent(compressedEvent);
                     // Create a new event with decompressed fields
-                    Object[] decompressedFields = CompressedEventAnalyticsUtils.getFieldValues(eventsList.get(i),
-                        payloadsList, i, compressedEvent.getTimestamp(), host);
+                    Object[] decompressedFields = CompressedEventAnalyticsUtils.getFieldValues(
+                        new ArrayList<String>(this.fields.keySet()), eventsList.get(i), payloadsList, i, 
+                        compressedEvent.getTimestamp(), -1 ,host);
                     complexEventPopulater.populateComplexEvent(decompressedEvent, decompressedFields);
                     decompressedStreamEventChunk.add(decompressedEvent);
                 }
