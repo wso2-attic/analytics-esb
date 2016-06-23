@@ -385,7 +385,7 @@ function getEntrypointMessageFlow(connector, loggedInUser, timeRanges) {
                 var searchParam = {
                     tableName: "MEDIATOR-STAT-PER-" + timeRange.unit,
                     groupByField: "componentId",
-                    query: "entryPointHashcode : \"" + entryHashCode + "\" AND startTime : [" + timeRange.range[0] + " TO " + timeRange.range[1] + "}",
+                    query: "entryPointHashcode : [" + entryHashCode + " TO " + entryHashCode + "] AND startTime : [" + timeRange.range[0] + " TO " + timeRange.range[1] + "}",
                     aggregateLevel: 0,
                     parentPath: [],
                     noOfRecords: 10000
