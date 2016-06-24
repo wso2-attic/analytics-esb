@@ -30,7 +30,7 @@
     },
     {
       "name": "entryPointHashcode",
-      "type": "INT"
+      "type": "STRING"
     },
     {
       "name": "componentId",
@@ -38,7 +38,7 @@
     },
     {
       "name": "hashCode",
-      "type": "INT"
+      "type": "STRING"
     },
     {
       "name": "componentName",

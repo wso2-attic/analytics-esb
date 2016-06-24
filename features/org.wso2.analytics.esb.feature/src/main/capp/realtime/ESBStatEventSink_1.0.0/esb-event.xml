@@ -39,7 +39,7 @@
             <EnableIndexing>true</EnableIndexing>
             <IsPrimaryKey>false</IsPrimaryKey>
             <EnableScoreParam>false</EnableScoreParam>
-            <Type>INTEGER</Type>
+            <Type>STRING</Type>
         </ColumnDefinition>
         <ColumnDefinition>
             <Name>componentName</Name>
@@ -137,7 +137,7 @@
             <EnableIndexing>true</EnableIndexing>
             <IsPrimaryKey>false</IsPrimaryKey>
             <EnableScoreParam>false</EnableScoreParam>
-            <Type>INTEGER</Type>
+            <Type>STRING</Type>
         </ColumnDefinition>
         <ColumnDefinition>
             <Name>faultCount</Name>

@@ -19,7 +19,7 @@
   -->
 
 <artifacts>
-    <artifact name="org.wso2.analytics.esb" version="1.0.0" type="carbon/application">
+    <artifact name="org.wso2.analytics.esb.offline" version="1.0.0" type="carbon/application">
 	    <dependency artifact="AnalyticsStatEventStream" version="1.0.0" include="true" serverRole="DataAnalyticsServer"/>
         <dependency artifact="AnalyticsStatEventSink" version="1.0.0" include="true" serverRole="DataAnalyticsServer"/>
         <dependency artifact="AnalyticsStatEventReceiver" version="1.0.0" include="true" serverRole="DataAnalyticsServer"/>

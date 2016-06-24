@@ -67,7 +67,7 @@
             <EnableIndexing>true</EnableIndexing>
             <IsPrimaryKey>true</IsPrimaryKey>
             <EnableScoreParam>false</EnableScoreParam>
-            <Type>INTEGER</Type>
+            <Type>STRING</Type>
         </ColumnDefinition>
         <ColumnDefinition>
             <Name>componentId</Name>
@@ -81,7 +81,7 @@
             <EnableIndexing>true</EnableIndexing>
             <IsPrimaryKey>true</IsPrimaryKey>
             <EnableScoreParam>false</EnableScoreParam>
-            <Type>INTEGER</Type>
+            <Type>STRING</Type>
         </ColumnDefinition>
         <ColumnDefinition>
             <Name>componentName</Name>

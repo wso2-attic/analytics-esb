@@ -14,8 +14,8 @@ contextPropertyMap : string
 transportPropertyMap : string
 children : string
 entryPoint : string
-entryPointHashcode : integer
+entryPointHashcode : string
 faultCount : integer
-hashCode : integer
+hashCode : string
 host : string
 _timestamp : long
