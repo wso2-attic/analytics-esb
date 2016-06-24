@@ -677,7 +677,7 @@
                         var searchParam = {
                             tableName: "MEDIATOR-STAT-PER-" + timeRange.unit,
                             groupByField: "componentId",
-                            query: "hashCode : [" + entryHashCode + " TO " + entryHashCode + "] AND startTime : [" + timeRange.range[0] + " TO " + timeRange.range[1] + "}",
+                            query: "hashCode : \"" + entryHashCode + "\" AND startTime : [" + timeRange.range[0] + " TO " + timeRange.range[1] + "}",
                             aggregateLevel: 0,
                             parentPath: [],
                             noOfRecords: 10000
