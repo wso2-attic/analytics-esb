@@ -177,7 +177,7 @@ public class Utils {
             //entry point
             singleEvent.add(proxyName);
             //entry point hash code
-            singleEvent.add(1241186573);
+            singleEvent.add("1241186573");
             //fault count
             if (isFault && (i == 0 || i == noOfMediators)) {
                 singleEvent.add(1);
@@ -186,7 +186,7 @@ public class Utils {
             }
             
             //hash code
-            singleEvent.add(1241186573 + i);
+            singleEvent.add("1241186573" + i);
             
             eventsList.add(singleEvent);
             List<Integer> attributeIndices = new ArrayList<Integer>();
