@@ -27,8 +27,6 @@
         <dependency artifact="AnalyticsConfigEventSink" version="1.0.0" include="true" serverRole="DataAnalyticsServer"/>
         <dependency artifact="AnalyticsConfigEventReceiver" version="1.0.0" include="true" serverRole="DataAnalyticsServer"/>
         <dependency artifact="Sparkscripts" version="1.0.0" include="true" serverRole="DataAnalyticsServer"/>
-        <dependency artifact="ESBStatStream" version="1.0.0" include="true" serverRole="DataAnalyticsServer"/>
-        <dependency artifact="ESBStatEventSink" version="1.0.0" include="true" serverRole="DataAnalyticsServer"/>
         <!-- Gadgets -->
         <dependency artifact="GadgetCommons" version="1.0.0" include="true" serverRole="DataAnalyticsServer"/>
         <dependency artifact="GadgetDateRangePicker" version="1.0.0" include="true" serverRole="DataAnalyticsServer"/>
