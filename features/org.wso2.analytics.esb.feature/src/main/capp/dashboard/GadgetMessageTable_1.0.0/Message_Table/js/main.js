@@ -5,6 +5,7 @@ var timeUnit = null;
 var page = gadgetUtil.getCurrentPage();
 var qs = gadgetUtil.getQueryString();
 var oTable;
+var SHARED_PARAM = "?shared=true&";
 
 $(function() {
     if (qs[PARAM_ID] == null) {
@@ -63,9 +64,15 @@ $(function() {
         if( timeUnit == null) {
             timeUnit = qs.timeUnit;
         }
-        // var targetUrl = MESSAGE_PAGE_URL + "?" + PARAM_ID + "=" + id + "&timeFrom=" + timeFrom + "&timeTo=" + timeTo + "&timeUnit=" + timeUnit;;
-        var targetUrl = MESSAGE_PAGE_URL + "?" + PARAM_ID + "=" + id;
-        parent.window.location = targetUrl;
+        // var targetUrl = MESSAGE_PAGE_URL + "?" + PARAM_ID + "=" + id + "&timeFrom=" + timeFrom + "&timeTo=" + timeTo + "&timeUnit=" + timeUnit;
+
+        var baseUrl = MESSAGE_PAGE_URL;
+        if (gadgetUtil.isSharedDashboard()) {
+            baseUrl += SHARED_PARAM;
+        } else {
+            baseUrl += "?";
+        }
+        parent.window.location =  baseUrl + PARAM_ID + "=" + id;
     });
 
 });

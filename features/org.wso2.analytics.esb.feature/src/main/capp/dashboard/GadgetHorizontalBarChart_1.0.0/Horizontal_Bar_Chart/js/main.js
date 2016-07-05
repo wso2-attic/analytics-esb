@@ -75,8 +75,14 @@ function onData(data) {
             if (item != null) {
                 id = item.datum.name;
             }
-            var targetUrl = config.targetUrl + "?" + PARAM_ID + "=" + id + "&timeFrom=" + timeFrom + "&timeTo=" + timeTo;
-
+            var baseUrl = config.targetUrl;
+            var urlParameters = gadgetUtil.getUrlParameters();
+            if (urlParameters != null) {
+                baseUrl += urlParameters + "&";
+            } else {
+                baseUrl += "?";
+            }
+            var targetUrl =  baseUrl + PARAM_ID + "=" + id + "&timeFrom=" + timeFrom + "&timeTo=" + timeTo;
             if (timeUnit != null) {
                 targetUrl += "&timeUnit=" + timeUnit;
             }

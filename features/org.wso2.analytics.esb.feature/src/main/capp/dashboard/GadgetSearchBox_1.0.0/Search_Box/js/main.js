@@ -2,7 +2,7 @@ var href = parent.window.location.href,
     hrefLastSegment = href.substr(href.lastIndexOf('/') + 1),
     resolveURI = parent.ues.global.dashboard.id == hrefLastSegment ? '../' : '../../';
 
-
+var SHARED_PARAM = "&shared=true";
 
 $(function() {
     var page = gadgetUtil.getCurrentPage();
@@ -44,6 +44,9 @@ $(function() {
             } else {
                 href = href + "?" + PARAM_ID + "=" + item;
             }
+            if (gadgetUtil.isSharedDashboard()) {
+                href += SHARED_PARAM;
+            }
             // console.log(href); 
             parent.window.location = href;
         }).focus().blur();
@@ -74,5 +77,4 @@ $(function() {
             cb(matches);
         };
     };
-
 });

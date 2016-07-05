@@ -10,6 +10,8 @@ var LEFT_TO_RIGHT = "LR";
 var orientation = TOPDOWN;
 var gadgetMaximized = gadgetUtil.getView() == 'maximized';
 
+var SHARED_PARAM = "&shared=true";
+
 $(function() {
     
     if (qs[PARAM_ID] == null) {
@@ -34,6 +36,9 @@ $(function() {
         }
         if (page.name != TYPE_MESSAGE) {
             var targetUrl = $(this).data("target-url");
+            if (gadgetUtil.isSharedDashboard()) {
+                targetUrl += SHARED_PARAM;
+            }
             parent.window.location = targetUrl;
         } else {
             var componentId = $(this).data("component-id");

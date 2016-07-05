@@ -20,7 +20,7 @@
 
 var CONTEXT = "/portal/apis/esbanalytics";
 var DASHBOARD_NAME = parent.ues.global.dashboard.id; //"esb-analytics"
-var BASE_URL = "/portal/dashboards/" + DASHBOARD_NAME + "/";
+var BASE_URL = getDashboardBaseUrl();
 
 var TYPE_LANDING = "landing";
 var TYPE_PROXY = "proxy";
@@ -52,6 +52,14 @@ var COLOR_RED = "#D9534F";
 var COLOR_GREEN = "#5CB85C";
 
 var PARENT_WINDOW = window.parent.document;
+var PARAM_SHARED = "shared=true"
+
+function getDashboardBaseUrl() {
+    var currentUrl = window.parent.location.href;
+    var BaseUrlRegex = new RegExp(".*?(portal.*dashboards)");
+    var tenantBaseUrl = BaseUrlRegex.exec(currentUrl)[1];
+    return "/" + tenantBaseUrl + "/"  + DASHBOARD_NAME + "/";
+}
 
 function GadgetUtil() {
     var DEFAULT_START_TIME = new Date(moment().subtract(29, 'days')).getTime();
@@ -66,6 +74,7 @@ function GadgetUtil() {
             }
         }
         return qsJsonObject;
+        
     };
 
     this.getChart = function(chartType) {
@@ -81,6 +90,7 @@ function GadgetUtil() {
     this.getCurrentPageName = function() {
         var pageName,type;
         var href = parent.window.location.href;
+        href = href.replace(/\/\?/,"?");
         var lastSegment = href.substr(href.lastIndexOf('/') + 1);
         if (lastSegment.indexOf('?') == -1) {
             pageName = lastSegment;
@@ -215,6 +225,22 @@ function GadgetUtil() {
         }
     };
 
+    this.getUrlParameters = function() {
+        var currentUrl = parent.window.location.href;
+        var urlParametersRegex = new RegExp(".*?(\\?.*)");
+        var urlParameters = "";
+        var parameters = urlParametersRegex.exec(currentUrl);
+        if (parameters != null && parameters.length > 1) {
+            urlParameters = parameters[1];
+            return urlParameters;
+        }
+        return null;
+    };
+
+    this.isSharedDashboard = function() {
+        var href = parent.window.location.href;
+        return href.includes(PARAM_SHARED);
+    }
 }
 
 var gadgetUtil = new GadgetUtil();
