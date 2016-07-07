@@ -21,6 +21,7 @@ body {
   margin-top: 5px;
   margin-right: 2px;
   width:278px;
+  border: 1px solid #e4e4e4;
 }
 
 .daterangepicker.opensleft:before {
@@ -460,10 +461,6 @@ body.dark .btn-group > .btn-label {
 #date-select .btn-default[aria-expanded=true] {
     background: #53627B;
     color: #fff;
-}
-
-#date-select .btn-default[aria-expanded=true] {
-    background: #e6e6e6;
 }
 
 .btn-dropdown-menu-open > .btn-dropdown-menu {
