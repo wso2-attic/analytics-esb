@@ -341,7 +341,7 @@
               "content": {
                 "id": "Date_Range_Picker",
                 "title": "Date Range Picker",
-                "type": "gadget",
+                "type": "widget",
                 "category": "Widgets",
                 "thumbnail": "store:\/\/gadget\/Date_Range_Picker\/index.png",
                 "data": {
@@ -889,7 +889,7 @@
               "content": {
                 "id": "Search_Box",
                 "title": "Search Box",
-                "type": "gadget",
+                "type": "widget",
                 "thumbnail": "store:\/\/gadget\/usa-business-revenue\/index.png",
                 "data": {
                   "url": "store:\/\/gadget\/Search_Box\/index.xml"
@@ -918,7 +918,7 @@
               "content": {
                 "id": "Date_Range_Picker",
                 "title": "Date Range Picker",
-                "type": "gadget",
+                "type": "widget",
                 "category": "Widgets",
                 "thumbnail": "store:\/\/gadget\/Date_Range_Picker\/index.png",
                 "data": {
@@ -1325,7 +1325,7 @@
               "content": {
                 "id": "Date_Range_Picker",
                 "title": "Date Range Picker",
-                "type": "gadget",
+                "type": "widget",
                 "category": "Widgets",
                 "thumbnail": "store:\/\/gadget\/Date_Range_Picker\/index.png",
                 "data": {
@@ -1377,7 +1377,7 @@
               "content": {
                 "id": "Search_Box",
                 "title": "Search Box",
-                "type": "gadget",
+                "type": "widget",
                 "thumbnail": "store:\/\/gadget\/usa-business-revenue\/index.png",
                 "data": {
                   "url": "store:\/\/gadget\/Search_Box\/index.xml"
@@ -1562,7 +1562,7 @@
               "content": {
                 "id": "Search_Box",
                 "title": "Search Box",
-                "type": "gadget",
+                "type": "widget",
                 "thumbnail": "store:\/\/gadget\/usa-business-revenue\/index.png",
                 "data": {
                   "url": "store:\/\/gadget\/Search_Box\/index.xml"
@@ -1591,7 +1591,7 @@
               "content": {
                 "id": "Date_Range_Picker",
                 "title": "Date Range Picker",
-                "type": "gadget",
+                "type": "widget",
                 "category": "Widgets",
                 "thumbnail": "store:\/\/gadget\/Date_Range_Picker\/index.png",
                 "data": {
@@ -2102,7 +2102,7 @@
               "content": {
                 "id": "Date_Range_Picker",
                 "title": "Date Range Picker",
-                "type": "gadget",
+                "type": "widget",
                 "category": "Widgets",
                 "thumbnail": "store:\/\/gadget\/Date_Range_Picker\/index.png",
                 "data": {
@@ -2504,7 +2504,7 @@
               "content": {
                 "id": "Search_Box",
                 "title": "Search Box",
-                "type": "gadget",
+                "type": "widget",
                 "thumbnail": "store:\/\/gadget\/usa-business-revenue\/index.png",
                 "data": {
                   "url": "store:\/\/gadget\/Search_Box\/index.xml"
@@ -2533,7 +2533,7 @@
               "content": {
                 "id": "Date_Range_Picker",
                 "title": "Date Range Picker",
-                "type": "gadget",
+                "type": "widget",
                 "category": "Widgets",
                 "thumbnail": "store:\/\/gadget\/Date_Range_Picker\/index.png",
                 "data": {
@@ -2933,7 +2933,7 @@
               "content": {
                 "id": "Search_Box",
                 "title": "Search Box",
-                "type": "gadget",
+                "type": "widget",
                 "thumbnail": "store:\/\/gadget\/usa-business-revenue\/index.png",
                 "data": {
                   "url": "store:\/\/gadget\/Search_Box\/index.xml"
@@ -3183,7 +3183,7 @@
               "content": {
                 "id": "Date_Range_Picker",
                 "title": "Date Range Picker",
-                "type": "gadget",
+                "type": "widget",
                 "category": "Widgets",
                 "thumbnail": "store:\/\/gadget\/Date_Range_Picker\/index.png",
                 "data": {
