@@ -57,10 +57,15 @@ $(function() {
     
     $(datePickerBtn).on('show.daterangepicker', function(ev, picker) {
         $(this).attr('aria-expanded', 'true');
+        wso2.gadgets.controls.resizeGadget({
+            height: "710px"
+        });
     });
     
     $(datePickerBtn).on('hide.daterangepicker', function(ev, picker) {
         $(this).attr('aria-expanded', 'false');
+        
+        wso2.gadgets.controls.restoreGadget();
     });
 
     $(datePickerBtn).daterangepicker({
@@ -120,15 +125,14 @@ $(function() {
         $('#btnDropdown').attr('aria-expanded', 'false');
     });
     
-    $('#btnDropdown').click(function() {
-        if($(gadgetWrapper).hasClass('btn-dropdown-menu-open')){
-            $(gadgetWrapper).removeClass('btn-dropdown-menu-open');
-            $(this).attr('aria-expanded', 'false');
-        }
-        else{
-            $(gadgetWrapper).addClass('btn-dropdown-menu-open');
-            $(this).attr('aria-expanded', 'true');
-        }
+    $('.date-shortcuts').on('show.bs.dropdown', function(e){
+        wso2.gadgets.controls.resizeGadget({
+            height: "180px"
+        });
+    });
+    
+    $('.date-shortcuts').on('hide.bs.dropdown', function(e){
+        wso2.gadgets.controls.restoreGadget();
     });
 
 });
@@ -161,24 +165,4 @@ $(window).resize(function() {
         $(gadgetWrapper).removeClass('btn-dropdown-menu-open');
         $('#btnDropdown').attr('aria-expanded', 'false');
     }
-});
-
-$(window).load(function() {
-    var datePicker = $('.daterangepicker'),
-        dropdown = $('ul.dropdown-menu');
-    
-    $('body').click(function(e){
-        if ((!dropdown.is(e.target) && dropdown.has(e.target).length === 0)
-            && (!$('#btnDropdown').is(e.target) && $('#btnDropdown').has(e.target).length === 0)) {
-                $(gadgetWrapper).removeClass('btn-dropdown-menu-open');
-                $('#btnDropdown').attr('aria-expanded', 'false');
-        }
-    });
-
-    $('head', parentWindow).append('<link rel="stylesheet" type="text/css" href="' + resolveURI + 'store/carbon.super/fs/gadget/Date_Range_Picker/css/daterangepicker.css" />');
-    $('body', parentWindow).append('<script src="' + resolveURI + 'store/carbon.super/fs/gadget/Date_Range_Picker/js/daterangepicker.js" type="text/javascript"></script>');
-    $(gadgetWrapper).append(datePicker);
-    $(gadgetWrapper).append(dropdown);
-    $(gadgetWrapper).closest('.ues-component-box').addClass('widget form-control-widget');
-    $('body').addClass('widget');
 });
