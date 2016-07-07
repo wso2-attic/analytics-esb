@@ -101,15 +101,6 @@ body.widget {
 }
 
 /* Dark Theme Styles */
-body.dark .tt-hint {
-    background: transparent !important;
-}
-
-body.dark .tt-input {
-    border: 1px solid #6B7992  !important;
-    color: #E3E5E6;
-}
-
 body.dark .form-control-btn {
     color: #E3E5E6;
 }
