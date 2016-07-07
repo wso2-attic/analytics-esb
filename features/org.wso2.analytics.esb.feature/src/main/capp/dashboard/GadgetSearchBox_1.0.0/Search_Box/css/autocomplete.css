@@ -12,10 +12,15 @@
     color: #438cad;
 }
 
+body.dark .tt-menu {
+    background-color: #1E2531;
+    color: #E3E5E6;
+    border: 1px solid #6B7992;
+}
+
 .tt-menu {
     background-color: #fff;
     color: #1E2531;
-    margin: -15px 0 0 15px;
     outline: 0;
     border: 1px solid #ccc;
     right: 0;
@@ -42,10 +47,23 @@
     cursor: pointer;
 }
 
+body.dark .tt-suggestion.tt-selectable:hover {
+    color: #1E2531;
+}
+
 .form-group {
     margin-bottom: 0;
 }
 
 pre {
     display: none;
+}
+
+body.dark .tt-hint {
+    background: transparent !important;
+}
+
+body.dark .tt-input {
+    border: 1px solid #6B7992  !important;
+    color: #E3E5E6;
 }
