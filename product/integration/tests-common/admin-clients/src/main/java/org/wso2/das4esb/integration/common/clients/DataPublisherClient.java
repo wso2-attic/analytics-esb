@@ -32,7 +32,7 @@ public class DataPublisherClient {
     private static final String USERNAME = "admin";
     private static final String PASSWORD = "admin";
     //FIXME: remove hardcoding
-    private static final String URL = "tcp://localhost:8311";
+    private static final String URL = "tcp://localhost:9511";
     private DataPublisher dataPublisher;
 
     public DataPublisherClient(String url) throws Exception {
