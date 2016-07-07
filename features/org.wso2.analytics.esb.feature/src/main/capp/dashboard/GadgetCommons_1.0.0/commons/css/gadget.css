@@ -10,6 +10,7 @@ body.dark {
 
 body.widget {
     background: transparent;
+    overflow: hidden;
 }
 
 .col-1,
@@ -111,25 +112,6 @@ body.dark .tt-input {
 
 body.dark .form-control-btn {
     color: #E3E5E6;
-}
-
-body.dark #date-select .btn-default {
-    background: #636C7C;
-    color: #fff;
-    border-color: #353C48;
-}
-
-body.dark #date-select .btn-default:hover, body.dark #date-select .btn-default[aria-expanded=true] {
-    background: #1E2531;
-}
-
-#date-select .btn-default[aria-expanded=true] {
-    background: #e6e6e6;
-}
-
-body.dark #date-select .btn-default.active, body.dark #date-select .btn-default.active:hover {
-    background: #438CAD;
-    border-color: #353C48;
 }
 
 body.dark .stats {
