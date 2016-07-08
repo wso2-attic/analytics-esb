@@ -161,7 +161,7 @@ function onChartZoomed(data) {
 };
 
 $(window).resize(function() {
-    if(($('body').attr('media-screen') == 'md') || ($('body').attr('media-screen') == 'lg')){
+    if(($('body').attr('media-screen') == 'md') || ($('body').attr('media-screen') == 'lg') || ($('body').attr('media-screen') == 'sm')){
         $(gadgetWrapper).removeClass('btn-dropdown-menu-open');
         $('#btnDropdown').attr('aria-expanded', 'false');
     }
