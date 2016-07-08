@@ -1,7 +1,7 @@
 {
   "id": "Date_Range_Picker",
   "title": "Date Range Picker",
-  "type": "gadget",
+  "type": "widget",
   "category": "Widgets",
   "thumbnail": "store://gadget/Date_Range_Picker/index.png",
   "data": {
