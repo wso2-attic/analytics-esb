@@ -199,7 +199,6 @@ public class ESBAnalyticsStatisticsTestCase extends DASIntegrationBaseTest {
     
     @AfterClass(alwaysRun = true, groups = "wso2.das4esb.publishing")
     public void cleanUpTables() throws Exception {
-        Thread.sleep(1000*60*60*2);
         restartAndCleanUpTables(120000);
     }
     
