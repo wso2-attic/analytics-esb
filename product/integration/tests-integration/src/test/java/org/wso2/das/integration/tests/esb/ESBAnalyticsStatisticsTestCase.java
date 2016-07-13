@@ -251,7 +251,7 @@ public class ESBAnalyticsStatisticsTestCase extends DASIntegrationBaseTest {
             aggregateRequest.setTableName(table);
             AnalyticsIterator<Record> resultItr = this.analyticsDataAPI.searchWithAggregates(username, aggregateRequest);
             int count = ((Double) resultItr.next().getValue(TestConstants.REQUEST_COUNT)).intValue();
-            log.info("ComponentId: " + TestConstants.COMPONENT_ID + " | Expected: " + expectedCount + " | " + "Actual: "
+            log.info("ComponentId: " + componentId + " | Expected: " + expectedCount + " | " + "Actual: "
                     + count + " | user: " + username);
             Assert.assertEquals(count, expectedCount, aggregateAttribute + " is incorrect in " + table + 
                     " table, for user: " + username);
