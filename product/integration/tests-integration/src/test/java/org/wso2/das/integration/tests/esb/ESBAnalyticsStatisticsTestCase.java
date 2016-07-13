@@ -36,18 +36,17 @@ import org.wso2.carbon.analytics.datasource.commons.AnalyticsIterator;
 import org.wso2.carbon.analytics.datasource.commons.Record;
 import org.wso2.carbon.analytics.datasource.commons.exception.AnalyticsException;
 import org.wso2.carbon.analytics.spark.admin.stub.AnalyticsProcessorAdminServiceStub;
-import org.wso2.das.integration.common.utils.DASIntegrationTest;
 import org.wso2.das.integration.common.utils.TestConstants;
+import org.wso2.das.integration.tests.DASIntegrationBaseTest;
 import org.wso2.das4esb.integration.common.clients.ConcurrentEventsPublisher;
 import org.wso2.das4esb.integration.common.clients.DataPublisherClient;
 
 /**
  * Class contains test cases related to statistics
  */
-public class ESBAnalyticsStatisticsTestCase extends DASIntegrationTest {
+public class ESBAnalyticsStatisticsTestCase extends DASIntegrationBaseTest {
     
     protected static final Log log = LogFactory.getLog(ESBAnalyticsStatisticsTestCase.class);
-    private DataPublisherClient dataPublisherClient;
     private static final int TOTAL_REQUESTS_PER_PROXY = 50000;
     private static final int NUMBER_OF_PROXIES = 5;
     private static final int NUMBER_OF_MEDIATORS = 10;
@@ -61,22 +60,14 @@ public class ESBAnalyticsStatisticsTestCase extends DASIntegrationTest {
     
     @BeforeClass(groups = "wso2.das4esb.stats", alwaysRun = true)
     protected void init() throws Exception {
-        log.info("Start publishing events");
         super.init();
-        this.dataPublisherClient = new DataPublisherClient();
-        // Publish events for five proxies simultaneously
-        ExecutorService executorService = Executors.newFixedThreadPool(NUMBER_OF_PROXIES);
-        for (int i = 0; i < NUMBER_OF_PROXIES; i++) {
-            executorService.execute(new ConcurrentEventsPublisher(this.dataPublisherClient, TOTAL_REQUESTS_PER_PROXY,
-                    "AccuracyTestProxy_" + i, NUMBER_OF_MEDIATORS, NUMBER_OF_FAULTS, ENABLE_PAYLOADS, 
-                    ENABLE_PROPERTIES, SLEEP_BETWEEN_REQUESTS));
-        }
-        executorService.shutdown();
-        executorService.awaitTermination(WAIT_FOR_PUBLISHING_IN_MINUTES, TimeUnit.MINUTES);
-        
+        log.info("Deploying CApp for tenants");
+        deployCarbonAppForTenants(TestConstants.REALTIME_TENANT_CAPP, TestConstants.TENANTS);
+        log.info("Publishing events");
+        publishSampleData(NUMBER_OF_PROXIES, TOTAL_REQUESTS_PER_PROXY, NUMBER_OF_MEDIATORS, NUMBER_OF_FAULTS,
+                ENABLE_PAYLOADS, ENABLE_PROPERTIES, TestConstants.TENANTS);
         log.info("Publishing complete. Waiting for indexing...");
         Thread.sleep(WAIT_FOR_INDEXING);
-        
         log.info("Indexing complete. Executing the spark scripts...");
         AnalyticsProcessorAdminServiceStub analyticsStub = getAnalyticsProcessorStub();
         analyticsStub.executeScript("esb_stat_analytics");
@@ -88,37 +79,32 @@ public class ESBAnalyticsStatisticsTestCase extends DASIntegrationTest {
     
     @Test(groups = "wso2.das4esb.stats", description = "Test total invocation counts in per-second table")
     public void testSecondTableTotalCount() throws Exception {
-        int count = getCounts(TestConstants.ESB_STAT_PER_SECOND_ALL_TABLE, TestConstants.NUMBER_OF_INVOCATION, "ALL");
-        Assert.assertEquals(count, TOTAL_REQUESTS_PER_PROXY*NUMBER_OF_PROXIES, "Total invocation count is incorrect" +
-                " in per-second table.");
+        testCounts(TestConstants.ESB_STAT_PER_SECOND_ALL_TABLE, TestConstants.NUMBER_OF_INVOCATION, "ALL",
+            TOTAL_REQUESTS_PER_PROXY * NUMBER_OF_PROXIES);
     }
     
     @Test(groups = "wso2.das4esb.stats", description = "Test total invocation counts in per-minute table")
     public void testMinuteTableTotalCount() throws Exception {
-        int count = getCounts(TestConstants.ESB_STAT_PER_MINUTE_ALL_TABLE, TestConstants.NUMBER_OF_INVOCATION, "ALL");
-        Assert.assertEquals(count, TOTAL_REQUESTS_PER_PROXY*NUMBER_OF_PROXIES, "Total invocation count is incorrect" +
-                " in per-minute table.");
+        testCounts(TestConstants.ESB_STAT_PER_MINUTE_ALL_TABLE, TestConstants.NUMBER_OF_INVOCATION, "ALL",
+            TOTAL_REQUESTS_PER_PROXY * NUMBER_OF_PROXIES);
     }
     
     @Test(groups = "wso2.das4esb.stats", description = "Test total invocation counts in per-hour table")
     public void testHourTableTotalCount() throws Exception {
-        int count = getCounts(TestConstants.ESB_STAT_PER_HOUR_TABLE, TestConstants.NUMBER_OF_INVOCATION, "ALL");
-        Assert.assertEquals(count, TOTAL_REQUESTS_PER_PROXY*NUMBER_OF_PROXIES, "Total invocation count is incorrect" +
-                " in per-hour table.");
+        testCounts(TestConstants.ESB_STAT_PER_HOUR_TABLE, TestConstants.NUMBER_OF_INVOCATION, "ALL",
+            TOTAL_REQUESTS_PER_PROXY * NUMBER_OF_PROXIES);
     }
     
     @Test(groups = "wso2.das4esb.stats", description = "Test total invocation counts in per-day table")
     public void testDayTableTotalCount() throws Exception {
-        int count = getCounts(TestConstants.ESB_STAT_PER_DAY_TABLE, TestConstants.NUMBER_OF_INVOCATION, "ALL");
-        Assert.assertEquals(count, TOTAL_REQUESTS_PER_PROXY*NUMBER_OF_PROXIES, "Total invocation count is incorrect" +
-                " in per-day table.");
+        testCounts(TestConstants.ESB_STAT_PER_DAY_TABLE, TestConstants.NUMBER_OF_INVOCATION, "ALL",
+            TOTAL_REQUESTS_PER_PROXY * NUMBER_OF_PROXIES);
     }
     
     @Test(groups = "wso2.das4esb.stats", description = "Test total invocation counts in per-month table")
     public void testMonthTableTotalCount() throws Exception {
-        int count = getCounts(TestConstants.ESB_STAT_PER_MONTH_TABLE, TestConstants.NUMBER_OF_INVOCATION, "ALL");
-        Assert.assertEquals(count, TOTAL_REQUESTS_PER_PROXY*NUMBER_OF_PROXIES, "Total invocation count is incorrect" +
-                " in per-month table.");
+        testCounts(TestConstants.ESB_STAT_PER_MONTH_TABLE, TestConstants.NUMBER_OF_INVOCATION, "ALL",
+                TOTAL_REQUESTS_PER_PROXY * NUMBER_OF_PROXIES);
     }
     
     
@@ -154,37 +140,32 @@ public class ESBAnalyticsStatisticsTestCase extends DASIntegrationTest {
     
     @Test(groups = "wso2.das4esb.stats", description = "Test total faults count in per-second table")
     public void testSecondTableTotalErrorCount() throws Exception {
-        int count = getCounts(TestConstants.ESB_STAT_PER_SECOND_ALL_TABLE, TestConstants.FAULT_COUNT, "ALL");
-        Assert.assertEquals(count, NUMBER_OF_FAULTS*NUMBER_OF_PROXIES, "Total faults count is incorrect" +
-                " in per-second table.");
+        testCounts(TestConstants.ESB_STAT_PER_SECOND_ALL_TABLE, TestConstants.FAULT_COUNT, "ALL", NUMBER_OF_FAULTS *
+            NUMBER_OF_PROXIES);
     }
     
     @Test(groups = "wso2.das4esb.stats", description = "Test total faults count in per-minute table")
     public void testMinuteTableTotalErrorCount() throws Exception {
-        int count = getCounts(TestConstants.ESB_STAT_PER_MINUTE_ALL_TABLE, TestConstants.FAULT_COUNT, "ALL");
-        Assert.assertEquals(count, NUMBER_OF_FAULTS*NUMBER_OF_PROXIES, "Total faults count is incorrect" +
-                " in per-minute table.");
+        testCounts(TestConstants.ESB_STAT_PER_MINUTE_ALL_TABLE, TestConstants.FAULT_COUNT, "ALL", NUMBER_OF_FAULTS *
+            NUMBER_OF_PROXIES);
     }
     
     @Test(groups = "wso2.das4esb.stats", description = "Test total faults count in per-hour table")
     public void testHourTableTotalErrorCount() throws Exception {
-        int count = getCounts(TestConstants.ESB_STAT_PER_HOUR_TABLE, TestConstants.FAULT_COUNT, "ALL");
-        Assert.assertEquals(count, NUMBER_OF_FAULTS*NUMBER_OF_PROXIES, "Total faults count is incorrect" +
-                " in per-hour table.");
+        testCounts(TestConstants.ESB_STAT_PER_HOUR_TABLE, TestConstants.FAULT_COUNT, "ALL", NUMBER_OF_FAULTS *
+            NUMBER_OF_PROXIES);
     }
     
     @Test(groups = "wso2.das4esb.stats", description = "Test total faults count in per-day table")
     public void testDayTableTotalErrorCount() throws Exception {
-        int count = getCounts(TestConstants.ESB_STAT_PER_DAY_TABLE, TestConstants.FAULT_COUNT, "ALL");
-        Assert.assertEquals(count, NUMBER_OF_FAULTS*NUMBER_OF_PROXIES, "Total faults count is incorrect" +
-                " in per-day table.");
+        testCounts(TestConstants.ESB_STAT_PER_DAY_TABLE, TestConstants.FAULT_COUNT, "ALL", NUMBER_OF_FAULTS *
+            NUMBER_OF_PROXIES);
     }
     
     @Test(groups = "wso2.das4esb.stats", description = "Test total faults count in per-month table")
     public void testMonthTableTotalErrorCount() throws Exception {
-        int count = getCounts(TestConstants.ESB_STAT_PER_MONTH_TABLE, TestConstants.FAULT_COUNT, "ALL");
-        Assert.assertEquals(count, NUMBER_OF_FAULTS*NUMBER_OF_PROXIES, "Total fault scount is incorrect" +
-                " in per-month table.");
+        testCounts(TestConstants.ESB_STAT_PER_MONTH_TABLE, TestConstants.FAULT_COUNT, "ALL", NUMBER_OF_FAULTS *
+                NUMBER_OF_PROXIES);
     }
     
     
@@ -218,35 +199,68 @@ public class ESBAnalyticsStatisticsTestCase extends DASIntegrationTest {
     
     @AfterClass(alwaysRun = true, groups = "wso2.das4esb.publishing")
     public void cleanUpTables() throws Exception {
+        Thread.sleep(1000*60*60*2);
         restartAndCleanUpTables(120000);
     }
     
     
     /**
-     * Get the total number of invocations from a given table
+     * Publish sample data for tenants
      * 
-     * @param table Table Name
-     * @return      Invocation Count
-     * @throws      AnalyticsException
+     * @param tenants
+     * @throws Exception
      */
-    private int getCounts(String table, String aggregateAttribute, String componentId) throws AnalyticsException {
-        List<AggregateField> fields = new ArrayList<AggregateField>();
-        fields.add(new AggregateField(new String[] { aggregateAttribute }, "sum", TestConstants.REQUEST_COUNT));
-        AggregateRequest aggregateRequest = new AggregateRequest();
-        aggregateRequest.setFields(fields);
-        aggregateRequest.setAggregateLevel(0);
-        aggregateRequest.setParentPath(new ArrayList<String>());
-        aggregateRequest.setGroupByField(TestConstants.COMPONENT_ID);
-        aggregateRequest.setQuery(TestConstants.COMPONENT_ID + ":\"" + componentId + "\"");
-        aggregateRequest.setTableName(table);
-        AnalyticsIterator<Record> resultItr = this.analyticsDataAPI.searchWithAggregates(-1234, 
-                aggregateRequest);
-        return ((Double) resultItr.next().getValue(TestConstants.REQUEST_COUNT)).intValue();
+    private void publishSampleData(int noOfProxies, int requestsPerProxy, int noOfMediators, int NoOfFaults, 
+                boolean enablePayloads, boolean enableProperties, String [][] tenants) throws Exception {
+        ExecutorService executorService = Executors.newFixedThreadPool(noOfProxies * tenants.length);
+        for (String[] tenant: tenants) {
+            for (int i = 0; i < noOfProxies; i++) {
+                String username = tenant[0] + "@" + tenant[1];
+                DataPublisherClient  dataPublisherClient = new DataPublisherClient(username, tenant[0]);
+                executorService.execute(new ConcurrentEventsPublisher(dataPublisherClient, requestsPerProxy,
+                        "AccuracyTestProxy_" + i, noOfMediators, NoOfFaults, enablePayloads, 
+                        enableProperties, SLEEP_BETWEEN_REQUESTS));
+            }
+        }
+        executorService.shutdown();
+        executorService.awaitTermination(WAIT_FOR_PUBLISHING_IN_MINUTES, TimeUnit.MINUTES);
     }
     
     
     /**
-     * Check the total number of invocations in all the medaitors in a given table
+     * Test counts in a given table
+     * 
+     * @param table                 Table name               
+     * @param aggregateAttribute    Aggregate attribute
+     * @param componentId           Component ID
+     * @param expectedCount         Expected count
+     * @throws AnalyticsException
+     */
+    private void testCounts(String table, String aggregateAttribute, String componentId, int expectedCount) 
+                throws AnalyticsException {
+        for (String[] tenant: TestConstants.TENANTS) {
+            String username = tenant[0] + "@" + tenant[1];
+            List<AggregateField> fields = new ArrayList<AggregateField>();
+            fields.add(new AggregateField(new String[] { aggregateAttribute }, "sum", TestConstants.REQUEST_COUNT));
+            AggregateRequest aggregateRequest = new AggregateRequest();
+            aggregateRequest.setFields(fields);
+            aggregateRequest.setAggregateLevel(0);
+            aggregateRequest.setParentPath(new ArrayList<String>());
+            aggregateRequest.setGroupByField(TestConstants.COMPONENT_ID);
+            aggregateRequest.setQuery(TestConstants.COMPONENT_ID + ":\"" + componentId + "\"");
+            aggregateRequest.setTableName(table);
+            AnalyticsIterator<Record> resultItr = this.analyticsDataAPI.searchWithAggregates(username, aggregateRequest);
+            int count = ((Double) resultItr.next().getValue(TestConstants.REQUEST_COUNT)).intValue();
+            log.info("ComponentId: " + TestConstants.COMPONENT_ID + " | Expected: " + expectedCount + " | " + "Actual: "
+                    + count + " | user: " + username);
+            Assert.assertEquals(count, expectedCount, aggregateAttribute + " is incorrect in " + table + 
+                    " table, for user: " + username);
+        }
+    }
+    
+    
+    /**
+     * Check the total number of invocations in all the mediators in a given table
      * 
      * @param table Table Name
      * @throws      AnalyticsException
@@ -258,16 +272,15 @@ public class ESBAnalyticsStatisticsTestCase extends DASIntegrationTest {
             for (int mediatorNumber = 1; mediatorNumber <= NUMBER_OF_MEDIATORS; mediatorNumber++) {
                 String mediatorId = "AccuracyTestProxy_" + proxyNumber + "@" + mediatorNumber + ":mediator_" + 
                         mediatorNumber;
-                int count = getCounts(table, TestConstants.NUMBER_OF_INVOCATION, mediatorId);
-                Assert.assertEquals(count, TOTAL_REQUESTS_PER_PROXY, "Invocation count is incorrect for mediator: " +
-                        mediatorId + " in " + table + " table.");
+                testCounts(table, TestConstants.NUMBER_OF_INVOCATION, mediatorId, TOTAL_REQUESTS_PER_PROXY);
             }
             log.info("AccuracyTestProxy_" + proxyNumber + ": All mediators: Ok");
         }
     }
     
+    
     /**
-     * Check the total number of faults in all the medaitors in a given table
+     * Check the total number of faults in all the mediators in a given table
      * 
      * @param table     Table Name
      * @throws          AnalyticsException
@@ -282,9 +295,7 @@ public class ESBAnalyticsStatisticsTestCase extends DASIntegrationTest {
                 }
                 String mediatorId = "AccuracyTestProxy_" + proxyNumber + "@" + mediatorNumber + ":mediator_" + 
                         mediatorNumber;
-                int count = getCounts(table, TestConstants.FAULT_COUNT, mediatorId);
-                Assert.assertEquals(count, expectedFaultCount, "Fault count is incorrect for " + mediatorId + 
-                        " in per-minute table.");
+                testCounts(table, TestConstants.FAULT_COUNT, mediatorId, expectedFaultCount);
             }
             log.info("AccuracyTestProxy_" + proxyNumber + ": All mediators: Ok");
         }

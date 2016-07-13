@@ -20,6 +20,8 @@ package org.wso2.das4esb.integration.common.clients;
 
 import java.util.UUID;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.joda.time.DateTime;
 import org.wso2.carbon.databridge.agent.exception.DataEndpointException;
 import org.wso2.carbon.databridge.commons.Event;
@@ -36,6 +38,7 @@ public class ConcurrentEventsPublisher implements Runnable {
     private boolean propertiesEnabled;
     private int sleepBetweenRequests;
     private int noOfFaults;
+    private static final Log log = LogFactory.getLog(ConcurrentEventsPublisher.class);
     
     public ConcurrentEventsPublisher(DataPublisherClient dataPublisherClient, int noOfRequests, String entryPointName,
             int noOfMediators, int noOfFaults, boolean payloadsEnabled, boolean propertiesEnabled, int sleepBetweenRequests) {
@@ -53,6 +56,7 @@ public class ConcurrentEventsPublisher implements Runnable {
     public void run() {
         Object[] metaData = { true };
         int sentFaults = 0;
+        int publishedRequests = 0;
         // Publish events
         try {
             for (int j = 0 ; j < this.noOfRequests ; j++) {
@@ -102,12 +106,14 @@ public class ConcurrentEventsPublisher implements Runnable {
                 }
                 // sleep to control the throughput
                 Thread.sleep(this.sleepBetweenRequests);
+                publishedRequests++;
             }
         } catch (DataEndpointException e) {
             throw new RuntimeException("Falied to publish event: " + e.getMessage(), e);
         } catch (InterruptedException ignored) {
         } finally {
             try {
+                log.info("Published: " + publishedRequests + " events to: " + entryPointName);
                 if (this.dataPublisherClient != null) {
                     Thread.sleep(60000);
                     this.dataPublisherClient.shutdown();
@@ -116,5 +122,4 @@ public class ConcurrentEventsPublisher implements Runnable {
             }
         }
     }
-
 }

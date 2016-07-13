@@ -18,15 +18,6 @@
 
 package org.wso2.das.integration.common.utils;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.wso2.carbon.analytics.spark.core.util.AnalyticsConstants;
-import org.wso2.carbon.analytics.spark.core.util.PublishingPayload;
-import org.wso2.carbon.automation.test.utils.http.client.HttpResponse;
-
-import com.esotericsoftware.kryo.Kryo;
-import com.esotericsoftware.kryo.io.Output;
-
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -42,6 +33,15 @@ import java.util.zip.GZIPOutputStream;
 
 import javax.xml.bind.DatatypeConverter;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.wso2.carbon.analytics.spark.core.util.AnalyticsConstants;
+import org.wso2.carbon.analytics.spark.core.util.PublishingPayload;
+import org.wso2.carbon.automation.test.utils.http.client.HttpResponse;
+
+import com.esotericsoftware.kryo.Kryo;
+import com.esotericsoftware.kryo.io.Output;
+
 /**
  *   Class contains the utility methods required by integration tests
  */
@@ -50,8 +50,7 @@ public class Utils {
     private static final Log logger = LogFactory.getLog(Utils.class);
 
     //use this method since HttpRequestUtils.doGet does not support HTTPS.
-    public static HttpResponse doGet(String endpoint, Map<String, String> headers) throws
-                                                                                   IOException {
+    public static HttpResponse doGet(String endpoint, Map<String, String> headers) throws IOException {
         HttpResponse httpResponse;
         URL url = new URL(endpoint);
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
@@ -115,7 +114,6 @@ public class Utils {
         ArrayList<List<Object>> eventsList = new ArrayList<List<Object>>();
         ArrayList<PublishingPayload> payloadsList = new ArrayList<PublishingPayload>();
         Map<Integer, List<Integer>> eventList  = new HashMap<Integer, List<Integer>>();
-        
         for (int i = 0 ; i <= noOfMediators ; i++) {
             List<Object> singleEvent = new ArrayList<Object>();
             //messageID
@@ -166,14 +164,12 @@ public class Utils {
                 singleEvent.add(null);
                 singleEvent.add(null);
             }
-            
             //children
             if (i != noOfMediators) {
                 singleEvent.add(Arrays.toString(new int[]{i+1}));
             } else {
                 singleEvent.add(null);
             }
-            
             //entry point
             singleEvent.add(proxyName);
             //entry point hash code
@@ -184,17 +180,14 @@ public class Utils {
             } else {
                 singleEvent.add(0);
             }
-            
             //hash code
             singleEvent.add("1241186573" + i);
-            
             eventsList.add(singleEvent);
             List<Integer> attributeIndices = new ArrayList<Integer>();
             attributeIndices.add(8);
             attributeIndices.add(9);
             eventList.put(i , attributeIndices);
         }
-       
         // Add payloads, if enabled
         if (payloadsEnabled) {
             PublishingPayload publishingPayload = new PublishingPayload();
@@ -202,11 +195,9 @@ public class Utils {
             publishingPayload.setPayload("<?xml version='1.0' encoding='utf-8'?><soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:sam=\"http://sample.esb.org\"><soapenv:Body><sam:renewLicense><sam:vehicleNumber>aaaaa</sam:vehicleNumber><sam:insurancePolicy>-2081631303</sam:insurancePolicy><sam:ecoCert>311989168</sam:ecoCert></sam:renewLicense></soapenv:Body></soapenv:Envelope>");
             payloadsList.add(publishingPayload);
         }
-        
         flowMap.put("host", "localhost");
         flowMap.put(AnalyticsConstants.EVENTS_ATTRIBUTE, eventsList);
         flowMap.put(AnalyticsConstants.PAYLOADS_ATTRIBUTE, payloadsList);
-        
         ByteArrayOutputStream out = kryoSerialize(flowMap);
         return compress(out);
     }
@@ -238,12 +229,12 @@ public class Utils {
     
     
     /**
-     * Compress a byte array stream with gzip, and encode with Base64
+     * Compress a byte array stream with gzip, and encode with Base64.
      * 
      * @param out   Byte array stream to be compressed
      * @return      Base64 encoded string of the compressed byte array 
      */
-    private static String compress (ByteArrayOutputStream out) {
+    private static String compress(ByteArrayOutputStream out) {
         ByteArrayOutputStream gzipOut = new ByteArrayOutputStream();
         GZIPOutputStream gzip = null;
         try {

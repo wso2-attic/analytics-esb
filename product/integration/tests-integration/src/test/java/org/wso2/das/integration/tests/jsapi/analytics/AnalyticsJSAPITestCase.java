@@ -37,7 +37,7 @@ import org.wso2.carbon.integration.common.admin.client.LogViewerClient;
 import org.wso2.carbon.logging.view.stub.types.carbon.LogEvent;
 import org.wso2.das.analytics.rest.beans.QueryBean;
 import org.wso2.das4esb.integration.common.clients.EventStreamPersistenceClient;
-import org.wso2.das.integration.common.utils.DASIntegrationTest;
+import org.wso2.das.integration.tests.DASIntegrationBaseTest;
 import org.wso2.das.integration.common.utils.TestConstants;
 import org.wso2.das.integration.common.utils.Utils;
 
@@ -49,7 +49,7 @@ import java.util.Map;
 /**
  * This class contains integration tests for Javascript analytics API
  */
-public class AnalyticsJSAPITestCase extends DASIntegrationTest {
+public class AnalyticsJSAPITestCase extends DASIntegrationBaseTest {
     private static final int ONE_HOUR_IN_MILLISECONDS = 3600000;
     private Log log = LogFactory.getLog(AnalyticsJSAPITestCase.class);
     public static final String STREAM_NAME = "superTenantSampleStream";
