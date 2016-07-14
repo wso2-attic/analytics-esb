@@ -115,7 +115,7 @@ public class ConcurrentEventsPublisher implements Runnable {
             try {
                 log.info("Published: " + publishedRequests + " events to: " + entryPointName);
                 if (this.dataPublisherClient != null) {
-                    Thread.sleep(60000);
+                    Thread.sleep(20000);
                     this.dataPublisherClient.shutdown();
                 }
             } catch (Exception ignored) {

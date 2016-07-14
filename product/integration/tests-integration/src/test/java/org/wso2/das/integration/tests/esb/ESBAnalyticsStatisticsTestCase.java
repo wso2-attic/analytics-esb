@@ -53,9 +53,9 @@ public class ESBAnalyticsStatisticsTestCase extends DASIntegrationBaseTest {
     private static final int NUMBER_OF_FAULTS = 20;
     private static final boolean ENABLE_PAYLOADS = false;
     private static final boolean ENABLE_PROPERTIES = false;
-    private static final int SLEEP_BETWEEN_REQUESTS = 12;
-    private static final int WAIT_FOR_PUBLISHING_IN_MINUTES = 12;
-    private static final int WAIT_FOR_INDEXING = 120000;
+    private static final int SLEEP_BETWEEN_REQUESTS = 6;
+    private static final int WAIT_FOR_PUBLISHING_IN_MINUTES = 6;
+    private static final int WAIT_FOR_INDEXING = 60000;
     private static final int WAIT_FOR_SPARK_SCRIPT = 60000;
     
     @BeforeClass(groups = "wso2.das4esb.stats", alwaysRun = true)
@@ -214,7 +214,12 @@ public class ESBAnalyticsStatisticsTestCase extends DASIntegrationBaseTest {
         ExecutorService executorService = Executors.newFixedThreadPool(noOfProxies * tenants.length);
         for (String[] tenant: tenants) {
             for (int i = 0; i < noOfProxies; i++) {
-                String username = tenant[0] + "@" + tenant[1];
+                String username;
+                if (tenant[1].equals("carbon.super")) {
+                    username = tenant[0];
+                } else {
+                    username = tenant[0] + "@" + tenant[1];
+                }
                 DataPublisherClient  dataPublisherClient = new DataPublisherClient(username, tenant[0]);
                 executorService.execute(new ConcurrentEventsPublisher(dataPublisherClient, requestsPerProxy,
                         "AccuracyTestProxy_" + i, noOfMediators, NoOfFaults, enablePayloads, 
@@ -238,7 +243,12 @@ public class ESBAnalyticsStatisticsTestCase extends DASIntegrationBaseTest {
     private void testCounts(String table, String aggregateAttribute, String componentId, int expectedCount) 
                 throws AnalyticsException {
         for (String[] tenant: TestConstants.TENANTS) {
-            String username = tenant[0] + "@" + tenant[1];
+            String username;
+            if (tenant[1].equals("carbon.super")) {
+                username = tenant[0];
+            } else {
+                username = tenant[0] + "@" + tenant[1];
+            }
             List<AggregateField> fields = new ArrayList<AggregateField>();
             fields.add(new AggregateField(new String[] { aggregateAttribute }, "sum", TestConstants.REQUEST_COUNT));
             AggregateRequest aggregateRequest = new AggregateRequest();

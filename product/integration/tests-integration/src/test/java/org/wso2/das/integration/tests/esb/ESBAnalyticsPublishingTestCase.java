@@ -44,7 +44,12 @@ public class ESBAnalyticsPublishingTestCase extends DASIntegrationBaseTest {
     @Test(groups = "wso2.das4esb.publishing", description = "Test Publishing configs")
     public void testPublishingConfigs() throws Exception {
         for (String[] tenant: TestConstants.TENANTS) {
-            String username = tenant[0] + "@" + tenant[1];
+            String username;
+            if (tenant[1].equals("carbon.super")) {
+                username = tenant[0];
+            } else {
+                username = tenant[0] + "@" + tenant[1];
+            }
             DataPublisherClient  dataPublisherClient = new DataPublisherClient(username, tenant[0]);
             String[] payloadData = new String[3];
             payloadData[0] = "1243212601";
@@ -74,7 +79,12 @@ public class ESBAnalyticsPublishingTestCase extends DASIntegrationBaseTest {
     @Test(groups = "wso2.das4esb.publishing", description = "Test Publishing esb events")
     public void testPublishingEsbEvents() throws Exception {
         for (String[] tenant: TestConstants.TENANTS) {
-            String username = tenant[0] + "@" + tenant[1];
+            String username;
+            if (tenant[1].equals("carbon.super")) {
+                username = tenant[0];
+            } else {
+                username = tenant[0] + "@" + tenant[1];
+            }
             DataPublisherClient  dataPublisherClient = new DataPublisherClient(username, tenant[0]);
             String messageId = "urn_uuid_" + UUID.randomUUID();
             int noOfMediators = 10;

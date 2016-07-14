@@ -49,6 +49,13 @@ public class TestConstants {
     public static final String ESB_CONFIGS_TABLE = "esb-config-entry-stream";
     public static final String ESB_EVENTS_TABLE = "ESB-EVENT";
     
-    public static final String TENANTS[][] = new String[][] { { "admin", "analytics.com" }, { "admin", "wso2.com" } };
+    /* 
+     * List of tenants in the format: { username, tenant-domain, tenantDomainKey }
+     * tenantDomainKey - Key of the tenant define at automation.xml
+     */
+    public static final String TENANTS[][] = new String[][] { { "admin", "carbon.super", "superTenant" }, 
+                                                              { "admin", "analytics.com", "analytics.com" }, 
+                                                              { "admin", "wso2.com", "wso2.com" } };
+    
     public static final String REALTIME_TENANT_CAPP = "org_wso2_analytics_esb_realtime_tenant-1.0.0.car";
 }

@@ -3,8 +3,8 @@
     <URL>http://localhost:11663</URL>
     <Username>admin</Username>
     <Password>admin</Password>
-    <MaxConnections>1000</MaxConnections>
-    <MaxConnectionsPerRoute>1000</MaxConnectionsPerRoute>
+    <MaxConnections>5000</MaxConnections>
+    <MaxConnectionsPerRoute>5000</MaxConnectionsPerRoute>
     <SocketConnectionTimeout>60000</SocketConnectionTimeout>
     <ConnectionTimeout>60000</ConnectionTimeout>
 </AnalyticsDataConfiguration>

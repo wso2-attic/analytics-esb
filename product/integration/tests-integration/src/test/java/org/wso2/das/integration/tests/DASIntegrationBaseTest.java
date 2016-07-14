@@ -52,7 +52,6 @@ public class DASIntegrationBaseTest {
 
     protected static final Log log = LogFactory.getLog(DASIntegrationBaseTest.class);
     private static final String ANALYTICS_SERVICE_NAME = "AnalyticsProcessorAdminService";
-    private static final int STREAM_DEPLOYMENT_DELAY = 10000;
     protected AutomationContext dasServer;
     protected String backendURL;
     protected String webAppURL;
@@ -185,9 +184,8 @@ public class DASIntegrationBaseTest {
     
     
     /**
-     * 
-     * @param CApp          Capp to be deployed
-     * @param tenants       Tenant names and domains
+     * @param CApp          CApp to be deployed
+     * @param tenants       list of tenant names and domains
      * @throws Exception
      */
     public void deployCarbonAppForTenants(String CApp, String [][] tenants) throws Exception {
@@ -195,15 +193,17 @@ public class DASIntegrationBaseTest {
                 File.separator + "capps"  + File.separator + CApp);
         DataHandler carbonAppUrlDataHandler = new DataHandler(carbonAppFileURL);
         for (String[] tenant: tenants) {
-            AutomationContext dasServerCtx = new AutomationContext("DAS", "das001", tenant[1], tenant[0]);
+            AutomationContext dasServerCtx = new AutomationContext("DAS", "das001", tenant[2], tenant[0]);
             LoginLogoutClient loginLogoutClient = new LoginLogoutClient(dasServerCtx);
             String loggedInSessionCookie = loginLogoutClient.login();
             String tenantBackendURL = dasServerCtx.getContextUrls().getBackEndUrl();
             if (!isStreamDeployed(tenantBackendURL, loggedInSessionCookie, TestConstants.ESB_FLOW_ENTRY_STREAM_NAME)) {
-                CarbonAppUploaderClient carbonAppUploaderClient = new CarbonAppUploaderClient(tenantBackendURL, 
-                        loggedInSessionCookie);
-                carbonAppUploaderClient.uploadCarbonAppArtifact(CApp, carbonAppUrlDataHandler);
-                boolean isDeployed = waitForStreamDeployement(tenantBackendURL, loggedInSessionCookie, 
+                if (!tenant[1].equals("carbon.super")) {
+                    CarbonAppUploaderClient carbonAppUploaderClient = new CarbonAppUploaderClient(tenantBackendURL,
+                            loggedInSessionCookie);
+                    carbonAppUploaderClient.uploadCarbonAppArtifact(CApp, carbonAppUrlDataHandler);
+                }
+                boolean isDeployed = waitForStreamDeployement(tenantBackendURL, loggedInSessionCookie,
                         TestConstants.ESB_FLOW_ENTRY_STREAM_NAME);
                 if (isDeployed) {
                     log.info("CApp: " + CApp + " successfully deployed under tenant: " + tenant[1]);
