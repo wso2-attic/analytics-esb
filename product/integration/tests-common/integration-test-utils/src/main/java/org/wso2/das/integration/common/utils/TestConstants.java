@@ -54,8 +54,7 @@ public class TestConstants {
      * tenantDomainKey - Key of the tenant define at automation.xml
      */
     public static final String TENANTS[][] = new String[][] { { "admin", "carbon.super", "superTenant" }, 
-                                                              { "admin", "analytics.com", "analytics.com" }, 
-                                                              { "admin", "wso2.com", "wso2.com" } };
+                                                              { "admin", "analytics.com", "analytics.com" } };
     
     public static final String REALTIME_TENANT_CAPP = "org_wso2_analytics_esb_realtime_tenant-1.0.0.car";
 }
