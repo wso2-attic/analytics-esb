@@ -55,7 +55,7 @@ public class ESBAnalyticsStatisticsTestCase extends DASIntegrationBaseTest {
     private static final boolean ENABLE_PROPERTIES = false;
     private static final int SLEEP_BETWEEN_REQUESTS = 12;
     private static final int WAIT_FOR_PUBLISHING_IN_MINUTES = 12;
-    private static final int WAIT_FOR_INDEXING = 60000;
+    private static final int WAIT_FOR_INDEXING = 120000;
     private static final int WAIT_FOR_SPARK_SCRIPT = 60000;
     
     @BeforeClass(groups = "wso2.das4esb.stats", alwaysRun = true)
