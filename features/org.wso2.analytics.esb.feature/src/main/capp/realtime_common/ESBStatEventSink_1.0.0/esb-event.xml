@@ -95,14 +95,14 @@
             <EnableIndexing>true</EnableIndexing>
             <IsPrimaryKey>false</IsPrimaryKey>
             <EnableScoreParam>false</EnableScoreParam>
-            <Type>FACET</Type>
+            <Type>STRING</Type>
         </ColumnDefinition>
         <ColumnDefinition>
             <Name>afterPayload</Name>
             <EnableIndexing>true</EnableIndexing>
             <IsPrimaryKey>false</IsPrimaryKey>
             <EnableScoreParam>false</EnableScoreParam>
-            <Type>FACET</Type>
+            <Type>STRING</Type>
         </ColumnDefinition>
         <ColumnDefinition>
             <Name>contextPropertyMap</Name>
