@@ -9,8 +9,7 @@
         afterPayload STRING, contextPropertyMap STRING, transportPropertyMap STRING, children STRING, entryPoint
         STRING, entryPointHashcode STRING, faultCount INT, hashCode STRING, host STRING, _tenantId INT, _timestamp LONG -i",
         incrementalProcessing "esbFlowEvent, MINUTE",
-        mergeSchema "false",
-        globalTenantAccess "true");
+        mergeSchema "false");
 
         CREATE TEMPORARY TABLE esbEvent USING CarbonAnalytics
         OPTIONS (tableName "ESB-EVENT",
@@ -20,8 +19,7 @@
         entryPoint FACET -i, entryPointHashcode STRING -i, faultCount INT, _tenantId INT, _timestamp LONG -i",
         primaryKeys "messageFlowId, componentId, componentType, componentIndex",
         incrementalProcessing "esbEvent, MINUTE",
-        mergeSchema "false",
-        globalTenantAccess "true");
+        mergeSchema "false");
 
         INSERT INTO TABLE esbEvent
         SELECT messageFlowId, host, hashCode, componentName, componentType, componentIndex, componentId, startTime,
@@ -39,8 +37,7 @@
          _tenantId INT, _timestamp LONG -i",
         primaryKeys "year, month, day, hour, minute, second, componentId, componentType",
         incrementalProcessing "esbServiceStatPerSecond, MINUTE",
-        mergeSchema "false",
-        globalTenantAccess "true");
+        mergeSchema "false");
 
         INSERT INTO TABLE esbServiceStatPerSecond
         SELECT year, month, day, hour, minute, second, componentId, componentName, componentType, totalDuration,
@@ -68,8 +65,7 @@
         noOfInvocation LONG -sp, faultCount LONG, startTime LONG -i, facetStartTime FACET -i, entryPoint FACET -i,
          _tenantId INT, _timestamp LONG -i",
         primaryKeys "year, month, day, hour, minute, second, componentId, componentType",
-        mergeSchema "false",
-        globalTenantAccess "true");
+        mergeSchema "false");
 
         INSERT INTO TABLE esbServiceStatPerSecondAll
         SELECT year, month, day, hour, minute, second, "ALL", "ALL", "ALL", totalDuration, minDuration, maxDuration,
@@ -95,8 +91,7 @@
          _tenantId INT, _timestamp LONG -i",
         primaryKeys "year, month, day, hour, minute, second, entryPointHashcode, hashCode, componentId, componentType",
         incrementalProcessing "mediatorStatPerSecond, MINUTE",
-        mergeSchema "false",
-        globalTenantAccess "true");
+        mergeSchema "false");
 
         INSERT INTO TABLE mediatorStatPerSecond
         SELECT temp.year, temp.month, temp.day, temp.hour, temp.minute, temp.second, temp.entryPoint,
@@ -125,8 +120,7 @@
         entryPoint FACET -i, _tenantId INT, _timestamp LONG -i",
         primaryKeys "year, month, day, hour, minute, componentId, componentType",
         incrementalProcessing "esbServiceStatPerMinute, HOUR",
-        mergeSchema "false",
-        globalTenantAccess "true");
+        mergeSchema "false");
 
         INSERT INTO TABLE esbServiceStatPerMinute
         SELECT year, month, day, hour, minute, componentId, componentName, componentType,
@@ -145,8 +139,7 @@
         maxDuration LONG, noOfInvocation LONG -sp, faultCount LONG, startTime LONG -i, facetStartTime FACET -i,
         entryPoint FACET -i, _tenantId INT, _timestamp LONG -i",
         primaryKeys "year, month, day, hour, minute, componentId, componentType",
-        mergeSchema "false",
-        globalTenantAccess "true");
+        mergeSchema "false");
 
         INSERT INTO TABLE esbServiceStatPerMinuteAll
         SELECT year, month, day, hour, minute, "ALL", "ALL", "ALL", totalDuration, minDuration, maxDuration,
@@ -173,8 +166,7 @@
         _timestamp LONG -i",
         primaryKeys "year, month, day, hour, minute, entryPointHashcode, hashCode, componentId, componentType",
         incrementalProcessing "mediatorStatPerMinute, HOUR",
-        mergeSchema "false",
-        globalTenantAccess "true");
+        mergeSchema "false");
 
         INSERT INTO TABLE mediatorStatPerMinute
         SELECT year, month, day, hour, minute, entryPoint, entryPointHashcode, componentIndex, componentId, hashCode,
@@ -197,8 +189,7 @@
         _tenantId INT, _timestamp LONG -i",
         primaryKeys "year, month, day, hour, componentId, componentType",
         incrementalParams "esbServiceStatPerHour, DAY",
-        mergeSchema "false",
-        globalTenantAccess "true");
+        mergeSchema "false");
 
         INSERT INTO TABLE esbServiceStatPerHour
         SELECT year, month, day, hour, componentId, componentName, componentType,
@@ -219,8 +210,7 @@
         noOfInvocation LONG -sp, faultCount LONG, startTime LONG -i, facetStartTime FACET -i, entryPoint FACET -i,
         _tenantId INT, _timestamp LONG -i",
         primaryKeys "year, month, day, hour, componentId, componentType",
-        mergeSchema "false",
-        globalTenantAccess "true");
+        mergeSchema "false");
 
         INSERT INTO TABLE esbServiceStatPerHourAll
         SELECT year, month, day, hour, "ALL", "ALL", "ALL", totalDuration, minDuration, maxDuration,
@@ -243,8 +233,7 @@
         facetStartTime FACET -i, _tenantId INT, _timestamp LONG -i",
         primaryKeys "year, month, day, hour, entryPointHashcode, hashCode, componentId, componentType",
         incrementalParams "mediatorStatPerHour, DAY",
-        mergeSchema "false",
-        globalTenantAccess "true");
+        mergeSchema "false");
 
         INSERT INTO TABLE mediatorStatPerHour
         SELECT year, month, day, hour, entryPoint, entryPointHashcode, componentId, hashCode,
@@ -266,8 +255,7 @@
         faultCount LONG, startTime LONG -i, facetStartTime FACET -i, entryPoint FACET -i, _tenantId INT,
          _timestamp LONG -i",
         primaryKeys "year, month, day, componentId, componentType",
-        mergeSchema "false",
-        globalTenantAccess "true");
+        mergeSchema "false");
 
         INSERT INTO TABLE esbServiceStatPerDay
         SELECT year, month, day, componentId, componentName, componentType,
@@ -288,8 +276,7 @@
         faultCount LONG, startTime LONG -i, facetStartTime FACET -i, entryPoint FACET -i, _tenantId INT, 
         _timestamp LONG -i",
         primaryKeys "year, month, day, componentId, componentType",
-        mergeSchema "false",
-        globalTenantAccess "true");
+        mergeSchema "false");
 
         INSERT INTO TABLE esbServiceStatPerDayAll
         SELECT year, month, day, "ALL", "ALL", "ALL", totalDuration, minDuration, maxDuration,
@@ -311,8 +298,7 @@
         LONG, minDuration INT, maxDuration INT, noOfInvocation LONG -sp, faultCount LONG, startTime LONG -i,
         facetStartTime FACET -i, _tenantId INT, _timestamp LONG -i",
         primaryKeys "year, month, day, entryPointHashcode, hashCode, componentId, componentType",
-        mergeSchema "false",
-        globalTenantAccess "true");
+        mergeSchema "false");
 
         INSERT INTO TABLE mediatorStatPerDay
         SELECT year, month, day, entryPoint, entryPointHashcode, componentId, hashCode,
@@ -334,8 +320,7 @@
         faultCount LONG, startTime LONG -i, facetStartTime FACET -i, entryPoint FACET -i, _tenantId INT,
         _timestamp LONG -i",
         primaryKeys "year, month, componentId, componentType",
-        mergeSchema "false",
-        globalTenantAccess "true");
+        mergeSchema "false");
 
         INSERT INTO TABLE esbServiceStatPerMonth
         SELECT year, month, componentId, componentName, componentType, sum(totalDuration) as totalDuration,
@@ -354,8 +339,7 @@
         faultCount LONG, startTime LONG -i, facetStartTime FACET -i, entryPoint FACET -i, _tenantId INT,
         _timestamp LONG -i",
         primaryKeys "year, month, componentId, componentType",
-        mergeSchema "false",
-        globalTenantAccess "true");
+        mergeSchema "false");
 
         INSERT INTO TABLE esbServiceStatPerMonthAll
         SELECT year, month, "ALL", "ALL", "ALL", totalDuration, minDuration, maxDuration,
@@ -377,8 +361,7 @@
         minDuration INT, maxDuration INT, noOfInvocation LONG -sp, faultCount LONG, startTime LONG -i,
         facetStartTime FACET -i, _tenantId INT, _timestamp LONG -i",
         primaryKeys "year, month, entryPointHashcode, hashCode, componentId, componentType",
-        mergeSchema "false",
-        globalTenantAccess "true");
+        mergeSchema "false");
 
         INSERT INTO TABLE mediatorStatPerMonth
         SELECT year, month, entryPoint, entryPointHashcode, componentId, hashCode,
