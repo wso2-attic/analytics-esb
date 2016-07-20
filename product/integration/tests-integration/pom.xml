@@ -36,7 +36,7 @@
                         <property>
                             <name>carbon.zip</name>
                             <value>
-                                ${basedir}/../../distribution/target/wso2analytics-esb-${project.version}.zip
+                                ${basedir}/../../distribution/target/wso2esb-analytics-${project.version}.zip
                             </value>
                         </property>
                         <property>
@@ -95,7 +95,7 @@
                             <artifactItems>
                                 <artifactItem>
                                     <groupId>org.wso2.analytics.esb</groupId>
-                                    <artifactId>wso2analytics-esb</artifactId>
+                                    <artifactId>wso2esb-analytics</artifactId>
                                     <version>${project.version}</version>
                                     <type>zip</type>
                                     <overWrite>true</overWrite>
@@ -133,7 +133,7 @@
                             <resources>
                                 <resource>
                                     <directory>
-                                        ${basedir}/target/tobeCopied/wso2analytics-esb-${project.version}/repository/resources/security/
+                                        ${basedir}/target/tobeCopied/wso2esb-analytics-${project.version}/repository/resources/security/
                                     </directory>
                                     <includes>
                                         <include>**/*.jks</include>
@@ -154,7 +154,7 @@
                             <resources>
                                 <resource>
                                     <directory>
-                                        ${basedir}/target/tobeCopied/wso2analytics-esb-${project.version}/repository/resources/security/
+                                        ${basedir}/target/tobeCopied/wso2esb-analytics-${project.version}/repository/resources/security/
                                     </directory>
                                     <includes>
                                         <include>**/*.jks</include>
@@ -175,7 +175,7 @@
                             <resources>
                                 <resource>
                                     <directory>
-                                        ${basedir}/target/tobeCopied/wso2analytics-esb-${project.version}/repository/conf/axis2/
+                                        ${basedir}/target/tobeCopied/wso2esb-analytics-${project.version}/repository/conf/axis2/
                                     </directory>
                                     <includes>
                                         <include>**/*.xml</include>
