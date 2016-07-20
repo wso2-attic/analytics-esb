@@ -18,4 +18,5 @@ entryPointHashcode : string
 faultCount : integer
 hashCode : string
 host : string
+metaTenantId : integer
 _timestamp : long

@@ -19,8 +19,10 @@ package org.wso2.analytics.esb.siddhi.extension;
 
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryo.io.Input;
+
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.wso2.analytics.esb.util.CompressedEventUtils;
 import org.wso2.carbon.analytics.spark.core.util.AnalyticsConstants;
 import org.wso2.carbon.analytics.spark.core.util.CompressedEventAnalyticsUtils;
 import org.wso2.carbon.analytics.spark.core.util.PublishingPayload;
@@ -39,6 +41,7 @@ import org.wso2.siddhi.query.api.definition.AbstractDefinition;
 import org.wso2.siddhi.query.api.definition.Attribute;
 
 import javax.xml.bind.DatatypeConverter;
+
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.*;
@@ -47,7 +50,8 @@ public class CompressedEventProcessor extends StreamProcessor {
     
     private Map<String,String> fields = new LinkedHashMap<String,String>();
     private int[] dataColumnIndex;
-    private int[] meta_compressedIndex;
+    private int[] metaCompressedIndex;
+    private int[] metaTenantIdIndex;
     
     private static ThreadLocal<Kryo> kryoTL = new ThreadLocal<Kryo>() {
         protected Kryo initialValue() {
@@ -97,7 +101,7 @@ public class CompressedEventProcessor extends StreamProcessor {
             String eventString = (String) compressedEvent.getAttribute(this.dataColumnIndex);
             if (!eventString.isEmpty()) {
                 ByteArrayInputStream unzippedByteArray;
-                if ((Boolean) compressedEvent.getAttribute(this.meta_compressedIndex)) {
+                if ((Boolean) compressedEvent.getAttribute(this.metaCompressedIndex)) {
                     unzippedByteArray = CompressedEventAnalyticsUtils.decompress(eventString);
                 } else {
                     unzippedByteArray = new ByteArrayInputStream(DatatypeConverter.parseBase64Binary(eventString));
@@ -111,13 +115,14 @@ public class CompressedEventProcessor extends StreamProcessor {
                     AnalyticsConstants.PAYLOADS_ATTRIBUTE);
                 
                 String host = (String)aggregatedEvent.get(AnalyticsConstants.HOST_ATTRIBUTE);
+                int metaTenantId = (int) compressedEvent.getAttribute(this.metaTenantIdIndex);
                 // Iterate over the array of events
                 for (int i = 0; i < eventsList.size(); i++) {
                     StreamEvent decompressedEvent = streamEventCloner.copyStreamEvent(compressedEvent);
                     // Create a new event with decompressed fields
-                    Object[] decompressedFields = CompressedEventAnalyticsUtils.getFieldValues(
+                    Object[] decompressedFields = CompressedEventUtils.getFieldValues(
                         new ArrayList<String>(this.fields.keySet()), eventsList.get(i), payloadsList, i, 
-                        compressedEvent.getTimestamp(), -1 ,host);
+                        compressedEvent.getTimestamp(), metaTenantId, host);
                     complexEventPopulater.populateComplexEvent(decompressedEvent, decompressedFields);
                     decompressedStreamEventChunk.add(decompressedEvent);
                 }
@@ -139,7 +144,10 @@ public class CompressedEventProcessor extends StreamProcessor {
                         this.dataColumnIndex = variable.getPosition();
                         break;
                     case AnalyticsConstants.META_FIELD_COMPRESSED :
-                        this.meta_compressedIndex = variable.getPosition();
+                        this.metaCompressedIndex = variable.getPosition();
+                        break;
+                    case AnalyticsConstants.META_FIELD_TENANT_ID :
+                        this.metaTenantIdIndex = variable.getPosition();
                         break;
                 }
             }
