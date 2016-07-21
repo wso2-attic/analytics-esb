@@ -46,12 +46,12 @@ Features
 
 Issues Fixed in This Release
 ============================
-* Issues fixed in this release could be found at https://wso2.org/jira/issues/?filter=12425
+* Issues fixed in this release could be found at https://wso2.org/jira/issues/?filter=13150
 
 Known Issues in This Release
 ============================
 
-* All known issues have been recorded at https://wso2.org/jira/issues/?filter=12426
+* All known issues have been recorded at https://wso2.org/jira/issues/?filter=13151
 
 Installation & Running
 ======================
@@ -69,7 +69,7 @@ System Requirements
 2. The Management Console requires full Javascript enablement of the Web browser
 
 For more details see the Installation guide or,
-https://docs.wso2.com/display/DAS300/Installation+Prerequisites
+https://docs.wso2.com/display/DAS310/Installation+Prerequisites
 
 Including External Dependencies
 ===============================
