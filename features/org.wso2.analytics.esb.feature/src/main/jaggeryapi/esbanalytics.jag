@@ -13,11 +13,14 @@
     var configs = require('/configs/designer.json');
     var utils = require('/modules/utils.js');
     var esbanalyticsUtils = require('esbanalytics-utils.jag');
+    var server = new carbon.server.Server();
     var JSUtils = Packages.org.wso2.carbon.analytics.jsservice.Utils;
     var AnalyticsCachedJSServiceConnector = Packages.org.wso2.carbon.analytics.jsservice.AnalyticsCachedJSServiceConnector;
     var AnalyticsCache = Packages.org.wso2.carbon.analytics.jsservice.AnalyticsCachedJSServiceConnector.AnalyticsCache;
     var cacheTimeoutSeconds = 5;
     var loggedInUser = null;
+    var tenantId = -1;
+    var superTenantId = -1234;
     var timeRangeUtil = Packages.org.wso2.analytics.esb.util.TimeRangeUtils;
     var timeRange = Packages.org.wso2.analytics.esb.bean.TimeRange;
 
@@ -94,6 +97,7 @@
             return;
         }
     }
+    tenantId = carbon.server.tenantId();
 
     var cache = application.get("AnalyticsWebServiceCache");
     if (cache == null) {
@@ -140,11 +144,11 @@
 
                 var tableName = "ESB-STAT-PER-" + timeUnit + tableSuffix;
                 query = stringify({
-                                      query: "_componentId : ALL AND startTime : [" + timeFrom + " TO " + timeTo + "}",
+                    query: "_componentId : ALL AND startTime : [" + timeFrom + " TO " + timeTo + "} AND meta_tenantId : [" + tenantId + " TO " + tenantId + "]",
                                       "start": 0,
                                       "count": 200
                                   });
-                resp = connector.search(loggedInUser, tableName, query);
+                resp = connector.search(superTenantId, tableName, query);
                 if (resp.status == "success") {
                     var dataPoints = [];
                     try {
@@ -192,11 +196,11 @@
                 }
                 var tableName = "ESB-STAT-PER-" + timeUnit + tableSuffix;
                 query = stringify({
-                                      query: "_componentId : ALL AND startTime : [" + timeFrom + " TO " + timeTo + "}",
+                                      query: "_componentId : ALL AND startTime : [" + timeFrom + " TO " + timeTo + "} AND meta_tenantId : [" + tenantId + " TO " + tenantId + "]",
                                       "start": 0,
                                       "count": 200
                                   });
-                resp = connector.search(loggedInUser, tableName, query);
+                resp = connector.search(superTenantId, tableName, query);
                 var dataPoints = [];
                 if (resp.status == "success") {
                     try {
@@ -225,17 +229,17 @@
             }
             case TYPE_TOP_INVOKED_PROXIES:
             {
-                var result = esbanalyticsUtils.getMostInvokedComponentNames(connector, loggedInUser, "Proxy Service");
+                var result = esbanalyticsUtils.getMostInvokedComponentNames(connector, superTenantId, "Proxy Service", tenantId);
                 break;
             }
             case TYPE_TOP_INVOKED_APIS:
             {
-                var result = esbanalyticsUtils.getMostInvokedComponentNames(connector, loggedInUser, "API");
+                var result = esbanalyticsUtils.getMostInvokedComponentNames(connector, superTenantId, "API", tenantId);
                 break;
             }
             case TYPE_PROXY_NAMES:
             {
-                var result = esbanalyticsUtils.getComponentNames(connector, loggedInUser, "Proxy Service");
+                var result = esbanalyticsUtils.getComponentNames(connector, superTenantId, "Proxy Service", tenantId);
                 break;
             }
             case TYPE_PROXY_MESSAGE_RATE:
@@ -243,7 +247,7 @@
                 var componentName = request.getParameter("id");
                 var timeUnit = timeRangeUtil.getSuitableTimeRangeUnit(timeFrom, timeTo);
                 var tableName = "ESB-STAT-PER-" + timeUnit;
-                result = esbanalyticsUtils.getMessageRate(connector, loggedInUser, timeFrom, timeTo, tableName, componentName, null);
+                result = esbanalyticsUtils.getMessageRate(connector, superTenantId, timeFrom, timeTo, tableName, componentName, null, tenantId);
                 break;
             }
             case TYPE_PROXY_LATENCY:
@@ -251,24 +255,24 @@
                 var timeUnit = timeRangeUtil.getSuitableTimeRangeUnit(timeFrom, timeTo);
                 var tableName = "ESB-STAT-PER-" + timeUnit;
                 var componentName = request.getParameter("id");
-                result = esbanalyticsUtils.getLatency(connector, loggedInUser, timeFrom, timeTo, tableName, componentName, null);
+                result = esbanalyticsUtils.getLatency(connector, superTenantId, timeFrom, timeTo, tableName, componentName, null, tenantId);
                 break;
             }
             case TYPE_PROXY_MESSAGE_FLOW:
             {
                 var timeRanges = timeRangeUtil.getDateTimeRanges(timeFrom, timeTo);
-                var result = esbanalyticsUtils.getEntrypointMessageFlow(connector, loggedInUser, timeRanges);
+                var result = esbanalyticsUtils.getEntrypointMessageFlow(connector, superTenantId, timeRanges, tenantId);
                 break;
             }
             case TYPE_PROXY_MESSAGES:
             {
                 var proxyName = request.getParameter("id");
-                var result = esbanalyticsUtils.getComponentMessages(connector, loggedInUser, proxyName, "Proxy Service", null, timeRangeUtil);
+                var result = esbanalyticsUtils.getComponentMessages(connector, superTenantId, proxyName, "Proxy Service", null, timeRangeUtil, tenantId);
                 break;
             }
             case TYPE_API_NAMES:
             {
-                var result = esbanalyticsUtils.getComponentNames(connector, loggedInUser, "API");
+                var result = esbanalyticsUtils.getComponentNames(connector, superTenantId, "API", tenantId);
                 break;
             }
             case TYPE_API_MESSAGE_RATE:
@@ -276,7 +280,7 @@
                 var timeUnit = timeRangeUtil.getSuitableTimeRangeUnit(timeFrom, timeTo);
                 var tableName = "ESB-STAT-PER-" + timeUnit;
                 var componentName = request.getParameter("id");
-                result = esbanalyticsUtils.getMessageRate(connector, loggedInUser, timeFrom, timeTo, tableName, componentName, null);
+                result = esbanalyticsUtils.getMessageRate(connector, superTenantId, timeFrom, timeTo, tableName, componentName, null, tenantId);
                 break;
             }
             case TYPE_API_LATENCY:
@@ -284,19 +288,19 @@
                 var timeUnit = timeRangeUtil.getSuitableTimeRangeUnit(timeFrom, timeTo);
                 var tableName = "ESB-STAT-PER-" + timeUnit;
                 var componentName = request.getParameter("id");
-                result = esbanalyticsUtils.getLatency(connector, loggedInUser, timeFrom, timeTo, tableName, componentName, null);
+                result = esbanalyticsUtils.getLatency(connector, superTenantId, timeFrom, timeTo, tableName, componentName, null, tenantId);
                 break;
             }
             case TYPE_API_MESSAGE_FLOW:
             {
                 var timeRanges = timeRangeUtil.getDateTimeRanges(timeFrom, timeTo);
-                var result = esbanalyticsUtils.getEntrypointMessageFlow(connector, loggedInUser, timeRanges);
+                var result = esbanalyticsUtils.getEntrypointMessageFlow(connector, superTenantId, timeRanges, tenantId);
                 break;
             }
             case TYPE_API_MESSAGES:
             {
                 var apiName = request.getParameter("id");
-                var result = esbanalyticsUtils.getComponentMessages(connector, loggedInUser, apiName, "API", null, timeRangeUtil);
+                var result = esbanalyticsUtils.getComponentMessages(connector, superTenantId, apiName, "API", null, timeRangeUtil, tenantId);
                 break;
             }
             case TYPE_MEDIATOR_NAMES:
@@ -311,7 +315,7 @@
                 var entryPoint = request.getParameter("entryPoint");
                 var timeUnit = timeRangeUtil.getSuitableTimeRangeUnit(timeFrom, timeTo);
                 var tableName = "MEDIATOR-STAT-PER-" + timeUnit;
-                query = "entryPoint : " + entryPoint + " AND _componentId : \"" + componentId + "\" AND startTime : [" + timeFrom + " TO " + timeTo + "}";
+                query = "entryPoint : " + entryPoint + " AND _componentId : \"" + componentId + "\" AND startTime : [" + timeFrom + " TO " + timeTo + "} AND meta_tenantId : [" + tenantId + " TO " + tenantId + "]";
                 query = stringify({
                                       tableName: tableName,
                                       groupByField: "facetStartTime",
@@ -331,7 +335,7 @@
                                       aggregateLevel: 0,
                                       parentPath: []
                                   });
-                resp = connector.searchWithAggregates(loggedInUser, tableName, query);
+                resp = connector.searchWithAggregates(superTenantId, tableName, query);
                 var dataPoints = [];
                 if (resp.status == "success") {
                     try {
@@ -363,11 +367,11 @@
                 var entryPoint = request.getParameter("entryPoint");
                 query = stringify({
                                       tableName: tableName,
-                                      query: "entryPoint : " + entryPoint + " AND _componentId : \"" + componentId + "\" AND startTime : [" + timeFrom + " TO " + timeTo + "}",
+                                      query: "entryPoint : " + entryPoint + " AND _componentId : \"" + componentId + "\" AND startTime : [" + timeFrom + " TO " + timeTo + "} AND meta_tenantId : [" + tenantId + " TO " + tenantId + "]",
                                       start: 0,
                                       count: 60
                                   });
-                resp = connector.search(loggedInUser, tableName, query);
+                resp = connector.search(superTenantId, tableName, query);
                 var dataPoints = [];
                 if (resp.status == "success") {
                     try {
@@ -395,7 +399,7 @@
             {
                 var componentId = request.getParameter("id");
                 var entryPoint = request.getParameter("entryPoint");
-                var result = esbanalyticsUtils.getComponentMessages(connector, loggedInUser, componentId, "Mediator", entryPoint, timeRangeUtil);
+                var result = esbanalyticsUtils.getComponentMessages(connector, superTenantId, componentId, "Mediator", entryPoint, timeRangeUtil, tenantId);
                 break;
             }
             case TYPE_MESSAGE_FLOW:
@@ -406,12 +410,12 @@
                 // Get Message details
                 var query = stringify({
                                           "tableName": tableName,
-                                          "query": "messageFlowId : \"" + messageId + "\"",
+                                          "query": "messageFlowId : \"" + messageId + "\" AND meta_tenantId : [" + tenantId + " TO " + tenantId + "]",
                                           "start": 0,
                                           "count": 10000
                                       });
                 var components = null;
-                var resp = connector.search(loggedInUser, tableName, query);
+                var resp = connector.search(superTenantId, tableName, query);
                 if (resp.status == "success") {
                     components = JSON.parse(resp.getMessage());
 
@@ -426,13 +430,13 @@
                 // Get schema 
                 var tableName = "ESB-CONFIG-ENTRY-STREAM";
                 var query = stringify({
-                                          "query": "_hashcode : \"" + entryPointHashCode + "\"",
+                                          "query": "_hashcode : \"" + entryPointHashCode + "\" meta_tenantId : [" + tenantId + " TO " + tenantId + "]",
                                           "start": 0,
                                           "count": 1
                                       });
 
                 var config =  null;
-                var resp = connector.search(loggedInUser, tableName, query);
+                var resp = connector.search(superTenantId, tableName, query);
                 if (resp.status == "success") {
                     config = JSON.parse(resp.getMessage())[0];
                 } else {
@@ -455,11 +459,11 @@
                                 // get schema of referenced sequences and add it to the overall schema
                                 if("Sequence" == componentInfo["componentType"]) {
                                     var query = stringify({
-                                                  "query": "_hashcode : \"" + componentInfo["hashCode"] + "\"",
+                                                  "query": "_hashcode : \"" + componentInfo["hashCode"] + "\" AND meta_tenantId : [" + tenantId + " TO " + tenantId + "]",
                                                   "start": 0,
                                                   "count": 1
                                               });
-                                    var seqConfigResp = connector.search(loggedInUser, tableName, query);
+                                    var seqConfigResp = connector.search(superTenantId, tableName, query);
                                     var seqConfig = JSON.parse(seqConfigResp.getMessage())[0];
                                     if (seqConfig != null) {
                                         var seqSchema = JSON.parse(seqConfig["values"]["configData"]);
@@ -556,7 +560,7 @@
             {
                 var result = [];
                 var excludeEndpoints = ["AnonymousEndpoint"];
-                var allEndpoints = esbanalyticsUtils.getComponentNames(connector, loggedInUser, "Endpoint");
+                var allEndpoints = esbanalyticsUtils.getComponentNames(connector, superTenantId, "Endpoint", tenantId);
                 for (key in allEndpoints) {
                     var endpointName = allEndpoints[key];
                     if (excludeEndpoints.indexOf(endpointName) == -1) {
@@ -571,7 +575,7 @@
                 var entryPoint = request.getParameter("entryPoint");
                 var timeUnit = timeRangeUtil.getSuitableTimeRangeUnit(timeFrom, timeTo);
                 var tableName = "MEDIATOR-STAT-PER-" + timeUnit;
-                var result = esbanalyticsUtils.getMessageRate(connector, loggedInUser, timeFrom, timeTo, tableName, componentName, entryPoint);
+                var result = esbanalyticsUtils.getMessageRate(connector, superTenantId, timeFrom, timeTo, tableName, componentName, entryPoint, tenantId);
                 break;
             }
             case TYPE_ENDPOINT_LATENCY:
@@ -580,21 +584,21 @@
                 var tableName = "MEDIATOR-STAT-PER-" + timeUnit;
                 var componentName = request.getParameter("id");
                 var entryPoint = request.getParameter("entryPoint");
-                var result = esbanalyticsUtils.getLatency(connector, loggedInUser, timeFrom, timeTo, tableName, componentName, entryPoint);
+                var result = esbanalyticsUtils.getLatency(connector, superTenantId, timeFrom, timeTo, tableName, componentName, entryPoint, tenantId);
                 break;
             }
             case TYPE_ENDPOINT_MESSAGES:
             {
                 var endpointName = request.getParameter("id");
                 var entryPoint = request.getParameter("entryPoint");
-                var result = esbanalyticsUtils.getComponentMessages(connector, loggedInUser, endpointName, "Endpoint", entryPoint, timeRangeUtil);
+                var result = esbanalyticsUtils.getComponentMessages(connector, superTenantId, endpointName, "Endpoint", entryPoint, timeRangeUtil, tenantId);
                 break;
             }
             case TYPE_SEQUENCE_NAMES:
             {
                 var result = [];
                 var excludeSequences = ["PROXY_INSEQ", "PROXY_OUTSEQ", "PROXY_FAULTSEQ", "API_OUTSEQ", "API_INSEQ", "API_FAULTSEQ", "AnonymousSequence"];
-                var allSequences = esbanalyticsUtils.getComponentNames(connector, loggedInUser, "Sequence");
+                var allSequences = esbanalyticsUtils.getComponentNames(connector, superTenantId, "Sequence", tenantId);
                 // Remove well-known sequences
                 for (key in allSequences) {
                     var sequenceName = allSequences[key];
@@ -610,7 +614,7 @@
                 var entryPoint = request.getParameter("entryPoint");
                 var timeUnit = timeRangeUtil.getSuitableTimeRangeUnit(timeFrom, timeTo);
                 var tableName = "MEDIATOR-STAT-PER-" + timeUnit;
-                result = esbanalyticsUtils.getLatency(connector, loggedInUser, timeFrom, timeTo, tableName, componentName, entryPoint);
+                result = esbanalyticsUtils.getLatency(connector, superTenantId, timeFrom, timeTo, tableName, componentName, entryPoint, tenantId);
                 break;
             }
             case TYPE_SEQUENCE_LATENCY:
@@ -619,14 +623,14 @@
                 var tableName = "MEDIATOR-STAT-PER-" + timeUnit;
                 var componentName = request.getParameter("id");
                 var entryPoint = request.getParameter("entryPoint");
-                var result = esbanalyticsUtils.getLatency(connector, loggedInUser, timeFrom, timeTo, tableName, componentName, entryPoint);
+                var result = esbanalyticsUtils.getLatency(connector, superTenantId, timeFrom, timeTo, tableName, componentName, entryPoint, tenantId);
                 break;
             }
             case TYPE_SEQUENCE_MESSAGES:
             {
                 var sequenceName = request.getParameter("id");
                 var entryPoint = request.getParameter("entryPoint");
-                var result = esbanalyticsUtils.getComponentMessages(connector, loggedInUser, sequenceName, "Sequence", entryPoint, timeRangeUtil);
+                var result = esbanalyticsUtils.getComponentMessages(connector, superTenantId, sequenceName, "Sequence", entryPoint, timeRangeUtil, tenantId);
                 break;
             }
             case TYPE_SEQUENCE_MESSAGE_FLOW:
@@ -636,7 +640,7 @@
                 // get schema 
                 var tableName = "ESB-CONFIG-ENTRY-STREAM";
                 var query = stringify({
-                                          "query": "_entryName : \"" + entryName + "\" AND _timestamp : [0000000000 TO " + timeTo + "] ",
+                                          "query": "_entryName : \"" + entryName + "\" AND _timestamp : [0000000000 TO " + timeTo + "] AND meta_tenantId : [" + tenantId + " TO " + tenantId + "]",
                                           "start": 0,
                                           "count": 100,
                                           "sortBy": [
@@ -648,7 +652,7 @@
                                           ]
                                       });
                 var config = null;
-                var resp = connector.search(loggedInUser, tableName, query);
+                var resp = connector.search(superTenantId, tableName, query);
                 if (resp.status == "success") {
                     config = JSON.parse(resp.getMessage())[0];
                 } else {
@@ -678,7 +682,7 @@
                         var searchParam = {
                             tableName: "MEDIATOR-STAT-PER-" + timeRange.unit,
                             groupByField: "componentId",
-                            query: "hashCode : \"" + entryHashCode + "\" AND startTime : [" + timeRange.range[0] + " TO " + timeRange.range[1] + "}",
+                            query: "hashCode : \"" + entryHashCode + "\" AND startTime : [" + timeRange.range[0] + " TO " + timeRange.range[1] + "} AND meta_tenantId : [" + tenantId + " TO " + tenantId + "]",
                             aggregateLevel: 0,
                             parentPath: [],
                             noOfRecords: 10000
@@ -686,7 +690,7 @@
                         searchParam.aggregateFields = aggregateFields;
                         searchParams.push(searchParam);
                     }
-                    var resp = connector.searchMultiTablesWithAggregates(loggedInUser, JSON.stringify(searchParams));
+                    var resp = connector.searchMultiTablesWithAggregates(superTenantId, JSON.stringify(searchParams));
                     var componentMap = {};
                     if (resp.status == "success") {
                         var allTables = JSON.parse(resp.getMessage());
@@ -799,7 +803,7 @@
             }
             case TYPE_INBOUND_ENDPOINT_NAMES:
             {
-                var result = esbanalyticsUtils.getComponentNames(connector, loggedInUser, "Inbound EndPoint");
+                var result = esbanalyticsUtils.getComponentNames(connector, superTenantId, "Inbound EndPoint", tenantId);
                 break;
             }
             case TYPE_INBOUND_ENDPOINT_MESSAGE_RATE:
@@ -807,7 +811,7 @@
                 var componentName = request.getParameter("id");
                 var timeUnit = timeRangeUtil.getSuitableTimeRangeUnit(timeFrom, timeTo);
                 var tableName = "ESB-STAT-PER-" + timeUnit;
-                result = esbanalyticsUtils.getMessageRate(connector, loggedInUser, timeFrom, timeTo, tableName, componentName, null);
+                result = esbanalyticsUtils.getMessageRate(connector, superTenantId, timeFrom, timeTo, tableName, componentName, null, tenantId);
                 break;
             }
             case TYPE_INBOUND_ENDPOINT_LATENCY:
@@ -815,27 +819,27 @@
                 var timeUnit = timeRangeUtil.getSuitableTimeRangeUnit(timeFrom, timeTo);
                 var tableName = "ESB-STAT-PER-" + timeUnit;
                 var componentName = request.getParameter("id");
-                result = esbanalyticsUtils.getLatency(connector, loggedInUser, timeFrom, timeTo, tableName, componentName, null);
+                result = esbanalyticsUtils.getLatency(connector, superTenantId, timeFrom, timeTo, tableName, componentName, null, tenantId);
                 break;
             }
             case TYPE_INBOUND_ENDPOINT_MESSAGES:
             {
                 var inboundEndpointName = request.getParameter("id");
                 var entryPoint = request.getParameter("entryPoint");
-                var result = esbanalyticsUtils.getComponentMessages(connector, loggedInUser, inboundEndpointName, "Inbound EndPoint", entryPoint, timeRangeUtil);
+                var result = esbanalyticsUtils.getComponentMessages(connector, superTenantId, inboundEndpointName, "Inbound EndPoint", entryPoint, timeRangeUtil, tenantId);
                 break;
             }
             case TYPE_INBOUND_ENDPOINT_MESSAGE_FLOW:
             {
                 var timeRanges = timeRangeUtil.getDateTimeRanges(timeFrom, timeTo);
-                var result = esbanalyticsUtils.getEntrypointMessageFlow(connector, loggedInUser, timeRanges);
+                var result = esbanalyticsUtils.getEntrypointMessageFlow(connector, superTenantId, timeRanges, tenantId);
                 break;
             }
             case TYPE_OVERALL_STATS:
             {
                 var timeRanges = timeRangeUtil.getDateTimeRanges(timeFrom, timeTo);
                 var table = "ESB-STAT-PER-";
-                var result = esbanalyticsUtils.getStats(connector, loggedInUser, "ALL", "ALL", null, timeRanges, table);
+                var result = esbanalyticsUtils.getStats(connector, superTenantId, "ALL", "ALL", null, timeRanges, table, tenantId);
                 break;
             }
             case TYPE_PROXY_STATS:
@@ -843,7 +847,7 @@
                 var componentName = request.getParameter("id");
                 var timeRanges = timeRangeUtil.getDateTimeRanges(timeFrom, timeTo);
                 var table = "ESB-STAT-PER-";
-                var result = esbanalyticsUtils.getStats(connector, loggedInUser, "Proxy", componentName, null, timeRanges, table);
+                var result = esbanalyticsUtils.getStats(connector, superTenantId, "Proxy", componentName, null, timeRanges, table, tenantId);
                 break;
             }
             case TYPE_API_STATS:
@@ -851,7 +855,7 @@
                 var componentName = request.getParameter("id");
                 var timeRanges = timeRangeUtil.getDateTimeRanges(timeFrom, timeTo);
                 var table = "ESB-STAT-PER-";
-                var result = esbanalyticsUtils.getStats(connector, loggedInUser, "API", componentName, null, timeRanges, table);
+                var result = esbanalyticsUtils.getStats(connector, superTenantId, "API", componentName, null, timeRanges, table, tenantId);
                 break;
             }
             case TYPE_SEQUENCE_STATS:
@@ -860,7 +864,7 @@
                 var entryPoint = request.getParameter("entryPoint");
                 var timeRanges = timeRangeUtil.getDateTimeRanges(timeFrom, timeTo);
                 var table = "MEDIATOR-STAT-PER-";
-                var result = esbanalyticsUtils.getStats(connector, loggedInUser, "Sequence", componentName, entryPoint, timeRanges, table);
+                var result = esbanalyticsUtils.getStats(connector, superTenantId, "Sequence", componentName, entryPoint, timeRanges, table, tenantId);
                 break;
             }
             case TYPE_ENDPOINT_STATS:
@@ -869,7 +873,7 @@
                 var timeRanges = timeRangeUtil.getDateTimeRanges(timeFrom, timeTo);
                 var entryPoint = request.getParameter("entryPoint");
                 var table = "MEDIATOR-STAT-PER-";
-                var result = esbanalyticsUtils.getStats(connector, loggedInUser, "Endpoint", componentName, entryPoint, timeRanges, table);
+                var result = esbanalyticsUtils.getStats(connector, superTenantId, "Endpoint", componentName, entryPoint, timeRanges, table, tenantId);
                 break;
             }
             case TYPE_INBOUND_ENDPOINT_STATS:
@@ -877,7 +881,7 @@
                 var componentName = request.getParameter("id");
                 var timeRanges = timeRangeUtil.getDateTimeRanges(timeFrom, timeTo);
                 var table = "ESB-STAT-PER-";
-                var result = esbanalyticsUtils.getStats(connector, loggedInUser, "Inbound", componentName, null, timeRanges, table);
+                var result = esbanalyticsUtils.getStats(connector, superTenantId, "Inbound", componentName, null, timeRanges, table, tenantId);
                 break;
             }
             case TYPE_MEDIATOR_STATS:
@@ -886,14 +890,14 @@
                 var entryPoint = request.getParameter("entryPoint");
                 var timeRanges = timeRangeUtil.getDateTimeRanges(timeFrom, timeTo);
                 var table = "MEDIATOR-STAT-PER-";
-                var result = esbanalyticsUtils.getStats(connector, loggedInUser, "Mediator", componentId, entryPoint, timeRanges, table);
+                var result = esbanalyticsUtils.getStats(connector, superTenantId, "Mediator", componentId, entryPoint, timeRanges, table, tenantId);
                 break;
             }
             case TYPE_TOP_INVOKED_ENDPOINTS:
             {
                 var result = [];
                 var excludeEndpoints = ["AnonymousEndpoint"];
-                var allEndpoints = esbanalyticsUtils.getMostInvokedComponentNames(connector, loggedInUser, "Endpoint");
+                var allEndpoints = esbanalyticsUtils.getMostInvokedComponentNames(connector, superTenantId, "Endpoint", tenantId);
                 // Remove well-known Endpoints
                 for (key in allEndpoints) {
                     var endpointName = allEndpoints[key]["name"];
@@ -905,13 +909,13 @@
             }
             case TYPE_TOP_INVOKED_INBOUNDS:
             {
-                var result = esbanalyticsUtils.getMostInvokedComponentNames(connector, loggedInUser, "Inbound EndPoint");
+                var result = esbanalyticsUtils.getMostInvokedComponentNames(connector, superTenantId, "Inbound EndPoint", tenantId);
                 break;
             }
             case TYPE_TOP_INVOKED_SEQUENCES:
             {
                 var result = [];
-                var allSequences = esbanalyticsUtils.getMostInvokedComponentNames(connector, loggedInUser, "Sequence");
+                var allSequences = esbanalyticsUtils.getMostInvokedComponentNames(connector, superTenantId, "Sequence", tenantId);
                 var excludeSequences = ["PROXY_INSEQ", "PROXY_OUTSEQ", "PROXY_FAULTSEQ", "API_OUTSEQ", "API_INSEQ", "API_FAULTSEQ", "AnonymousSequence", "fault"];
                 // Remove well-known sequences
                 for (key in allSequences) {
@@ -931,11 +935,11 @@
                 // Get Message details for the current component
                 var query = stringify({
                                           "tableName": tableName,
-                                          "query": "_messageFlowId : \"" + messageId + "\" AND _componentId :\"" + componentId + "\"",
+                                          "query": "_messageFlowId : \"" + messageId + "\" AND _componentId :\"" + componentId + "\" AND meta_tenantId : [" + tenantId + " TO " + tenantId + "]",
                                           "start": 0,
                                           "count": 10000
                                       });
-                var resp = connector.search(loggedInUser, tableName, query);
+                var resp = connector.search(superTenantId, tableName, query);
                 if (resp.status == "success") {
                     var messageInfoBefore = JSON.parse(resp.getMessage())[0]["values"];
 
@@ -944,11 +948,11 @@
                         var childIndex = JSON.parse(messageInfoBefore["children"])[0];
                         var query = stringify({
                                                   "tableName": tableName,
-                                                  "query": "_messageFlowId : \"" + messageId + "\" AND componentIndex :" + childIndex,
+                                                  "query": "_messageFlowId : \"" + messageId + "\" AND meta_tenantId : [" + tenantId + " TO " + tenantId + "] AND componentIndex :" + childIndex,
                                                   "start": 0,
                                                   "count": 10000
                                               });
-                        var resp = connector.search(loggedInUser, tableName, query);
+                        var resp = connector.search(superTenantId, tableName, query);
                         if (resp.status == "success") {
                             var component = JSON.parse(resp.getMessage())[0];
                             if (component != null) {

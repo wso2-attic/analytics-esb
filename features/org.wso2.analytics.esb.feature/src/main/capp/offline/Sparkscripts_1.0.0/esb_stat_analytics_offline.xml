@@ -7,7 +7,7 @@
         schema "messageFlowId STRING, componentType STRING, componentName STRING,
         componentIndex INT -i, componentId STRING, startTime LONG, endTime LONG, duration LONG, beforePayload STRING,
         afterPayload STRING, contextPropertyMap STRING, transportPropertyMap STRING, children STRING, entryPoint
-        STRING, entryPointHashcode STRING, faultCount INT, hashCode STRING, host STRING, meta_tenantId INT, _timestamp LONG -i",
+        STRING, entryPointHashcode STRING, faultCount INT, hashCode STRING, host STRING, meta_tenantId INT -i, _timestamp LONG -i",
         incrementalProcessing "esbFlowEvent, MINUTE",
         mergeSchema "false");
 
@@ -16,7 +16,7 @@
         schema "messageFlowId FACET -i, host STRING, hashCode STRING -i, componentName FACET -i, componentType FACET -i,
         componentIndex INT, componentId FACET -i, startTime LONG -i, endTime LONG -i, duration LONG, beforePayload
         STRING, afterPayload STRING, contextPropertyMap STRING, transportPropertyMap STRING, children STRING,
-        entryPoint FACET -i, entryPointHashcode STRING -i, faultCount INT, meta_tenantId INT, _timestamp LONG -i",
+        entryPoint FACET -i, entryPointHashcode STRING -i, faultCount INT, meta_tenantId INT -i, _timestamp LONG -i",
         primaryKeys "messageFlowId, componentId, componentType, componentIndex",
         incrementalProcessing "esbEvent, MINUTE",
         mergeSchema "false");
@@ -34,7 +34,7 @@
         schema "year INT -i, month INT -i, day INT -i, hour INT -I, minute INT -i, second INT -i, componentId FACET -i,
         componentName FACET -i, componentType FACET -i, totalDuration LONG, minDuration LONG, maxDuration LONG,
         noOfInvocation LONG -sp, faultCount LONG, startTime LONG -i, facetStartTime FACET -i, entryPoint FACET -i,
-         meta_tenantId INT, _timestamp LONG -i",
+         meta_tenantId INT -i, _timestamp LONG -i",
         primaryKeys "year, month, day, hour, minute, second, componentId, componentType",
         incrementalProcessing "esbServiceStatPerSecond, MINUTE",
         mergeSchema "false");
@@ -63,7 +63,7 @@
         schema "year INT -i, month INT -i, day INT -i, hour INT -I, minute INT -i, second INT -i, componentId FACET -i,
         componentName FACET -i, componentType FACET -i, totalDuration LONG, minDuration LONG, maxDuration LONG,
         noOfInvocation LONG -sp, faultCount LONG, startTime LONG -i, facetStartTime FACET -i, entryPoint FACET -i,
-         meta_tenantId INT, _timestamp LONG -i",
+         meta_tenantId INT -i, _timestamp LONG -i",
         primaryKeys "year, month, day, hour, minute, second, componentId, componentType",
         mergeSchema "false");
 
@@ -75,7 +75,7 @@
         min(minDuration) as minDuration, max(maxDuration) as maxDuration, sum(noOfInvocation) as noOfInvocation,
         sum(faultCount) as totalFault,
         getSecondStartingTime(year, month, day, hour, minute, second) as startTime,
-        cast(getSecondStartingTime(year, month, day, hour, minute, second) as STRING) as facetStartTime, meta_tenantId INT,
+        cast(getSecondStartingTime(year, month, day, hour, minute, second) as STRING) as facetStartTime, meta_tenantId INT -i,
         meta_tenantId, getSecondStartingTime(year, month, day, hour, minute, second) as _timestamp
         FROM esbServiceStatPerSecond
         WHERE componentType = "Proxy Service" OR componentType = "API" OR componentType = "Endpoint" OR
@@ -85,17 +85,17 @@
         CREATE TEMPORARY TABLE mediatorStatPerSecond USING CarbonAnalytics
         OPTIONS (tableName "mediator-stat-per-second",
         schema "year INT -i, month INT -i, day INT -i, hour INT -I, minute INT -i, second INT -i, entryPoint FACET -i,
-        entryPointHashcode STRING -i, componentIndex INT, componentId FACET -i, hashCode STRING -i, componentName
+        entryPointHashcode STRING -i, componentId FACET -i, hashCode STRING -i, componentName
         FACET -i, componentType FACET -i, totalDuration LONG, minDuration LONG,
         maxDuration LONG, noOfInvocation LONG -sp, faultCount LONG, startTime LONG -i, facetStartTime FACET -i,
-         meta_tenantId INT, _timestamp LONG -i",
+         meta_tenantId INT -i, _timestamp LONG -i",
         primaryKeys "year, month, day, hour, minute, second, entryPointHashcode, hashCode, componentId, componentType",
         incrementalProcessing "mediatorStatPerSecond, MINUTE",
         mergeSchema "false");
 
         INSERT INTO TABLE mediatorStatPerSecond
         SELECT temp.year, temp.month, temp.day, temp.hour, temp.minute, temp.second, temp.entryPoint,
-        temp.entryPointHashcode, temp.componentIndex, temp.componentId, temp.hashCode, temp.componentName,
+        temp.entryPointHashcode, temp.componentId, temp.hashCode, temp.componentName,
         temp.componentType, sum(duration) as totalDuration, min(duration) as minDuration, max(duration) as maxDuration,
         count(*) as noOfInvocation, sum(faultCount) as totalFault,
         getSecondStartingTime(temp.year, temp.month, temp.day, temp.hour, temp.minute, temp.second) as startTime,
@@ -103,11 +103,11 @@
         getSecondStartingTime(temp.year, temp.month, temp.day, temp.hour, temp.minute, temp.second) as _timestamp
         FROM (SELECT getYear(startTime) as year, getMonth(startTime) as month, getDay(startTime) as day,
         getHour(startTime) as hour, getMinute(startTime) as minute, getSeconds(startTime) as second, duration as
-        duration, entryPoint, cast(entryPointHashcode as int) entryPointHashcode, componentIndex, cast (hashCode as int)
+        duration, entryPoint, cast(entryPointHashcode as int) entryPointHashcode, cast (hashCode as int)
         hashCode, componentName, componentType, componentId,
         (CASE WHEN faultCount > 0 then 1 ELSE 0 END) as faultCount, meta_tenantId FROM esbEvent) temp
         GROUP BY temp.year, temp.month, temp.day, temp.hour, temp.minute, temp.second, temp.entryPoint,
-        temp.entryPointHashcode, temp.componentIndex, temp.componentId, temp.hashCode, temp.componentName,
+        temp.entryPointHashcode, temp.componentId, temp.hashCode, temp.componentName,
         temp.componentType, temp.meta_tenantId;
 
         INCREMENTAL_TABLE_COMMIT esbEvent;
@@ -117,7 +117,7 @@
         schema "year INT -i, month INT -i, day INT -i, hour INT -i, minute INT -i, componentId FACET -i,
         componentName FACET -i, componentType FACET -i, totalDuration LONG, minDuration LONG,
         maxDuration LONG, noOfInvocation LONG -sp, faultCount LONG, startTime LONG -i, facetStartTime FACET -i,
-        entryPoint FACET -i, meta_tenantId INT, _timestamp LONG -i",
+        entryPoint FACET -i, meta_tenantId INT -i, _timestamp LONG -i",
         primaryKeys "year, month, day, hour, minute, componentId, componentType",
         incrementalProcessing "esbServiceStatPerMinute, HOUR",
         mergeSchema "false");
@@ -137,7 +137,7 @@
         schema "year INT -i, month INT -i, day INT -i, hour INT -i, minute INT -i, componentId FACET -i,
         componentName FACET -i, componentType FACET -i, totalDuration LONG, minDuration LONG,
         maxDuration LONG, noOfInvocation LONG -sp, faultCount LONG, startTime LONG -i, facetStartTime FACET -i,
-        entryPoint FACET -i, meta_tenantId INT, _timestamp LONG -i",
+        entryPoint FACET -i, meta_tenantId INT -i, _timestamp LONG -i",
         primaryKeys "year, month, day, hour, minute, componentId, componentType",
         mergeSchema "false");
 
@@ -160,23 +160,23 @@
         CREATE TEMPORARY TABLE mediatorStatPerMinute USING CarbonAnalytics
         OPTIONS (tableName "mediator-stat-per-minute",
         schema "year INT -i, month INT -i, day INT -i, hour INT -I, minute INT -i, entryPoint FACET -i,
-        entryPointHashcode STRING -i, componentIndex INT, componentId FACET -i, hashCode STRING -i,
+        entryPointHashcode STRING -i, componentId FACET -i, hashCode STRING -i,
         componentName FACET -i, componentType FACET -i, totalDuration LONG, minDuration LONG, maxDuration LONG,
-        noOfInvocation LONG -sp, faultCount LONG, startTime LONG -i, facetStartTime FACET -i, meta_tenantId INT, 
+        noOfInvocation LONG -sp, faultCount LONG, startTime LONG -i, facetStartTime FACET -i, meta_tenantId INT -i, 
         _timestamp LONG -i",
         primaryKeys "year, month, day, hour, minute, entryPointHashcode, hashCode, componentId, componentType",
         incrementalProcessing "mediatorStatPerMinute, HOUR",
         mergeSchema "false");
 
         INSERT INTO TABLE mediatorStatPerMinute
-        SELECT year, month, day, hour, minute, entryPoint, entryPointHashcode, componentIndex, componentId, hashCode,
+        SELECT year, month, day, hour, minute, entryPoint, entryPointHashcode, componentId, hashCode,
         componentName, componentType, sum(totalDuration) as totalDuration, min(minDuration) as minDuration,
         max(maxDuration) as maxDuration, sum(noOfInvocation) as noOfInvocation, sum(faultCount) as totalFault,
         getMinuteStartingTime(year, month, day, hour, minute) as startingTime,
         cast(getMinuteStartingTime(year, month, day, hour, minute) as STRING) as facetStartTime, meta_tenantId,
         getMinuteStartingTime(year, month, day, hour, minute) as _timestamp
         FROM mediatorStatPerSecond
-        GROUP BY year, month, day, hour, minute, entryPoint, entryPointHashcode, componentIndex, componentId, hashCode,
+        GROUP BY year, month, day, hour, minute, entryPoint, entryPointHashcode, componentId, hashCode,
         componentName, componentType, meta_tenantId;
 
         INCREMENTAL_TABLE_COMMIT mediatorStatPerSecond;
@@ -186,7 +186,7 @@
         schema "year INT -i, month INT -i, day INT -i, hour INT -I, componentId FACET -i,
         componentName FACET -i, componentType FACET -i, totalDuration LONG, minDuration INT, maxDuration INT,
         noOfInvocation LONG -sp, faultCount LONG, startTime LONG -i, facetStartTime FACET -i, entryPoint FACET -i,
-        meta_tenantId INT, _timestamp LONG -i",
+        meta_tenantId INT -i, _timestamp LONG -i",
         primaryKeys "year, month, day, hour, componentId, componentType",
         incrementalParams "esbServiceStatPerHour, DAY",
         mergeSchema "false");
@@ -208,7 +208,7 @@
         schema "year INT -i, month INT -i, day INT -i, hour INT -I, componentId FACET -i,
         componentName FACET -i, componentType FACET -i, totalDuration LONG, minDuration INT, maxDuration INT,
         noOfInvocation LONG -sp, faultCount LONG, startTime LONG -i, facetStartTime FACET -i, entryPoint FACET -i,
-        meta_tenantId INT, _timestamp LONG -i",
+        meta_tenantId INT -i, _timestamp LONG -i",
         primaryKeys "year, month, day, hour, componentId, componentType",
         mergeSchema "false");
 
@@ -230,7 +230,7 @@
         schema "year INT -i, month INT -i, day INT -i, hour INT -I, entryPoint FACET -i, entryPointHashcode STRING -i,
         componentId FACET -i, hashCode STRING -i, componentName FACET -i, componentType FACET -i, totalDuration LONG,
         minDuration INT, maxDuration INT, noOfInvocation LONG -sp, faultCount LONG, startTime LONG -i,
-        facetStartTime FACET -i, meta_tenantId INT, _timestamp LONG -i",
+        facetStartTime FACET -i, meta_tenantId INT -i, _timestamp LONG -i",
         primaryKeys "year, month, day, hour, entryPointHashcode, hashCode, componentId, componentType",
         incrementalParams "mediatorStatPerHour, DAY",
         mergeSchema "false");
@@ -252,7 +252,7 @@
         OPTIONS (tableName "ESB-Stat-per-Day",
         schema "year INT -i, month INT -i, day INT -i, componentId FACET -i, componentName FACET -i,
         componentType FACET -i, totalDuration LONG, minDuration INT, maxDuration INT, noOfInvocation LONG -sp,
-        faultCount LONG, startTime LONG -i, facetStartTime FACET -i, entryPoint FACET -i, meta_tenantId INT,
+        faultCount LONG, startTime LONG -i, facetStartTime FACET -i, entryPoint FACET -i, meta_tenantId INT -i,
          _timestamp LONG -i",
         primaryKeys "year, month, day, componentId, componentType",
         mergeSchema "false");
@@ -273,7 +273,7 @@
         OPTIONS (tableName "ESB-Stat-per-Day",
         schema "year INT -i, month INT -i, day INT -i, componentId FACET -i, componentName FACET -i,
         componentType FACET -i, totalDuration LONG, minDuration INT, maxDuration INT, noOfInvocation LONG -sp,
-        faultCount LONG, startTime LONG -i, facetStartTime FACET -i, entryPoint FACET -i, meta_tenantId INT, 
+        faultCount LONG, startTime LONG -i, facetStartTime FACET -i, entryPoint FACET -i, meta_tenantId INT -i, 
         _timestamp LONG -i",
         primaryKeys "year, month, day, componentId, componentType",
         mergeSchema "false");
@@ -296,7 +296,7 @@
         schema "year INT -i, month INT -i, day INT -i, entryPoint FACET -i, entryPointHashcode STRING -i,
         componentId FACET -i, hashCode STRING -i, componentName FACET -i, componentType FACET -i, totalDuration
         LONG, minDuration INT, maxDuration INT, noOfInvocation LONG -sp, faultCount LONG, startTime LONG -i,
-        facetStartTime FACET -i, meta_tenantId INT, _timestamp LONG -i",
+        facetStartTime FACET -i, meta_tenantId INT -i, _timestamp LONG -i",
         primaryKeys "year, month, day, entryPointHashcode, hashCode, componentId, componentType",
         mergeSchema "false");
 
@@ -317,7 +317,7 @@
         OPTIONS (tableName "ESB-Stat-per-Month",
         schema "year INT -i, month INT -i, componentId FACET -i, componentName FACET -i,
         componentType FACET -i, totalDuration LONG, minDuration INT, maxDuration INT, noOfInvocation LONG -sp,
-        faultCount LONG, startTime LONG -i, facetStartTime FACET -i, entryPoint FACET -i, meta_tenantId INT,
+        faultCount LONG, startTime LONG -i, facetStartTime FACET -i, entryPoint FACET -i, meta_tenantId INT -i,
         _timestamp LONG -i",
         primaryKeys "year, month, componentId, componentType",
         mergeSchema "false");
@@ -336,7 +336,7 @@
         OPTIONS (tableName "ESB-Stat-per-Month",
         schema "year INT -i, month INT -i, componentId FACET -i, componentName FACET -i,
         componentType FACET -i, totalDuration LONG, minDuration INT, maxDuration INT, noOfInvocation LONG -sp,
-        faultCount LONG, startTime LONG -i, facetStartTime FACET -i, entryPoint FACET -i, meta_tenantId INT,
+        faultCount LONG, startTime LONG -i, facetStartTime FACET -i, entryPoint FACET -i, meta_tenantId INT -i,
         _timestamp LONG -i",
         primaryKeys "year, month, componentId, componentType",
         mergeSchema "false");
@@ -359,7 +359,7 @@
         schema "year INT -i, month INT -i, entryPoint FACET -i, entryPointHashcode STRING -i,
         componentId FACET -i, hashCode STRING -i, componentName FACET -i, componentType FACET -i, totalDuration LONG,
         minDuration INT, maxDuration INT, noOfInvocation LONG -sp, faultCount LONG, startTime LONG -i,
-        facetStartTime FACET -i, meta_tenantId INT, _timestamp LONG -i",
+        facetStartTime FACET -i, meta_tenantId INT -i, _timestamp LONG -i",
         primaryKeys "year, month, entryPointHashcode, hashCode, componentId, componentType",
         mergeSchema "false");
 
