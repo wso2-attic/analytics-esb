@@ -7,26 +7,24 @@
         schema "messageFlowId STRING, componentType STRING, componentName STRING,
         componentIndex INT -i, componentId STRING, startTime LONG, endTime LONG, duration LONG, beforePayload STRING,
         afterPayload STRING, contextPropertyMap STRING, transportPropertyMap STRING, children STRING, entryPoint
-        STRING, entryPointHashcode STRING, faultCount INT, hashCode STRING, host STRING, _tenantId INT, _timestamp LONG -i",
+        STRING, entryPointHashcode STRING, faultCount INT, hashCode STRING, host STRING, meta_tenantId INT -i, _timestamp LONG -i",
         incrementalProcessing "esbFlowEvent, MINUTE",
-        mergeSchema "false",
-        globalTenantAccess "true");
+        mergeSchema "false");
 
         CREATE TEMPORARY TABLE esbEvent USING CarbonAnalytics
         OPTIONS (tableName "ESB-EVENT",
         schema "messageFlowId FACET -i, host STRING, hashCode STRING -i, componentName FACET -i, componentType FACET -i,
         componentIndex INT, componentId FACET -i, startTime LONG -i, endTime LONG -i, duration LONG, beforePayload
         STRING, afterPayload STRING, contextPropertyMap STRING, transportPropertyMap STRING, children STRING,
-        entryPoint FACET -i, entryPointHashcode STRING -i, faultCount INT, _tenantId INT, _timestamp LONG -i",
+        entryPoint FACET -i, entryPointHashcode STRING -i, faultCount INT, meta_tenantId INT -i, _timestamp LONG -i",
         primaryKeys "messageFlowId, componentId, componentType, componentIndex",
         incrementalProcessing "esbEvent, MINUTE",
-        mergeSchema "false",
-        globalTenantAccess "true");
+        mergeSchema "false");
 
         INSERT INTO TABLE esbEvent
         SELECT messageFlowId, host, hashCode, componentName, componentType, componentIndex, componentId, startTime,
         endTime, duration, beforePayload, afterPayload, contextPropertyMap, transportPropertyMap, children, entryPoint,
-        entryPointHashcode, faultCount, _tenantId, startTime AS _timestamp
+        entryPointHashcode, faultCount, meta_tenantId, startTime AS _timestamp
         FROM esbFlowEvent;
 
         INCREMENTAL_TABLE_COMMIT esbFlowEvent;
@@ -36,84 +34,81 @@
         schema "year INT -i, month INT -i, day INT -i, hour INT -I, minute INT -i, second INT -i, componentId FACET -i,
         componentName FACET -i, componentType FACET -i, totalDuration LONG, minDuration LONG, maxDuration LONG,
         noOfInvocation LONG -sp, faultCount LONG, startTime LONG -i, facetStartTime FACET -i, entryPoint FACET -i,
-         _tenantId INT, _timestamp LONG -i",
+         meta_tenantId INT -i, _timestamp LONG -i",
         primaryKeys "year, month, day, hour, minute, second, componentId, componentType",
         incrementalProcessing "esbServiceStatPerSecond, MINUTE",
-        mergeSchema "false",
-        globalTenantAccess "true");
+        mergeSchema "false");
 
         INSERT INTO TABLE esbServiceStatPerSecond
         SELECT year, month, day, hour, minute, second, componentId, componentName, componentType, totalDuration,
         minDuration, maxDuration, noOfInvocation, totalFault, startTime,
-        cast(startTime as STRING) as facetStartTime, entryPoint, _tenantId, startTime AS _timestamp
+        cast(startTime as STRING) as facetStartTime, entryPoint, meta_tenantId, startTime AS _timestamp
         FROM
         (SELECT temp.year, temp.month, temp.day, temp.hour, temp.minute, temp.second, temp.componentId,
         temp.componentName, temp.componentType, temp.entryPoint, sum(duration) as totalDuration, count(*) as
         noOfInvocation, sum(faultCount) as totalFault, min(duration) as minDuration, max(duration) as maxDuration,
-        getSecondStartingTime(year, month, day, hour, minute, second) as startTime, _tenantId 
+        getSecondStartingTime(year, month, day, hour, minute, second) as startTime, meta_tenantId 
         FROM
         (SELECT getYear(startTime) as year, getMonth(startTime) as month, getDay(startTime) as day, getHour(startTime)
         as hour, getMinute(startTime) as minute, getSeconds(startTime) as second, duration as duration, componentName,
         componentType, componentId, (CASE WHEN faultCount > 0 then 1 ELSE 0 END) as faultCount,
-        entryPoint, _tenantId FROM esbEvent) temp
+        entryPoint, meta_tenantId FROM esbEvent) temp
         WHERE temp.componentType = "Proxy Service" OR temp.componentType = "API" OR temp.componentType = "Endpoint" OR
         temp.componentType = "Inbound EndPoint"
         GROUP BY temp.year, temp.month, temp.day, temp.hour, temp.minute, temp.second, temp.componentId,
-        temp.componentName, temp.componentType, temp.entryPoint, temp._tenantId) result;
+        temp.componentName, temp.componentType, temp.entryPoint, temp.meta_tenantId) result;
 
         CREATE TEMPORARY TABLE esbServiceStatPerSecondAll USING CarbonAnalytics
         OPTIONS (tableName "ESB-Stat-per-Second-all",
         schema "year INT -i, month INT -i, day INT -i, hour INT -I, minute INT -i, second INT -i, componentId FACET -i,
         componentName FACET -i, componentType FACET -i, totalDuration LONG, minDuration LONG, maxDuration LONG,
         noOfInvocation LONG -sp, faultCount LONG, startTime LONG -i, facetStartTime FACET -i, entryPoint FACET -i,
-         _tenantId INT, _timestamp LONG -i",
+         meta_tenantId INT -i, _timestamp LONG -i",
         primaryKeys "year, month, day, hour, minute, second, componentId, componentType",
-        mergeSchema "false",
-        globalTenantAccess "true");
+        mergeSchema "false");
 
         INSERT INTO TABLE esbServiceStatPerSecondAll
         SELECT year, month, day, hour, minute, second, "ALL", "ALL", "ALL", totalDuration, minDuration, maxDuration,
-        noOfInvocation, totalFault, startTime, facetStartTime, "ALL", _tenantId, _timestamp
+        noOfInvocation, totalFault, startTime, facetStartTime, "ALL", meta_tenantId, _timestamp
         FROM
         (SELECT year, month, day, hour, minute, second, sum(totalDuration) as totalDuration,
         min(minDuration) as minDuration, max(maxDuration) as maxDuration, sum(noOfInvocation) as noOfInvocation,
         sum(faultCount) as totalFault,
         getSecondStartingTime(year, month, day, hour, minute, second) as startTime,
-        cast(getSecondStartingTime(year, month, day, hour, minute, second) as STRING) as facetStartTime, _tenantId INT,
-        _tenantId, getSecondStartingTime(year, month, day, hour, minute, second) as _timestamp
+        cast(getSecondStartingTime(year, month, day, hour, minute, second) as STRING) as facetStartTime, meta_tenantId INT -i,
+        meta_tenantId, getSecondStartingTime(year, month, day, hour, minute, second) as _timestamp
         FROM esbServiceStatPerSecond
         WHERE componentType = "Proxy Service" OR componentType = "API" OR componentType = "Endpoint" OR
         componentType = "Inbound EndPoint"
-        GROUP BY year, month, day, hour, minute, second, _tenantId) temp;
+        GROUP BY year, month, day, hour, minute, second, meta_tenantId) temp;
 
         CREATE TEMPORARY TABLE mediatorStatPerSecond USING CarbonAnalytics
         OPTIONS (tableName "mediator-stat-per-second",
         schema "year INT -i, month INT -i, day INT -i, hour INT -I, minute INT -i, second INT -i, entryPoint FACET -i,
-        entryPointHashcode STRING -i, componentIndex INT, componentId FACET -i, hashCode STRING -i, componentName
+        entryPointHashcode STRING -i, componentId FACET -i, hashCode STRING -i, componentName
         FACET -i, componentType FACET -i, totalDuration LONG, minDuration LONG,
         maxDuration LONG, noOfInvocation LONG -sp, faultCount LONG, startTime LONG -i, facetStartTime FACET -i,
-         _tenantId INT, _timestamp LONG -i",
+         meta_tenantId INT -i, _timestamp LONG -i",
         primaryKeys "year, month, day, hour, minute, second, entryPointHashcode, hashCode, componentId, componentType",
         incrementalProcessing "mediatorStatPerSecond, MINUTE",
-        mergeSchema "false",
-        globalTenantAccess "true");
+        mergeSchema "false");
 
         INSERT INTO TABLE mediatorStatPerSecond
         SELECT temp.year, temp.month, temp.day, temp.hour, temp.minute, temp.second, temp.entryPoint,
-        temp.entryPointHashcode, temp.componentIndex, temp.componentId, temp.hashCode, temp.componentName,
+        temp.entryPointHashcode, temp.componentId, temp.hashCode, temp.componentName,
         temp.componentType, sum(duration) as totalDuration, min(duration) as minDuration, max(duration) as maxDuration,
         count(*) as noOfInvocation, sum(faultCount) as totalFault,
         getSecondStartingTime(temp.year, temp.month, temp.day, temp.hour, temp.minute, temp.second) as startTime,
-        cast(getSecondStartingTime(year, month, day, hour, minute, second) as STRING) as facetStartTime, _tenantId,
+        cast(getSecondStartingTime(year, month, day, hour, minute, second) as STRING) as facetStartTime, meta_tenantId,
         getSecondStartingTime(temp.year, temp.month, temp.day, temp.hour, temp.minute, temp.second) as _timestamp
         FROM (SELECT getYear(startTime) as year, getMonth(startTime) as month, getDay(startTime) as day,
         getHour(startTime) as hour, getMinute(startTime) as minute, getSeconds(startTime) as second, duration as
-        duration, entryPoint, cast(entryPointHashcode as int) entryPointHashcode, componentIndex, cast (hashCode as int)
+        duration, entryPoint, cast(entryPointHashcode as int) entryPointHashcode, cast (hashCode as int)
         hashCode, componentName, componentType, componentId,
-        (CASE WHEN faultCount > 0 then 1 ELSE 0 END) as faultCount, _tenantId FROM esbEvent) temp
+        (CASE WHEN faultCount > 0 then 1 ELSE 0 END) as faultCount, meta_tenantId FROM esbEvent) temp
         GROUP BY temp.year, temp.month, temp.day, temp.hour, temp.minute, temp.second, temp.entryPoint,
-        temp.entryPointHashcode, temp.componentIndex, temp.componentId, temp.hashCode, temp.componentName,
-        temp.componentType, temp._tenantId;
+        temp.entryPointHashcode, temp.componentId, temp.hashCode, temp.componentName,
+        temp.componentType, temp.meta_tenantId;
 
         INCREMENTAL_TABLE_COMMIT esbEvent;
 
@@ -122,11 +117,10 @@
         schema "year INT -i, month INT -i, day INT -i, hour INT -i, minute INT -i, componentId FACET -i,
         componentName FACET -i, componentType FACET -i, totalDuration LONG, minDuration LONG,
         maxDuration LONG, noOfInvocation LONG -sp, faultCount LONG, startTime LONG -i, facetStartTime FACET -i,
-        entryPoint FACET -i, _tenantId INT, _timestamp LONG -i",
+        entryPoint FACET -i, meta_tenantId INT -i, _timestamp LONG -i",
         primaryKeys "year, month, day, hour, minute, componentId, componentType",
         incrementalProcessing "esbServiceStatPerMinute, HOUR",
-        mergeSchema "false",
-        globalTenantAccess "true");
+        mergeSchema "false");
 
         INSERT INTO TABLE esbServiceStatPerMinute
         SELECT year, month, day, hour, minute, componentId, componentName, componentType,
@@ -134,58 +128,56 @@
         sum(noOfInvocation) as noOfInvocation, sum(faultCount) as totalFault,
         getMinuteStartingTime(year, month, day, hour, minute) as startTime,
         cast(getMinuteStartingTime(year, month, day, hour, minute) as STRING) as facetStartTime,
-        entryPoint, _tenantId, getMinuteStartingTime(year, month, day, hour, minute) as _timestamp
+        entryPoint, meta_tenantId, getMinuteStartingTime(year, month, day, hour, minute) as _timestamp
         FROM esbServiceStatPerSecond
-        GROUP BY year, month, day, hour, minute, componentId, componentName, componentType, entryPoint, _tenantId;
+        GROUP BY year, month, day, hour, minute, componentId, componentName, componentType, entryPoint, meta_tenantId;
 
         CREATE TEMPORARY TABLE esbServiceStatPerMinuteAll USING CarbonAnalytics
         OPTIONS (tableName "ESB-Stat-per-Minute-all",
         schema "year INT -i, month INT -i, day INT -i, hour INT -i, minute INT -i, componentId FACET -i,
         componentName FACET -i, componentType FACET -i, totalDuration LONG, minDuration LONG,
         maxDuration LONG, noOfInvocation LONG -sp, faultCount LONG, startTime LONG -i, facetStartTime FACET -i,
-        entryPoint FACET -i, _tenantId INT, _timestamp LONG -i",
+        entryPoint FACET -i, meta_tenantId INT -i, _timestamp LONG -i",
         primaryKeys "year, month, day, hour, minute, componentId, componentType",
-        mergeSchema "false",
-        globalTenantAccess "true");
+        mergeSchema "false");
 
         INSERT INTO TABLE esbServiceStatPerMinuteAll
         SELECT year, month, day, hour, minute, "ALL", "ALL", "ALL", totalDuration, minDuration, maxDuration,
-        noOfInvocation, totalFault, startTime, facetStartTime, "ALL", _tenantId, _timestamp
+        noOfInvocation, totalFault, startTime, facetStartTime, "ALL", meta_tenantId, _timestamp
         FROM
         (SELECT year, month, day, hour, minute, sum(totalDuration) as totalDuration, min(minDuration) as minDuration,
         max(maxDuration) as maxDuration, sum(noOfInvocation) as noOfInvocation, sum(faultCount) as totalFault,
         getMinuteStartingTime(year, month, day, hour, minute) as startTime,
-        cast(getMinuteStartingTime(year, month, day, hour, minute) as STRING) as facetStartTime, _tenantId,
+        cast(getMinuteStartingTime(year, month, day, hour, minute) as STRING) as facetStartTime, meta_tenantId,
         getMinuteStartingTime(year, month, day, hour, minute) as _timestamp
         FROM esbServiceStatPerMinute
         WHERE componentType = "Proxy Service" OR componentType = "API" OR componentType = "Endpoint" OR
         componentType = "Inbound EndPoint"
-        GROUP BY year, month, day, hour, minute, _tenantId) temp;
+        GROUP BY year, month, day, hour, minute, meta_tenantId) temp;
 
         INCREMENTAL_TABLE_COMMIT esbServiceStatPerSecond;
 
         CREATE TEMPORARY TABLE mediatorStatPerMinute USING CarbonAnalytics
         OPTIONS (tableName "mediator-stat-per-minute",
         schema "year INT -i, month INT -i, day INT -i, hour INT -I, minute INT -i, entryPoint FACET -i,
-        entryPointHashcode STRING -i, componentIndex INT, componentId FACET -i, hashCode STRING -i,
+        entryPointHashcode STRING -i, componentId FACET -i, hashCode STRING -i,
         componentName FACET -i, componentType FACET -i, totalDuration LONG, minDuration LONG, maxDuration LONG,
-        noOfInvocation LONG -sp, faultCount LONG, startTime LONG -i, facetStartTime FACET -i, _tenantId INT, 
+        noOfInvocation LONG -sp, faultCount LONG, startTime LONG -i, facetStartTime FACET -i, meta_tenantId INT -i, 
         _timestamp LONG -i",
         primaryKeys "year, month, day, hour, minute, entryPointHashcode, hashCode, componentId, componentType",
         incrementalProcessing "mediatorStatPerMinute, HOUR",
-        mergeSchema "false",
-        globalTenantAccess "true");
+        mergeSchema "false");
 
         INSERT INTO TABLE mediatorStatPerMinute
-        SELECT year, month, day, hour, minute, entryPoint, entryPointHashcode, componentIndex, componentId, hashCode,
+        SELECT year, month, day, hour, minute, entryPoint, entryPointHashcode, componentId, hashCode,
         componentName, componentType, sum(totalDuration) as totalDuration, min(minDuration) as minDuration,
         max(maxDuration) as maxDuration, sum(noOfInvocation) as noOfInvocation, sum(faultCount) as totalFault,
         getMinuteStartingTime(year, month, day, hour, minute) as startingTime,
-        cast(getMinuteStartingTime(year, month, day, hour, minute) as STRING) as facetStartTime, _tenantId,
+        cast(getMinuteStartingTime(year, month, day, hour, minute) as STRING) as facetStartTime, meta_tenantId,
         getMinuteStartingTime(year, month, day, hour, minute) as _timestamp
         FROM mediatorStatPerSecond
-        GROUP BY year, month, day, hour, minute, entryPoint, entryPointHashcode, componentIndex, componentId, hashCode,
-        componentName, componentType, _tenantId;
+        GROUP BY year, month, day, hour, minute, entryPoint, entryPointHashcode, componentId, hashCode,
+        componentName, componentType, meta_tenantId;
 
         INCREMENTAL_TABLE_COMMIT mediatorStatPerSecond;
 
@@ -194,21 +186,20 @@
         schema "year INT -i, month INT -i, day INT -i, hour INT -I, componentId FACET -i,
         componentName FACET -i, componentType FACET -i, totalDuration LONG, minDuration INT, maxDuration INT,
         noOfInvocation LONG -sp, faultCount LONG, startTime LONG -i, facetStartTime FACET -i, entryPoint FACET -i,
-        _tenantId INT, _timestamp LONG -i",
+        meta_tenantId INT -i, _timestamp LONG -i",
         primaryKeys "year, month, day, hour, componentId, componentType",
         incrementalParams "esbServiceStatPerHour, DAY",
-        mergeSchema "false",
-        globalTenantAccess "true");
+        mergeSchema "false");
 
         INSERT INTO TABLE esbServiceStatPerHour
         SELECT year, month, day, hour, componentId, componentName, componentType,
         sum(totalDuration) as totalDuration, min(minDuration) as minDuration, max(maxDuration) as maxDuration,
         sum(noOfInvocation) as noOfInvocation, sum(faultCount) as faultCount,
         getHourStartingTime(year, month, day, hour) as startTime,
-        cast(getHourStartingTime(year, month, day, hour) as STRING) as facetStartTime, entryPoint, _tenantId,
+        cast(getHourStartingTime(year, month, day, hour) as STRING) as facetStartTime, entryPoint, meta_tenantId,
         getHourStartingTime(year, month, day, hour) as _timestamp
         FROM esbServiceStatPerMinute
-        GROUP BY year, month, day, hour, componentId, componentName, componentType, entryPoint, _tenantId;
+        GROUP BY year, month, day, hour, componentId, componentName, componentType, entryPoint, meta_tenantId;
 
         INCREMENTAL_TABLE_COMMIT esbServiceStatPerMinute;
 
@@ -217,45 +208,43 @@
         schema "year INT -i, month INT -i, day INT -i, hour INT -I, componentId FACET -i,
         componentName FACET -i, componentType FACET -i, totalDuration LONG, minDuration INT, maxDuration INT,
         noOfInvocation LONG -sp, faultCount LONG, startTime LONG -i, facetStartTime FACET -i, entryPoint FACET -i,
-        _tenantId INT, _timestamp LONG -i",
+        meta_tenantId INT -i, _timestamp LONG -i",
         primaryKeys "year, month, day, hour, componentId, componentType",
-        mergeSchema "false",
-        globalTenantAccess "true");
+        mergeSchema "false");
 
         INSERT INTO TABLE esbServiceStatPerHourAll
         SELECT year, month, day, hour, "ALL", "ALL", "ALL", totalDuration, minDuration, maxDuration,
-        noOfInvocation, faultCount, startTime, facetStartTime, "ALL", _tenantId, _timestamp
+        noOfInvocation, faultCount, startTime, facetStartTime, "ALL", meta_tenantId, _timestamp
         FROM
         (SELECT year, month, day, hour, sum(totalDuration) as totalDuration, min(minDuration) as minDuration,
         max(maxDuration) as maxDuration, sum(noOfInvocation) as noOfInvocation, sum(faultCount) as faultCount,
         getHourStartingTime(year, month, day, hour) as startTime,
-        cast(getHourStartingTime(year, month, day, hour) as STRING) as facetStartTime, _tenantId,
+        cast(getHourStartingTime(year, month, day, hour) as STRING) as facetStartTime, meta_tenantId,
         getHourStartingTime(year, month, day, hour) as _timestamp
         FROM esbServiceStatPerHour
         WHERE componentType = "Proxy Service" OR componentType = "API" OR componentType = "Inbound EndPoint"
-        GROUP BY year, month, day, hour, _tenantId) temp;
+        GROUP BY year, month, day, hour, meta_tenantId) temp;
 
         CREATE TEMPORARY TABLE mediatorStatPerHour USING CarbonAnalytics
         OPTIONS (tableName "mediator-stat-per-hour",
         schema "year INT -i, month INT -i, day INT -i, hour INT -I, entryPoint FACET -i, entryPointHashcode STRING -i,
         componentId FACET -i, hashCode STRING -i, componentName FACET -i, componentType FACET -i, totalDuration LONG,
         minDuration INT, maxDuration INT, noOfInvocation LONG -sp, faultCount LONG, startTime LONG -i,
-        facetStartTime FACET -i, _tenantId INT, _timestamp LONG -i",
+        facetStartTime FACET -i, meta_tenantId INT -i, _timestamp LONG -i",
         primaryKeys "year, month, day, hour, entryPointHashcode, hashCode, componentId, componentType",
         incrementalParams "mediatorStatPerHour, DAY",
-        mergeSchema "false",
-        globalTenantAccess "true");
+        mergeSchema "false");
 
         INSERT INTO TABLE mediatorStatPerHour
         SELECT year, month, day, hour, entryPoint, entryPointHashcode, componentId, hashCode,
         componentName, componentType, sum(totalDuration) as totalDuration, min(minDuration) as minDuration,
         max(maxDuration) as maxDuration, sum(noOfInvocation) as noOfInvocation, sum(faultCount) as faultCount,
         getHourStartingTime(year, month, day, hour) as startTime,
-        cast(getHourStartingTime(year, month, day, hour) as STRING) as facetStartTime, _tenantId,
+        cast(getHourStartingTime(year, month, day, hour) as STRING) as facetStartTime, meta_tenantId,
         getHourStartingTime(year, month, day, hour) as _timestamp
         FROM mediatorStatPerMinute
         GROUP BY year, month, day, hour, entryPoint, entryPointHashcode, componentId, hashCode,
-        componentName, componentType, _tenantId;
+        componentName, componentType, meta_tenantId;
 
         INCREMENTAL_TABLE_COMMIT mediatorStatPerMinute;
 
@@ -263,21 +252,20 @@
         OPTIONS (tableName "ESB-Stat-per-Day",
         schema "year INT -i, month INT -i, day INT -i, componentId FACET -i, componentName FACET -i,
         componentType FACET -i, totalDuration LONG, minDuration INT, maxDuration INT, noOfInvocation LONG -sp,
-        faultCount LONG, startTime LONG -i, facetStartTime FACET -i, entryPoint FACET -i, _tenantId INT,
+        faultCount LONG, startTime LONG -i, facetStartTime FACET -i, entryPoint FACET -i, meta_tenantId INT -i,
          _timestamp LONG -i",
         primaryKeys "year, month, day, componentId, componentType",
-        mergeSchema "false",
-        globalTenantAccess "true");
+        mergeSchema "false");
 
         INSERT INTO TABLE esbServiceStatPerDay
         SELECT year, month, day, componentId, componentName, componentType,
         sum(totalDuration) as totalDuration, min(minDuration) as minDuration, max(maxDuration) as maxDuration,
         sum(noOfInvocation) as noOfInvocation, sum(faultCount) as faultCount,
         getDateStartingTime(year, month, day) as startTime,
-        cast(getDateStartingTime(year, month, day) as STRING) as facetStartTime, entryPoint, _tenantId, 
+        cast(getDateStartingTime(year, month, day) as STRING) as facetStartTime, entryPoint, meta_tenantId, 
         getDateStartingTime(year, month, day) as _timestamp
         FROM esbServiceStatPerHour
-        GROUP BY year, month, day, componentId, componentName, componentType, entryPoint, _tenantId;
+        GROUP BY year, month, day, componentId, componentName, componentType, entryPoint, meta_tenantId;
 
         INCREMENTAL_TABLE_COMMIT esbServiceStatPerHour;
 
@@ -285,45 +273,43 @@
         OPTIONS (tableName "ESB-Stat-per-Day",
         schema "year INT -i, month INT -i, day INT -i, componentId FACET -i, componentName FACET -i,
         componentType FACET -i, totalDuration LONG, minDuration INT, maxDuration INT, noOfInvocation LONG -sp,
-        faultCount LONG, startTime LONG -i, facetStartTime FACET -i, entryPoint FACET -i, _tenantId INT, 
+        faultCount LONG, startTime LONG -i, facetStartTime FACET -i, entryPoint FACET -i, meta_tenantId INT -i, 
         _timestamp LONG -i",
         primaryKeys "year, month, day, componentId, componentType",
-        mergeSchema "false",
-        globalTenantAccess "true");
+        mergeSchema "false");
 
         INSERT INTO TABLE esbServiceStatPerDayAll
         SELECT year, month, day, "ALL", "ALL", "ALL", totalDuration, minDuration, maxDuration,
-        noOfInvocation, faultCount, startTime, facetStartTime, "ALL", _tenantId, _timestamp
+        noOfInvocation, faultCount, startTime, facetStartTime, "ALL", meta_tenantId, _timestamp
         FROM
         (SELECT year, month, day, sum(totalDuration) as totalDuration, min(minDuration) as minDuration,
         max(maxDuration) as maxDuration, sum(noOfInvocation) as noOfInvocation, sum(faultCount) as faultCount,
         getDateStartingTime(year, month, day) as startTime,
-        cast(getDateStartingTime(year, month, day) as STRING) as facetStartTime, _tenantId,
+        cast(getDateStartingTime(year, month, day) as STRING) as facetStartTime, meta_tenantId,
         getDateStartingTime(year, month, day) as _timestamp
         FROM esbServiceStatPerDay
         WHERE componentType = "Proxy Service" OR componentType = "API" OR componentType = "Inbound EndPoint"
-        GROUP BY year, month, day, _tenantId) temp;
+        GROUP BY year, month, day, meta_tenantId) temp;
 
         CREATE TEMPORARY TABLE mediatorStatPerDay USING CarbonAnalytics
         OPTIONS (tableName "mediator-stat-per-day",
         schema "year INT -i, month INT -i, day INT -i, entryPoint FACET -i, entryPointHashcode STRING -i,
         componentId FACET -i, hashCode STRING -i, componentName FACET -i, componentType FACET -i, totalDuration
         LONG, minDuration INT, maxDuration INT, noOfInvocation LONG -sp, faultCount LONG, startTime LONG -i,
-        facetStartTime FACET -i, _tenantId INT, _timestamp LONG -i",
+        facetStartTime FACET -i, meta_tenantId INT -i, _timestamp LONG -i",
         primaryKeys "year, month, day, entryPointHashcode, hashCode, componentId, componentType",
-        mergeSchema "false",
-        globalTenantAccess "true");
+        mergeSchema "false");
 
         INSERT INTO TABLE mediatorStatPerDay
         SELECT year, month, day, entryPoint, entryPointHashcode, componentId, hashCode,
         componentName, componentType, sum(totalDuration) as totalDuration, min(minDuration) as minDuration,
         max(maxDuration) as maxDuration, sum(noOfInvocation) as noOfInvocation, sum(faultCount) as faultCount,
         getDateStartingTime(year, month, day) as startTime,
-        cast(getDateStartingTime(year, month, day) as STRING) as facetStartTime, _tenantId,
+        cast(getDateStartingTime(year, month, day) as STRING) as facetStartTime, meta_tenantId,
         getDateStartingTime(year, month, day) as _timestamp
         FROM mediatorStatPerHour
         GROUP BY year, month, day, entryPoint, entryPointHashcode, componentId, hashCode,
-        componentName, componentType, _tenantId;
+        componentName, componentType, meta_tenantId;
 
         INCREMENTAL_TABLE_COMMIT mediatorStatPerHour;
 
@@ -331,65 +317,62 @@
         OPTIONS (tableName "ESB-Stat-per-Month",
         schema "year INT -i, month INT -i, componentId FACET -i, componentName FACET -i,
         componentType FACET -i, totalDuration LONG, minDuration INT, maxDuration INT, noOfInvocation LONG -sp,
-        faultCount LONG, startTime LONG -i, facetStartTime FACET -i, entryPoint FACET -i, _tenantId INT,
+        faultCount LONG, startTime LONG -i, facetStartTime FACET -i, entryPoint FACET -i, meta_tenantId INT -i,
         _timestamp LONG -i",
         primaryKeys "year, month, componentId, componentType",
-        mergeSchema "false",
-        globalTenantAccess "true");
+        mergeSchema "false");
 
         INSERT INTO TABLE esbServiceStatPerMonth
         SELECT year, month, componentId, componentName, componentType, sum(totalDuration) as totalDuration,
         min(minDuration) as minDuration, max(maxDuration) as maxDuration,
         sum(noOfInvocation) as noOfInvocation, sum(faultCount) as faultCount,
         getMonthStartingTime(year, month) as startTime,
-        cast(getMonthStartingTime(year, month) as STRING) as facetStartTime, entryPoint, _tenantId, 
+        cast(getMonthStartingTime(year, month) as STRING) as facetStartTime, entryPoint, meta_tenantId, 
         getMonthStartingTime(year, month) as _timestamp
         FROM esbServiceStatPerDay
-        GROUP BY year, month, componentId, componentName, componentType, entryPoint, _tenantId;
+        GROUP BY year, month, componentId, componentName, componentType, entryPoint, meta_tenantId;
 
         CREATE TEMPORARY TABLE esbServiceStatPerMonthAll USING CarbonAnalytics
         OPTIONS (tableName "ESB-Stat-per-Month",
         schema "year INT -i, month INT -i, componentId FACET -i, componentName FACET -i,
         componentType FACET -i, totalDuration LONG, minDuration INT, maxDuration INT, noOfInvocation LONG -sp,
-        faultCount LONG, startTime LONG -i, facetStartTime FACET -i, entryPoint FACET -i, _tenantId INT,
+        faultCount LONG, startTime LONG -i, facetStartTime FACET -i, entryPoint FACET -i, meta_tenantId INT -i,
         _timestamp LONG -i",
         primaryKeys "year, month, componentId, componentType",
-        mergeSchema "false",
-        globalTenantAccess "true");
+        mergeSchema "false");
 
         INSERT INTO TABLE esbServiceStatPerMonthAll
         SELECT year, month, "ALL", "ALL", "ALL", totalDuration, minDuration, maxDuration,
-        noOfInvocation, faultCount, startTime, facetStartTime, "ALL", _tenantId, _timestamp
+        noOfInvocation, faultCount, startTime, facetStartTime, "ALL", meta_tenantId, _timestamp
         FROM
         (SELECT year, month, sum(totalDuration) as totalDuration, min(minDuration) as minDuration,
         max(maxDuration) as maxDuration, sum(noOfInvocation) as noOfInvocation, sum(faultCount) as faultCount,
         getMonthStartingTime(year, month) as startTime,
-        cast(getMonthStartingTime(year, month) as STRING) as facetStartTime, _tenantId,
+        cast(getMonthStartingTime(year, month) as STRING) as facetStartTime, meta_tenantId,
         getMonthStartingTime(year, month) as _timestamp
         FROM esbServiceStatPerMonth
         WHERE componentType = "Proxy Service" OR componentType = "API" OR componentType = "Inbound EndPoint"
-        GROUP BY year, month, _tenantId) temp;
+        GROUP BY year, month, meta_tenantId) temp;
 
         CREATE TEMPORARY TABLE mediatorStatPerMonth USING CarbonAnalytics
         OPTIONS (tableName "mediator-stat-per-month",
         schema "year INT -i, month INT -i, entryPoint FACET -i, entryPointHashcode STRING -i,
         componentId FACET -i, hashCode STRING -i, componentName FACET -i, componentType FACET -i, totalDuration LONG,
         minDuration INT, maxDuration INT, noOfInvocation LONG -sp, faultCount LONG, startTime LONG -i,
-        facetStartTime FACET -i, _tenantId INT, _timestamp LONG -i",
+        facetStartTime FACET -i, meta_tenantId INT -i, _timestamp LONG -i",
         primaryKeys "year, month, entryPointHashcode, hashCode, componentId, componentType",
-        mergeSchema "false",
-        globalTenantAccess "true");
+        mergeSchema "false");
 
         INSERT INTO TABLE mediatorStatPerMonth
         SELECT year, month, entryPoint, entryPointHashcode, componentId, hashCode,
         componentName, componentType, sum(totalDuration) as totalDuration, min(minDuration) as minDuration,
         max(maxDuration) as maxDuration, sum(noOfInvocation) as noOfInvocation, sum(faultCount) as faultCount,
         getMonthStartingTime(year, month) as startTime,
-        cast(getMonthStartingTime(year, month) as STRING) as facetStartTime, _tenantId,
+        cast(getMonthStartingTime(year, month) as STRING) as facetStartTime, meta_tenantId,
         getMonthStartingTime(year, month) as _timestamp
         FROM mediatorStatPerDay
         GROUP BY year, month, entryPoint, entryPointHashcode, componentId, hashCode, componentName, componentType,
-        _tenantId;
+        meta_tenantId;
     </Script>
     <CronExpression></CronExpression>
 </Analytics>

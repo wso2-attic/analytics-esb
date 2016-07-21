@@ -3,6 +3,12 @@
   "version": "1.0.0",
   "nickName": "per-second",
   "description": "Proxy,API,Endpoint stat per second based",
+  "metaData": [
+    {
+      "name": "tenantId",
+      "type": "INT"
+    }
+  ],
   "payloadData": [
     {
       "name": "year",

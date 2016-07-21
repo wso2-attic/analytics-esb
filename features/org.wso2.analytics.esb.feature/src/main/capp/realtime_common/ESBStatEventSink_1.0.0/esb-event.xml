@@ -21,6 +21,13 @@
 <EventStoreConfiguration>
     <TableSchema>
         <ColumnDefinition>
+            <Name>meta_tenantId</Name>
+            <EnableIndexing>true</EnableIndexing>
+            <IsPrimaryKey>false</IsPrimaryKey>
+            <EnableScoreParam>false</EnableScoreParam>
+            <Type>INTEGER</Type>
+        </ColumnDefinition>
+        <ColumnDefinition>
             <Name>messageFlowId</Name>
             <EnableIndexing>true</EnableIndexing>
             <IsPrimaryKey>false</IsPrimaryKey>

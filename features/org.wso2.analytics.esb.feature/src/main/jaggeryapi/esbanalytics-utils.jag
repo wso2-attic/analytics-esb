@@ -2,7 +2,7 @@
 /*
 * Get the mostly invoked five components (APIs/Proxyies/Sequences/Endpoints)
 */
-function getMostInvokedComponentNames(connector, loggedInUser, componentType) {
+function getMostInvokedComponentNames(connector, superTenantId, componentType, tenantId) {
     var result = [];
     var timeFrom = request.getParameter("timeFrom");
     var timeTo = request.getParameter("timeTo");
@@ -14,10 +14,10 @@ function getMostInvokedComponentNames(connector, loggedInUser, componentType) {
     var query = stringify({
                               "fieldName": "componentName",
                               "categoryPath": [],
-                              "query": "startTime : [" + timeFrom + " TO " + timeTo + "} AND _componentType:\"" + componentType + "\"",
+                              "query": "startTime : [" + timeFrom + " TO " + timeTo + "} AND _componentType:\"" + componentType + "\" AND meta_tenantId : [" + tenantId + " TO " + tenantId + "]",
                               "scoreFunction": "noOfInvocation"
                           });
-    var resp = connector.drillDownCategories(loggedInUser, tableName, query);
+    var resp = connector.drillDownCategories(superTenantId, tableName, query);
     if (resp.status == "success") {
         var drillDownResult = JSON.parse(resp.getMessage());
         for (var key in drillDownResult["categories"]) {
@@ -37,7 +37,7 @@ function getMostInvokedComponentNames(connector, loggedInUser, componentType) {
 /*
 * Get the list of components of a given type(API/Proxy/Sequence/Endpoint/InboundEndpoint)
 */
-function getComponentNames(connector, loggedInUser, componentType) {
+function getComponentNames(connector, superTenantId, componentType, tenantId) {
     result = [];
     if (componentType == "Proxy Service" || componentType == "API" || componentType == "Inbound EndPoint") {
         var tableName = "ESB-STAT-PER-MINUTE";
@@ -46,9 +46,9 @@ function getComponentNames(connector, loggedInUser, componentType) {
     }
     query = stringify({
                           "fieldName": "componentName",
-                          "query": "_componentType : \"" + componentType + "\""
+                          "query": "_componentType : \"" + componentType + "\" AND meta_tenantId : [" + tenantId + " TO " + tenantId + "]"
                       });
-    resp = connector.drillDownCategories(loggedInUser, tableName, query);
+    resp = connector.drillDownCategories(superTenantId, tableName, query);
     if (resp.status == "success") {
         var proxyNames = JSON.parse(resp.getMessage());
         for (var name in proxyNames["categories"]) {
@@ -65,13 +65,13 @@ function getComponentNames(connector, loggedInUser, componentType) {
 /*
 * Get the latency (time taken to invoke) of a component
 */
-function getLatency(connector, loggedInUser, timeFrom, timeTo, tableName, componentName, entryPoint) {
+function getLatency(connector, superTenantId, timeFrom, timeTo, tableName, componentName, entryPoint, tenantId) {
     var result = [];
     var query;
     if (entryPoint == 'undefined' || entryPoint === null) {
-        query = "_componentName : \"" + componentName + "\" AND startTime : [" + timeFrom + " TO " + timeTo + "}";
+        query = "_componentName : \"" + componentName + "\" AND startTime : [" + timeFrom + " TO " + timeTo + "} AND meta_tenantId : [" + tenantId + " TO " + tenantId + "]";
     } else {
-        query = "entryPoint : " + entryPoint + " AND _componentName : \"" + componentName + "\" AND startTime : [" + timeFrom + " TO " + timeTo + "}";
+        query = "entryPoint : " + entryPoint + " AND _componentName : \"" + componentName + "\" AND startTime : [" + timeFrom + " TO " + timeTo + "} AND meta_tenantId : [" + tenantId + " TO " + tenantId + "]";
     }
     query = stringify({
                           tableName: tableName,
@@ -79,7 +79,7 @@ function getLatency(connector, loggedInUser, timeFrom, timeTo, tableName, compon
                           start: 0,
                           count: 60
                       });
-    resp = connector.search(loggedInUser, tableName, query);
+    resp = connector.search(superTenantId, tableName, query);
     if (resp.status == "success") {
         var dataPoints = JSON.parse(resp.getMessage());
         for (var i = 0; i < dataPoints.length; i++) {
@@ -104,13 +104,13 @@ function getLatency(connector, loggedInUser, timeFrom, timeTo, tableName, compon
 /*
 * Get the message rate (count of messages) of a component
 */
-function getMessageRate(connector, loggedInUser, timeFrom, timeTo, tableName, componentName, entryPoint) {
+function getMessageRate(connector, superTenantId, timeFrom, timeTo, tableName, componentName, entryPoint, tenantId) {
     var result = [];
     var query;
     if (entryPoint == 'undefined' || entryPoint === null) {
-        query = "_componentName : \"" + componentName + "\" AND startTime : [" + timeFrom + " TO " + timeTo + "}";
+        query = "_componentName : \"" + componentName + "\" AND startTime : [" + timeFrom + " TO " + timeTo + "} AND meta_tenantId : [" + tenantId + " TO " + tenantId + "]";
     } else {
-        query = "entryPoint : " + entryPoint + " AND _componentName : \"" + componentName + "\" AND startTime : [" + timeFrom + " TO " + timeTo + "}";
+        query = "entryPoint : " + entryPoint + " AND _componentName : \"" + componentName + "\" AND startTime : [" + timeFrom + " TO " + timeTo + "} AND meta_tenantId : [" + tenantId + " TO " + tenantId + "]";
     }
     query = stringify({
                           tableName: tableName,
@@ -119,7 +119,7 @@ function getMessageRate(connector, loggedInUser, timeFrom, timeTo, tableName, co
                           count: 60
                       });
 
-    resp = connector.search(loggedInUser, tableName, query);
+    resp = connector.search(superTenantId, tableName, query);
     if (resp.status == "success") {
         var dataPoints = JSON.parse(resp.getMessage());
         for (var i = 0; i < dataPoints.length; i++) {
@@ -143,7 +143,7 @@ function getMessageRate(connector, loggedInUser, timeFrom, timeTo, tableName, co
 /*
 * Get message stats of a component
 */
-function getStats(connector, loggedInUser, componentType, componentName, entryPoint, timeRanges, table) {
+function getStats(connector, superTenantId, componentType, componentName, entryPoint, timeRanges, table, tenantId) {
     var timeRange = Packages.org.wso2.analytics.esb.bean.TimeRange;
     var result = {};
     var searchParams = [];
@@ -170,9 +170,9 @@ function getStats(connector, loggedInUser, componentType, componentName, entryPo
     for (var i = 0; i < timeRanges.size(); i++) {
         timeRange = timeRanges.get(i);
         if (entryPoint == 'undefined' || entryPoint === null) {
-            query = "_" + componentIdentifier + " : \"" + componentName + "\" AND startTime : [" + timeRange.range[0] + " TO " + timeRange.range[1] + "}";
+            query = "_" + componentIdentifier + " : \"" + componentName + "\" AND startTime : [" + timeRange.range[0] + " TO " + timeRange.range[1] + "} AND meta_tenantId : [" + tenantId + " TO " + tenantId + "]";
         } else {
-            query = "entryPoint : " + entryPoint + " AND _" + componentIdentifier + " : \"" + componentName + "\" AND startTime : [" + timeRange.range[0] + " TO " + timeRange.range[1] + "}";
+            query = "entryPoint : " + entryPoint + " AND _" + componentIdentifier + " : \"" + componentName + "\" AND startTime : [" + timeRange.range[0] + " TO " + timeRange.range[1] + "} AND meta_tenantId : [" + tenantId + " TO " + tenantId + "]";
         }
         var searchParam = {
             tableName: table + timeRange.unit,
@@ -187,7 +187,7 @@ function getStats(connector, loggedInUser, componentType, componentName, entryPo
         searchParam.aggregateFields = aggregateFields;
         searchParams.push(searchParam);
     }
-    resp = connector.searchMultiTablesWithAggregates(loggedInUser, JSON.stringify(searchParams));
+    resp = connector.searchMultiTablesWithAggregates(superTenantId, JSON.stringify(searchParams));
     if (resp.status == "success") {
         var totalInvocation = 0;
         var totalFault = 0;
@@ -217,7 +217,7 @@ function getStats(connector, loggedInUser, componentType, componentName, entryPo
 /*
 * Get the list of messages arrived to a component (Proxy/API/Sequnce/Mediator)
 */
-function getComponentMessages(connector, loggedInUser, componentName, componentType, entryPoint, timeRangeUtil) {
+function getComponentMessages(connector, superTenantId, componentName, componentType, entryPoint, timeRangeUtil, tenantId) {
     var result = {};
     var data = [];
     var timeFrom = request.getParameter("timeFrom");
@@ -231,9 +231,9 @@ function getComponentMessages(connector, loggedInUser, componentName, componentT
     var order = request.getParameter("order[0][dir]");
 
     if (componentType == "Mediator") {
-        tempQuery = "_componentType : \"" + componentType + "\" AND _componentId : \"" + componentName + "\" AND startTime : [" + timeFrom + " TO " + timeTo + "}";
+        tempQuery = "_componentType : \"" + componentType + "\" AND _componentId : \"" + componentName + "\" AND startTime : [" + timeFrom + " TO " + timeTo + "} AND meta_tenantId : [" + tenantId + " TO " + tenantId + "]";
     } else {
-        tempQuery = "_componentType : \"" + componentType + "\" AND _componentName : \"" + componentName + "\" AND startTime : [" + timeFrom + " TO " + timeTo + "}";
+        tempQuery = "_componentType : \"" + componentType + "\" AND _componentName : \"" + componentName + "\" AND startTime : [" + timeFrom + " TO " + timeTo + "} AND meta_tenantId : [" + tenantId + " TO " + tenantId + "]";
     }
 
     // Add the entry point if exists
@@ -259,8 +259,8 @@ function getComponentMessages(connector, loggedInUser, componentName, componentT
             ]
         });
 
-    var resp = connector.search(loggedInUser, "ESB-EVENT", query);
-    var count = connector.searchCount(loggedInUser, "ESB-EVENT", query);
+    var resp = connector.search(superTenantId, "ESB-EVENT", query);
+    var count = connector.searchCount(superTenantId, "ESB-EVENT", query);
     var limit = count.getMessage();
 
     if (resp.status == "success") {
@@ -339,7 +339,7 @@ function processProperties(propertyMap) {
 /*
 * Get message flow of a component (Proxy/API)
 */
-function getEntrypointMessageFlow(connector, loggedInUser, timeRanges) {
+function getEntrypointMessageFlow(connector, superTenantId, timeRanges, tenantId) {
     var result = [];
     var timeFrom = request.getParameter("timeFrom");
     var timeTo = request.getParameter("timeTo");
@@ -348,7 +348,7 @@ function getEntrypointMessageFlow(connector, loggedInUser, timeRanges) {
     // get schema 
     var tableName = "ESB-CONFIG-ENTRY-STREAM";
     var query = stringify({
-            "query": "_entryName : \"" + entryName + "\" AND _timestamp : [" + 0000000000 + " TO " + timeTo + "}",
+            "query": "_entryName : \"" + entryName + "\" AND _timestamp : [" + 0000000000 + " TO " + timeTo + "} AND meta_tenantId : [" + tenantId + " TO " + tenantId + "]",
             "start": 0,
             "count": 100,
             "sortBy": [
@@ -359,7 +359,7 @@ function getEntrypointMessageFlow(connector, loggedInUser, timeRanges) {
                 }
             ]
         });
-    var resp = connector.search(loggedInUser, tableName, query);
+    var resp = connector.search(superTenantId, tableName, query);
     var config = null;
 
     if (resp.status == "success") {
@@ -385,7 +385,7 @@ function getEntrypointMessageFlow(connector, loggedInUser, timeRanges) {
                 var searchParam = {
                     tableName: "MEDIATOR-STAT-PER-" + timeRange.unit,
                     groupByField: "componentId",
-                    query: "entryPointHashcode : \"" + entryHashCode + "\" AND startTime : [" + timeRange.range[0] + " TO " + timeRange.range[1] + "}",
+                    query: "entryPointHashcode : \"" + entryHashCode + "\" AND startTime : [" + timeRange.range[0] + " TO " + timeRange.range[1] + "} AND meta_tenantId : [" + tenantId + " TO " + tenantId + "]",
                     aggregateLevel: 0,
                     parentPath: [],
                     noOfRecords: 10000
@@ -393,7 +393,7 @@ function getEntrypointMessageFlow(connector, loggedInUser, timeRanges) {
                 searchParam.aggregateFields = aggregateFields;
                 searchParams.push(searchParam);
             }
-            var resp = connector.searchMultiTablesWithAggregates(loggedInUser, JSON.stringify(searchParams));
+            var resp = connector.searchMultiTablesWithAggregates(superTenantId, JSON.stringify(searchParams));
             var allTables = JSON.parse(resp.getMessage());
 
             // Aggregate all tables and prepare component map
