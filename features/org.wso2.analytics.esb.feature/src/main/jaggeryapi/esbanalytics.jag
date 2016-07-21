@@ -97,7 +97,8 @@
             return;
         }
     }
-    tenantId = carbon.server.tenantId();
+    var user = carbon.server.tenantUser(loggedInUser);
+    tenantId = user.tenantId;
 
     var cache = application.get("AnalyticsWebServiceCache");
     if (cache == null) {
