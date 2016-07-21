@@ -26,6 +26,7 @@ div#header-div div.left-logo {
     margin-left: 25px;
     margin-top: 22px;
     position: absolute;
+    height: 45px;
 }
 
 div#header-div div.right-logo {
