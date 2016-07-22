@@ -61,11 +61,9 @@ public class ESBAnalyticsStatisticsTestCase extends DASIntegrationBaseTest {
     @BeforeClass(groups = "wso2.das4esb.stats", alwaysRun = true)
     protected void init() throws Exception {
         super.init();
-        log.info("Deploying CApp for tenants");
-        deployCarbonAppForTenants(TestConstants.REALTIME_TENANT_CAPP, TestConstants.TENANTS);
         log.info("Publishing events");
         publishSampleData(NUMBER_OF_PROXIES, TOTAL_REQUESTS_PER_PROXY, NUMBER_OF_MEDIATORS, NUMBER_OF_FAULTS,
-                ENABLE_PAYLOADS, ENABLE_PROPERTIES, TestConstants.TENANTS);
+                ENABLE_PAYLOADS, ENABLE_PROPERTIES, TestConstants.TENANT_IDS);
         log.info("Publishing complete. Waiting for indexing...");
         Thread.sleep(WAIT_FOR_INDEXING);
         log.info("Indexing complete. Executing the spark scripts...");
@@ -210,18 +208,12 @@ public class ESBAnalyticsStatisticsTestCase extends DASIntegrationBaseTest {
      * @throws Exception
      */
     private void publishSampleData(int noOfProxies, int requestsPerProxy, int noOfMediators, int NoOfFaults, 
-                boolean enablePayloads, boolean enableProperties, String [][] tenants) throws Exception {
+                boolean enablePayloads, boolean enableProperties, int [] tenants) throws Exception {
         ExecutorService executorService = Executors.newFixedThreadPool(noOfProxies * tenants.length);
-        for (String[] tenant: tenants) {
+        for (int tenantId: TestConstants.TENANT_IDS) {
             for (int i = 0; i < noOfProxies; i++) {
-                String username;
-                if (tenant[1].equals("carbon.super")) {
-                    username = tenant[0];
-                } else {
-                    username = tenant[0] + "@" + tenant[1];
-                }
-                DataPublisherClient  dataPublisherClient = new DataPublisherClient(username, tenant[0]);
-                executorService.execute(new ConcurrentEventsPublisher(dataPublisherClient, requestsPerProxy,
+                DataPublisherClient  dataPublisherClient = new DataPublisherClient();
+                executorService.execute(new ConcurrentEventsPublisher(dataPublisherClient, tenantId, requestsPerProxy,
                         "AccuracyTestProxy_" + i, noOfMediators, NoOfFaults, enablePayloads, 
                         enableProperties, SLEEP_BETWEEN_REQUESTS));
             }
@@ -242,13 +234,7 @@ public class ESBAnalyticsStatisticsTestCase extends DASIntegrationBaseTest {
      */
     private void testCounts(String table, String aggregateAttribute, String componentId, int expectedCount) 
                 throws AnalyticsException {
-        for (String[] tenant: TestConstants.TENANTS) {
-            String username;
-            if (tenant[1].equals("carbon.super")) {
-                username = tenant[0];
-            } else {
-                username = tenant[0] + "@" + tenant[1];
-            }
+        for (int tenantId: TestConstants.TENANT_IDS) {
             List<AggregateField> fields = new ArrayList<AggregateField>();
             fields.add(new AggregateField(new String[] { aggregateAttribute }, "sum", TestConstants.REQUEST_COUNT));
             AggregateRequest aggregateRequest = new AggregateRequest();
@@ -256,14 +242,15 @@ public class ESBAnalyticsStatisticsTestCase extends DASIntegrationBaseTest {
             aggregateRequest.setAggregateLevel(0);
             aggregateRequest.setParentPath(new ArrayList<String>());
             aggregateRequest.setGroupByField(TestConstants.COMPONENT_ID);
-            aggregateRequest.setQuery(TestConstants.COMPONENT_ID + ":\"" + componentId + "\"");
+            aggregateRequest.setQuery(TestConstants.META_TENANT_ID + ":" + tenantId + " AND " + TestConstants.COMPONENT_ID +
+                    ":\"" + componentId + "\"");
             aggregateRequest.setTableName(table);
-            AnalyticsIterator<Record> resultItr = this.analyticsDataAPI.searchWithAggregates(username, aggregateRequest);
+            AnalyticsIterator<Record> resultItr = this.analyticsDataAPI.searchWithAggregates(-1234, aggregateRequest);
             int count = ((Double) resultItr.next().getValue(TestConstants.REQUEST_COUNT)).intValue();
             log.info("ComponentId: " + componentId + " | Expected: " + expectedCount + " | " + "Actual: "
-                    + count + " | user: " + username);
+                    + count + " | tenant: " + tenantId);
             Assert.assertEquals(count, expectedCount, aggregateAttribute + " is incorrect in " + table + 
-                    " table, for user: " + username);
+                    " table, for tenant: " + tenantId);
         }
     }
     

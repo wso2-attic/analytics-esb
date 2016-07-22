@@ -31,8 +31,10 @@ public class DataPublisherClient {
 
     private static final String URL = "tcp://localhost:9511";
     private DataPublisher dataPublisher;
+    private String username = "admin";
+    private String password = "admin";
 
-    public DataPublisherClient(String url, String username, String password) throws Exception {
+    public DataPublisherClient(String url) throws Exception {
         String resourceDir = new File(this.getClass().getClassLoader().getResource("datapublisher").toURI()).getAbsolutePath();
         System.setProperty("Security.KeyStore.Location", resourceDir + File.separator + "wso2carbon.jks");
         System.setProperty("javax.net.ssl.trustStore", resourceDir + File.separator + "client-truststore.jks");
@@ -42,7 +44,7 @@ public class DataPublisherClient {
         this.dataPublisher = new DataPublisher(url, username, password);
     }
 
-    public DataPublisherClient(String username, String password) throws Exception {
+    public DataPublisherClient() throws Exception {
         String resourceDir = new File(this.getClass().getClassLoader().getResource("datapublisher").toURI()).getAbsolutePath();
         System.setProperty("Security.KeyStore.Location", resourceDir + File.separator + "wso2carbon.jks");
         System.setProperty("javax.net.ssl.trustStore", resourceDir + File.separator + "client-truststore.jks");
