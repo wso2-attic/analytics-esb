@@ -38,19 +38,13 @@ public class ESBAnalyticsPublishingTestCase extends DASIntegrationBaseTest {
     @BeforeClass(groups = "wso2.das4esb.publishing", dependsOnGroups = "wso2.das", alwaysRun = true)
     protected void init() throws Exception {
         super.init();
-        deployCarbonAppForTenants(TestConstants.REALTIME_TENANT_CAPP, TestConstants.TENANTS);
     }
 
     @Test(groups = "wso2.das4esb.publishing", description = "Test Publishing configs")
     public void testPublishingConfigs() throws Exception {
-        for (String[] tenant: TestConstants.TENANTS) {
-            String username;
-            if (tenant[1].equals("carbon.super")) {
-                username = tenant[0];
-            } else {
-                username = tenant[0] + "@" + tenant[1];
-            }
-            DataPublisherClient  dataPublisherClient = new DataPublisherClient(username, tenant[0]);
+        for (int tenantId: TestConstants.TENANT_IDS) {
+            DataPublisherClient  dataPublisherClient = new DataPublisherClient();
+            Object[] metaData = { tenantId };
             String[] payloadData = new String[3];
             payloadData[0] = "1243212601";
             payloadData[1] = "PublishingTestProxy1";
@@ -68,36 +62,34 @@ public class ESBAnalyticsPublishingTestCase extends DASIntegrationBaseTest {
                 ",\"group\":\"PublishingTestProxy1@1:PROXY_INSEQ\"}]";
             Event event = new Event();
             event.setPayloadData(payloadData);
+            event.setMetaData(metaData);
             dataPublisherClient.publish(TestConstants.ESB_CONFIGS_TABLE, "1.0.0", event);
             Thread.sleep(5000);
-            int configsCount = this.analyticsDataAPI.searchCount(username, TestConstants.ESB_CONFIGS_TABLE, "*:*");
-            Assert.assertEquals(configsCount, 1, "ESB configs has not correctly published for user: " + username);
+            int configsCount = this.analyticsDataAPI.searchCount(-1234, TestConstants.ESB_CONFIGS_TABLE, 
+                    TestConstants.META_TENANT_ID + ":" + tenantId);
+            Assert.assertEquals(configsCount, 1, "ESB configs has not correctly published for tenant: " + tenantId);
         }
     }
     
     
     @Test(groups = "wso2.das4esb.publishing", description = "Test Publishing esb events")
     public void testPublishingEsbEvents() throws Exception {
-        for (String[] tenant: TestConstants.TENANTS) {
-            String username;
-            if (tenant[1].equals("carbon.super")) {
-                username = tenant[0];
-            } else {
-                username = tenant[0] + "@" + tenant[1];
-            }
-            DataPublisherClient  dataPublisherClient = new DataPublisherClient(username, tenant[0]);
+        for (int tenantId: TestConstants.TENANT_IDS) {
+            DataPublisherClient  dataPublisherClient = new DataPublisherClient();
             String messageId = "urn_uuid_" + UUID.randomUUID();
             int noOfMediators = 10;
             String[] payloadData = new String[2];
             payloadData[0] = messageId;
             payloadData[1] = Utils.getESBCompressedEventString(messageId,"PublishingTestProxy2", noOfMediators, true, true,
                     false, System.currentTimeMillis());
-            Object[] metaData = { true };
+            Object[] metaData = { true, tenantId };
             Event event = new Event(null, System.currentTimeMillis(), metaData, null, payloadData);
             dataPublisherClient.publish(TestConstants.ESB_FLOW_ENTRY_STREAM_NAME, "1.0.0", event);
             Thread.sleep(5000);
-            int esbEventsCount = this.analyticsDataAPI.searchCount(username, TestConstants.ESB_EVENTS_TABLE, "*:*");
-            Assert.assertEquals(esbEventsCount, noOfMediators + 1, "ESB event has not correctly published for user: " + username);
+            int esbEventsCount = this.analyticsDataAPI.searchCount(-1234, TestConstants.ESB_EVENTS_TABLE, 
+                    TestConstants.META_TENANT_ID + ":" + tenantId);
+            Assert.assertEquals(esbEventsCount, noOfMediators + 1, "ESB event has not correctly published for tenant: "
+                    + tenantId);
         }
     }
     

@@ -29,6 +29,7 @@ public class TestConstants {
     public static final String COMPONENT_ID = "componentId";
     public static final String NUMBER_OF_INVOCATION = "noOfInvocation";
     public static final String FAULT_COUNT = "faultCount";
+    public static final String META_TENANT_ID = "meta_tenantId";
     
     // Event streams
     public static final String MEDIATOR_STAT_PER_SECOND_TABLE = "MEDIATOR-STAT-PER-SECOND";
@@ -50,11 +51,8 @@ public class TestConstants {
     public static final String ESB_EVENTS_TABLE = "ESB-EVENT";
     
     /* 
-     * List of tenants in the format: { username, tenant-domain, tenantDomainKey }
-     * tenantDomainKey - Key of the tenant define at automation.xml
+     * IDs of tenants define at automation.xml
      */
-    public static final String TENANTS[][] = new String[][] { { "admin", "carbon.super", "superTenant" }, 
-                                                              { "admin", "analytics.com", "analytics.com" } };
+    public static final int TENANT_IDS[] = new int[] { 1, 2 };
     
-    public static final String REALTIME_TENANT_CAPP = "org_wso2_analytics_esb_realtime_tenant-1.0.0.car";
 }

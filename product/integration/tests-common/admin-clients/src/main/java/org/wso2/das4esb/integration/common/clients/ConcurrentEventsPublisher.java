@@ -38,9 +38,10 @@ public class ConcurrentEventsPublisher implements Runnable {
     private boolean propertiesEnabled;
     private int sleepBetweenRequests;
     private int noOfFaults;
+    private int tenantId;
     private static final Log log = LogFactory.getLog(ConcurrentEventsPublisher.class);
     
-    public ConcurrentEventsPublisher(DataPublisherClient dataPublisherClient, int noOfRequests, String entryPointName,
+    public ConcurrentEventsPublisher(DataPublisherClient dataPublisherClient, int tenantId, int noOfRequests, String entryPointName,
             int noOfMediators, int noOfFaults, boolean payloadsEnabled, boolean propertiesEnabled, int sleepBetweenRequests) {
         this.dataPublisherClient = dataPublisherClient;
         this.entryPointName = entryPointName;
@@ -50,11 +51,12 @@ public class ConcurrentEventsPublisher implements Runnable {
         this.sleepBetweenRequests = sleepBetweenRequests;
         this.noOfMediators = noOfMediators;
         this.noOfFaults = noOfFaults;
+        this.tenantId = tenantId;
     }
 
     @Override
     public void run() {
-        Object[] metaData = { true };
+        Object[] metaData = { true, tenantId };
         int sentFaults = 0;
         int publishedRequests = 0;
         // Publish events
@@ -112,7 +114,7 @@ public class ConcurrentEventsPublisher implements Runnable {
         } catch (InterruptedException ignored) {
         } finally {
             try {
-                log.info("Published: " + publishedRequests + " events to: " + entryPointName);
+                log.info("Published: " + publishedRequests + " events to: " + entryPointName + " for tenant: " + tenantId);
                 if (this.dataPublisherClient != null) {
                     Thread.sleep(20000);
                     this.dataPublisherClient.shutdown();

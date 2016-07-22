@@ -36,7 +36,7 @@ from decompressedEventStreamTemp
 select metaTenantId as meta_tenantId, messageFlowId, host, hashCode, componentName, componentType, componentIndex, componentId,  startTime, endTime, duration, beforePayload, afterPayload, contextPropertyMap, transportPropertyMap, children, entryPoint, entryPointHashcode, faultCount, _timestamp
 insert into decompressedEventStream;
 
-from decompressedEventStream[not(beforePayload is null) or not(transportPropertyMap is null) or not(contextPropertyMap is null)]
+from decompressedEventStream[not(beforePayload is null) or not(transportPropertyMap is null) or not(contextPropertyMap is null)]#window.timeBatch(3 sec)
 select *
 insert into esbEvent;
 
@@ -64,7 +64,7 @@ insert into perSecondAll;
 
 -- min
 from perSecond
-select meta_tenantId, str:concat(facetStartTime, '_', componentId, '_', componentName, '_', componentType, '_', entryPoint) as uniqueId, year, month, day, hour, minute, second, componentId, componentName, componentType, totalDuration, minDuration, maxDuration, noOfInvocation, faultCount, startTime, facetStartTime, entryPoint, _timestamp
+select meta_tenantId, str:concat(meta_tenantId, '_', facetStartTime, '_', componentId, '_', componentName, '_', componentType, '_', entryPoint) as uniqueId, year, month, day, hour, minute, second, componentId, componentName, componentType, totalDuration, minDuration, maxDuration, noOfInvocation, faultCount, startTime, facetStartTime, entryPoint, _timestamp
 insert into perSecondWithUniqueId;
 
 from perSecondWithUniqueId#window.uniqueExternalTimeBatch(uniqueId, startTime, 60 sec, 59999 millisec, 120 sec, true)
@@ -76,7 +76,11 @@ from esbStatPerMinTemp
 select meta_tenantId, time:extract(startTime, 'year') as year, time:extract(startTime, 'month') as month, time:extract(startTime, 'day') as day, time:extract(startTime, 'hour') as hour, time:extract(startTime, 'minute') as minute, componentId, componentName, componentType, totalDuration, minDuration, maxDuration, noOfInvocation, faultCount, esbAnalytics:getMinuteStartingTime(startTime) as startTime, convert(esbAnalytics:getMinuteStartingTime(startTime), 'string') as facetStartTime, entryPoint, startTime as _timestamp
 insert into esbStatPerMin;
 
-from perSecondAll#window.uniqueExternalTimeBatch(facetStartTime, startTime, 60 sec, 59999 millisec, 120 sec, true)
+from perSecondAll
+select meta_tenantId, str:concat(meta_tenantId, '_', facetStartTime) as uniqueId, year, month, day, hour, minute, second, componentId, componentName, componentType, totalDuration, minDuration, maxDuration, noOfInvocation, faultCount,  startTime, facetStartTime, entryPoint, _timestamp
+insert into perSecondAllWithUniqueId;
+
+from perSecondAllWithUniqueId#window.uniqueExternalTimeBatch(uniqueId, startTime, 60 sec, 59999 millisec, 120 sec, true)
 select meta_tenantId, startTime, componentId, componentName, componentType, sum(totalDuration) as totalDuration, min(minDuration) as minDuration, max(maxDuration) as maxDuration, sum(noOfInvocation) as noOfInvocation, sum(faultCount) as faultCount, entryPoint, _timestamp
 group by meta_tenantId
 insert into esbStatPerMinAllTemp;
@@ -96,7 +100,7 @@ select meta_tenantId, time:extract(startTime, 'year') as year, time:extract(star
 insert into mediatorStatPerSec;
 
 from mediatorStatPerSec
-select meta_tenantId, str:concat(facetStartTime, '_', componentId, '_', componentName, '_', componentType, '_', entryPoint, '_', entryPointHashcode, '_', hashCode) as uniqueId, year, month, day, hour, minute, second,  entryPoint, entryPointHashcode, componentId, hashCode, componentName, componentType, totalDuration, minDuration, maxDuration, noOfInvocation, faultCount, startTime, facetStartTime, _timestamp
+select meta_tenantId, str:concat(meta_tenantId, '_', facetStartTime, '_', componentId, '_', componentName, '_', componentType, '_', entryPoint, '_', entryPointHashcode, '_', hashCode) as uniqueId, year, month, day, hour, minute, second,  entryPoint, entryPointHashcode, componentId, hashCode, componentName, componentType, totalDuration, minDuration, maxDuration, noOfInvocation, faultCount, startTime, facetStartTime, _timestamp
 insert into mediatorStatPerSecWithUniqueId;
 
 from mediatorStatPerSecWithUniqueId#window.uniqueExternalTimeBatch(uniqueId, startTime, 60 sec, 59999 millisec, 120 sec, true)
