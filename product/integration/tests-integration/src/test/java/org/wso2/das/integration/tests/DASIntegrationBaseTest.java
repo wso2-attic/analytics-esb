@@ -111,7 +111,7 @@ public class DASIntegrationBaseTest {
         }
     }
     
-    protected AnalyticsProcessorAdminServiceStub getAnalyticsProcessorStub() throws Exception {
+    protected AnalyticsProcessorAdminServiceStub getAnalyticsProcessorStub(int timeout) throws Exception {
         ConfigurationContext configContext = ConfigurationContextFactory.
                 createConfigurationContextFromFileSystem(null);
         String loggedInSessionCookie = getSessionCookie();
@@ -122,6 +122,7 @@ public class DASIntegrationBaseTest {
         option.setManageSession(true);
         option.setProperty(org.apache.axis2.transport.http.HTTPConstants.COOKIE_STRING,
                 loggedInSessionCookie);
+        option.setTimeOutInMilliSeconds(timeout);
         return analyticsStub;
     }
     

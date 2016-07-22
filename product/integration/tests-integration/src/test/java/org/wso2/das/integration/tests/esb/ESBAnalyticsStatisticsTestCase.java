@@ -56,7 +56,7 @@ public class ESBAnalyticsStatisticsTestCase extends DASIntegrationBaseTest {
     private static final int SLEEP_BETWEEN_REQUESTS = 25;
     private static final int WAIT_FOR_PUBLISHING_IN_MINUTES = 12;
     private static final int WAIT_FOR_INDEXING = 120000;
-    private static final int WAIT_FOR_SPARK_SCRIPT = 60000;
+    private static final int TIMEOUT = 60000;
     
     @BeforeClass(groups = "wso2.das4esb.stats", alwaysRun = true)
     protected void init() throws Exception {
@@ -67,9 +67,8 @@ public class ESBAnalyticsStatisticsTestCase extends DASIntegrationBaseTest {
         log.info("Publishing complete. Waiting for indexing...");
         Thread.sleep(WAIT_FOR_INDEXING);
         log.info("Indexing complete. Executing the spark scripts...");
-        AnalyticsProcessorAdminServiceStub analyticsStub = getAnalyticsProcessorStub();
+        AnalyticsProcessorAdminServiceStub analyticsStub = getAnalyticsProcessorStub(TIMEOUT);
         analyticsStub.executeScript("esb_stat_analytics");
-        Thread.sleep(WAIT_FOR_SPARK_SCRIPT);
     }
 
     

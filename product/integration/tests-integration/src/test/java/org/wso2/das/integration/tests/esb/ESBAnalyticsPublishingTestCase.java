@@ -85,7 +85,7 @@ public class ESBAnalyticsPublishingTestCase extends DASIntegrationBaseTest {
             Object[] metaData = { true, tenantId };
             Event event = new Event(null, System.currentTimeMillis(), metaData, null, payloadData);
             dataPublisherClient.publish(TestConstants.ESB_FLOW_ENTRY_STREAM_NAME, "1.0.0", event);
-            Thread.sleep(5000);
+            Thread.sleep(10000);
             int esbEventsCount = this.analyticsDataAPI.searchCount(-1234, TestConstants.ESB_EVENTS_TABLE, 
                     TestConstants.META_TENANT_ID + ":" + tenantId);
             Assert.assertEquals(esbEventsCount, noOfMediators + 1, "ESB event has not correctly published for tenant: "
