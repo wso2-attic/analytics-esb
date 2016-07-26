@@ -127,17 +127,6 @@
                 <include>**/analytics-eventsink-config.xml</include>
             </includes>
         </fileSet>
-        <!-- Log analyzer webapp -->
-        <!--<fileSet>
-            <directory>
-                src/DASLog
-            </directory>
-            <outputDirectory>${pom.artifactId}-${pom.version}/repository/deployment/server/jaggeryapps/log-analyzer</outputDirectory>
-            <includes>
-                <include>**/*</include>
-            </includes>
-        </fileSet>-->
-
         <!-- CEP -->
 
         <!--creating an empty input event adaptors directory-->
@@ -231,24 +220,7 @@
                 ../p2-profile-gen/target/wso2carbon-core-${carbon.kernel.version}/repository/deployment/server/jaggeryapps/portal
             </directory>
             <outputDirectory>${pom.artifactId}-${pom.version}/repository/deployment/server/jaggeryapps/portal</outputDirectory>
-            <!-- <excludes>
-                <exclude>**/extensions/themes/basic/css/dashboard.css</exclude>
-                <exclude>**/extensions/themes/basic/css/portal.css</exclude>
-                <exclude>**/extensions/themes/basic/js/*</exclude>
-            </excludes> -->
         </fileSet>
-
-        <!-- Adding customized analytics theme to themes directory -->
-        <!-- <fileSet>
-            <directory>
-                src/ues/themes/basic
-            </directory>
-            <outputDirectory>${pom.artifactId}-${pom.version}/repository/deployment/server/jaggeryapps/portal/extensions/themes/basic/</outputDirectory>
-            <includes>
-                <include>**/*</include>
-            </includes>
-        </fileSet> -->
-
         <!-- END UES related dashboard artifacts -->
 
 
@@ -591,6 +563,43 @@
             </outputDirectory>
         </file>
 
+        <!--YARN conf files-->
+        <file>
+            <source>
+                ../p2-profile-gen/target/wso2carbon-core-${carbon.kernel.version}/repository/conf/etc/bundle-config/hadoop-client/core-site.xml
+            </source>
+            <outputDirectory>${pom.artifactId}-${pom.version}/repository/conf/etc/bundle-config/hadoop-client/
+            </outputDirectory>
+            <fileMode>644</fileMode>
+        </file>
+
+        <file>
+            <source>
+                ../p2-profile-gen/target/wso2carbon-core-${carbon.kernel.version}/repository/conf/etc/bundle-config/hadoop-client/hdfs-site.xml
+            </source>
+            <outputDirectory>${pom.artifactId}-${pom.version}/repository/conf/etc/bundle-config/hadoop-client/
+            </outputDirectory>
+            <fileMode>644</fileMode>
+        </file>
+
+        <file>
+            <source>
+                ../p2-profile-gen/target/wso2carbon-core-${carbon.kernel.version}/repository/conf/etc/bundle-config/hadoop-client/yarn-site.xml
+            </source>
+            <outputDirectory>${pom.artifactId}-${pom.version}/repository/conf/etc/bundle-config/hadoop-client/
+            </outputDirectory>
+            <fileMode>644</fileMode>
+        </file>
+
+        <file>
+            <source>
+                ../p2-profile-gen/target/wso2carbon-core-${carbon.kernel.version}/repository/conf/etc/bundle-config/hadoop-client/mapred-site.xml
+            </source>
+            <outputDirectory>${pom.artifactId}-${pom.version}/repository/conf/etc/bundle-config/hadoop-client/
+            </outputDirectory>
+            <fileMode>644</fileMode>
+        </file>
+
         <!-- Including tasks-config.xml file-->
         <file>
             <source>
@@ -671,6 +680,15 @@
         <file>
             <source>
                 ../p2-profile-gen/target/wso2carbon-core-${carbon.kernel.version}/repository/conf/analytics/spark/external-spark-classpath.conf
+            </source>
+            <outputDirectory>${pom.artifactId}-${pom.version}/repository/conf/analytics/spark/
+            </outputDirectory>
+            <fileMode>755</fileMode>
+        </file>
+
+        <file>
+            <source>
+                ../p2-profile-gen/target/wso2carbon-core-${carbon.kernel.version}/repository/conf/analytics/spark/carbon-spark-classpath.conf
             </source>
             <outputDirectory>${pom.artifactId}-${pom.version}/repository/conf/analytics/spark/
             </outputDirectory>
@@ -828,14 +846,6 @@
             <fileMode>644</fileMode>
         </file>
 
-        <file>
-            <source>
-                ../p2-profile-gen/target/wso2carbon-core-${carbon.kernel.version}/repository/conf/analytics/spark/carbon-spark-classpath.conf
-            </source>
-            <outputDirectory>${pom.artifactId}-${pom.version}/repository/conf/analytics/spark/
-            </outputDirectory>
-            <fileMode>755</fileMode>
-        </file>
         <!--Siddhi conf-->
 <!--        <file>
             <source>repository/conf/siddhi/siddhi.extension</source>
