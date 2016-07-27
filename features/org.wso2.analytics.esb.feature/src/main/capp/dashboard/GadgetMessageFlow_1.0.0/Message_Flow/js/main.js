@@ -98,9 +98,9 @@ function onData(response) {
                 g.setNode(nodes[i].id, { label: "", clusterLabelPos: 'top' });
 
                 //Add arbitary nodes for group
-                g.setNode(nodes[i].id + "-s", { label: nodes[i].label, style: 'stroke-width: 0px;' });
-                // g.setEdge(nodes[i].id + "-s", nodes[i].id + "-e",  { style: 'stroke-width: 0px; fill: #ffd47f'});
-                g.setNode(nodes[i].id + "-e", { label: "", style: 'stroke-width: 0px;' });
+                g.setNode(nodes[i].id + "-s", { label: nodes[i].label, style: 'display: none;' });
+                // g.setEdge(nodes[i].id + "-s", nodes[i].id + "-e",  { style: 'display: none;; fill: #ffd47f'});
+                g.setNode(nodes[i].id + "-e", { label: "", style: 'display: none;' });
                 g.setParent(nodes[i].id + "-s", nodes[i].id);
                 g.setParent(nodes[i].id + "-e", nodes[i].id);
 
@@ -140,8 +140,8 @@ function onData(response) {
             if (nodes[i].group != null) {
                 g.setParent(nodes[i].id, nodes[i].group);
                 if (nodes[i].type != "group" && !isParent(nodes, nodes[i])) {
-                    g.setEdge(nodes[i].group + "-s", nodes[i].id, { style: 'stroke-width: 0px; ' });
-                    g.setEdge(nodes[i].id, nodes[i].group + "-e", { style: 'stroke-width: 0px; ' });
+                    g.setEdge(nodes[i].group + "-s", nodes[i].id, { style: 'display: none;' });
+                    g.setEdge(nodes[i].id, nodes[i].group + "-e", { style: 'display: none;' });
                 }
 
 
@@ -237,7 +237,9 @@ function onError(msg) {
     $("#canvas").html(gadgetUtil.getErrorText(msg));
 };
 
-var maximizeButton = $('#' + gadgets.rpc.RPC_ID, window.parent.document).closest('.grid-stack-item').find('.ues-component-full-handle');
 $('body').on('click', '#btnViewToggle', function(){
-    $(maximizeButton).click();
+    $('#' + gadgets.rpc.RPC_ID, window.parent.document)
+        .closest('.grid-stack-item')
+        .find('.ues-component-full-handle')
+        .click();
 });
