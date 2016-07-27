@@ -23,4 +23,10 @@
         "borders": false,
         "title": false
     },
+    "toolbarButtons":{
+        "default":{
+            "maximize": true,
+            "configurations": false
+        }
+    }
 }

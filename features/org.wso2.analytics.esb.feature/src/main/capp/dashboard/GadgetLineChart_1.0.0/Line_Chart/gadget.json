@@ -17,5 +17,11 @@
             "type": "date-range",
             "description": "This notifies message generated in publisher"
         }
+    },
+    "toolbarButtons":{
+        "default":{
+            "maximize": false,
+            "configurations": false
+        }
     }
 }

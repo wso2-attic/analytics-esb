@@ -11,5 +11,11 @@
             "type": "mediator-info",
             "description": "Used to listen to Any message of type state"
         }
+    },
+    "toolbarButtons":{
+        "default":{
+            "maximize": false,
+            "configurations": false
+        }
     }
 }
