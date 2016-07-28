@@ -12,7 +12,9 @@ $(function() {
     else {
         $('#stats').show();
         if(qs[PARAM_ID]) {
-            $("#title").html('for ' + qs[PARAM_ID]);
+            $("#title")
+                .html(qs[PARAM_ID])
+                .attr('title', qs[PARAM_ID]);
         }
     }
     var timeFrom = gadgetUtil.timeFrom();
