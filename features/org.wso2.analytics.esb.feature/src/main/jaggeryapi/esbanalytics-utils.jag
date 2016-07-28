@@ -429,6 +429,25 @@ function getEntrypointMessageFlow(connector, superTenantId, timeRanges, tenantId
                 if (schema[i] != null) {
                     var groupId = schema[i]["group"];
                     var componentId = schema[i]["id"];
+
+
+		/** change component id when @indirect presents **/
+		var isIndirectComponent = componentId.indexOf("@indirect");
+
+		var originalCompId = componentId;
+
+		if (isIndirectComponent > 0) {
+
+			// PaymentServiceEp@14:PaymentServiceEp@indirect --> PaymentServiceEp@0:PaymentServiceEp
+
+			var splitByAt = componentId.split("@"); // ["PaymentServiceEp", "14:PaymentServiceEp", "indirect"]
+			var splitByColon = splitByAt[1].split(":"); // ["14", "PaymentServiceEp"]
+
+			componentId = splitByAt[0] + "@0:" + splitByColon[1];
+		}
+
+
+
                     var componentInfo = componentMap[componentId];
                     var dataAttributes = [];
 
@@ -472,7 +491,7 @@ function getEntrypointMessageFlow(connector, superTenantId, timeRanges, tenantId
 
                     if (schema[i]["parentId"] == schema[i]["group"]) {
                         result.push({
-                                        "id": componentId,
+                                        "id": originalCompId,
                                         "label": componentLabel,
                                         "parents": [],
                                         "group": schema[i]["group"],
@@ -482,7 +501,7 @@ function getEntrypointMessageFlow(connector, superTenantId, timeRanges, tenantId
                                     });
                     } else {
                         result.push({
-                                        "id": componentId,
+                                        "id": originalCompId,
                                         "label": componentLabel,
                                         "parents": [schema[i]["parentId"]],
                                         "group": schema[i]["group"],
