@@ -176,12 +176,12 @@ div.dataTables_processing {
     border-top: 1px solid #353C48;
 }
 
-.table > tbody > tr:hover > td {
+.table.table-clickable > tbody > tr:hover > td {
     background-color: #bcbcbc;
     cursor: pointer;
 }
 
-.dark .table > tbody > tr:hover > td {
+.dark .table.table-clickable > tbody > tr:hover > td {
     background-color: #353C48;
 }
 

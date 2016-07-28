@@ -5,19 +5,15 @@ var BEFORE = "before";
 var AFTER = "after";
 
 $(function() {
-    if (qs[PARAM_ID] == null) {
-        $("#gadget-message").html(gadgetUtil.getDefaultText());
-        $("#gadget-message").show();
-        $("#props").hide();
-        return;
-    } else {
-        $("#gadget-message").hide();
-        $("#props").show();
-    }
+    $("#gadget-message").html(gadgetUtil.getInfoText('Please select medaitor from the above message flow chart to view properties of it.', 'Select a mediator'));
+    $("#gadget-message").show();
+    $("#props").hide();
 });
 
 gadgets.HubSettings.onConnect = function() {
     gadgets.Hub.subscribe(TOPIC, function(topic, data, subscriberData) {
+        $("#gadget-message").hide();
+        $("#props").show();
         mediatorClicked(data);
     });
 };
@@ -33,6 +29,7 @@ function mediatorClicked(data) {
             hashCode: hashCode
         }, onData, onError);
     }
+    $('.nano').nanoScroller();
 };
 
 function onData(response) {

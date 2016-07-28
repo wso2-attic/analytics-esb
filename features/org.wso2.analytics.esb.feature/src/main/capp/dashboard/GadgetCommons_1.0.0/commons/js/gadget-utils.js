@@ -186,6 +186,18 @@ function GadgetUtil() {
                 '</div>'+
             '</div>';
     };
+    
+    this.getInfoText = function(msg, title) {
+        var title = (title) ? title : 'No records found',
+            msg = (msg) ? msg : 'Nothing selected or no data to show.';
+        
+        return '<div class="status-message">'+
+                '<div class="message message-info">'+
+                    '<h4><i class="icon fw fw-info"></i>' + title + '</h4>'+
+                    '<p>' + msg + '</p>'+
+                '</div>'+
+            '</div>';
+    };
 
     this.getErrorText = function(msg) {
         return '<div class="status-message">'+
