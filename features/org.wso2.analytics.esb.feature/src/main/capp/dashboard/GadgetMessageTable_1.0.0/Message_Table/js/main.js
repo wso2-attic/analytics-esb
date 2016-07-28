@@ -27,6 +27,9 @@ $(function() {
              '<"dataTablesBottom"' +
              'lip' +
              '>',
+        language: {
+            searchPlaceholder: "beforePayload: value or afterPayload: value"
+        },
         "processing": true,
         "serverSide": true,
         "columns" : [

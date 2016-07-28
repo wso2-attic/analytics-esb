@@ -243,7 +243,11 @@ function getComponentMessages(connector, superTenantId, componentName, component
 
     // Add the user search query if exists
     if (userQuery != null && userQuery.length > 0) {
-        tempQuery = tempQuery + " AND (" + userQuery + ")";
+        if (userQuery.charAt(0) == "\"") {
+            tempQuery = tempQuery + " AND (beforePayload : " + userQuery + ")";
+        } else {
+            tempQuery = tempQuery + " AND (" + userQuery + ")";
+        }
     }
     var columns = ["messageFlowId", "host", "startTime", "faultCount"];
     var query = stringify({
