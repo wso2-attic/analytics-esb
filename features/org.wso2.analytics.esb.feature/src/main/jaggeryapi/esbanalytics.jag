@@ -486,6 +486,15 @@
                         if (schema[i] != null) {
                             var groupId = schema[i]["group"];
                             var componentId = schema[i]["id"];
+
+                            var isIndirectComponent = componentId.indexOf("@indirect");
+                            var originalCompId = componentId;
+                            if (isIndirectComponent > 0) {
+                                // PaymentServiceEp@14:PaymentServiceEp@indirect --> PaymentServiceEp@0:PaymentServiceEp
+                                var splitByAt = componentId.split("@"); // ["PaymentServiceEp", "14:PaymentServiceEp", "indirect"]
+                                var splitByColon = splitByAt[1].split(":"); // ["14", "PaymentServiceEp"]
+                                componentId = splitByAt[0] + "@0:" + splitByColon[1];
+                            }
                             var componentInfo  = null;
                             if (componentId != null) {
                                 componentInfo = componentMap[componentId];
@@ -522,23 +531,25 @@
 
                                 if (schema[i]["parentId"] == schema[i]["group"]) {
                                     result.push({
-                                                    "id": componentId,
+                                                    "id": originalCompId,
                                                     "label": componentLabel,
                                                     "parents": [],
                                                     "group": schema[i]["group"],
                                                     "type": componentType,
                                                     "dataAttributes": dataAttributes,
-                                                    "hiddenAttributes": hiddenAttributes
+                                                    "hiddenAttributes": hiddenAttributes,
+                                                    "modifiedId": componentId
                                                 });
                                 } else {
                                     result.push({
-                                                    "id": componentId,
+                                                    "id": originalCompId,
                                                     "label": componentLabel,
                                                     "parents": [schema[i]["parentId"]],
                                                     "group": schema[i]["group"],
                                                     "type": componentType,
                                                     "dataAttributes": dataAttributes,
-                                                    "hiddenAttributes": hiddenAttributes
+                                                    "hiddenAttributes": hiddenAttributes,
+                                                    "modifiedId": componentId
                                                 });
                                 }
                             }                        
@@ -724,6 +735,15 @@
                         var groupLabel;
                         var groupId = schema[i]["group"];
                         var componentId = schema[i]["id"];
+                        var isIndirectComponent = componentId.indexOf("@indirect");
+                        var originalCompId = componentId;
+                        if (isIndirectComponent > 0) {
+                            // PaymentServiceEp@14:PaymentServiceEp@indirect --> PaymentServiceEp@0:PaymentServiceEp
+                            var splitByAt = componentId.split("@"); // ["PaymentServiceEp", "14:PaymentServiceEp", "indirect"]
+                            var splitByColon = splitByAt[1].split(":"); // ["14", "PaymentServiceEp"]
+                            componentId = splitByAt[0] + "@0:" + splitByColon[1];
+                        }
+
                         var componentInfo = componentMap[componentId];
                         var dataAttributes = [];
 
@@ -769,23 +789,25 @@
 
                         if (schema[i]["parentId"] == schema[i]["group"]) {
                             result.push({
-                                            "id": componentId,
+                                            "id": originalCompId,
                                             "label": componentLabel,
                                             "parents": [],
                                             "group": schema[i]["group"],
                                             "type": componentType,
                                             "dataAttributes": dataAttributes,
-                                            "hiddenAttributes": hiddenAttributes
+                                            "hiddenAttributes": hiddenAttributes,
+                                            "modifiedId": componentId
                                         });
                         } else {
                             result.push({
-                                            "id": componentId,
+                                            "id": originalCompId,
                                             "label": componentLabel,
                                             "parents": [schema[i]["parentId"]],
                                             "group": schema[i]["group"],
                                             "type": componentType,
                                             "dataAttributes": dataAttributes,
-                                            "hiddenAttributes": hiddenAttributes
+                                            "hiddenAttributes": hiddenAttributes,
+                                            "modifiedId": componentId
                                         });
                         }
                     }

@@ -421,7 +421,7 @@ function getEntrypointMessageFlow(connector, superTenantId, timeRanges, tenantId
                 }
             }
 
-            // Populate tabel data
+            // Populate table data
             var componentNameRegex = new RegExp("^.*@\\d*:(.*)");
             var groups = [];
             for (var i = 0; i < schema.length; i++) {
@@ -497,7 +497,8 @@ function getEntrypointMessageFlow(connector, superTenantId, timeRanges, tenantId
                                         "group": schema[i]["group"],
                                         "type": componentType,
                                         "dataAttributes": dataAttributes,
-                                        "hiddenAttributes": hiddenAttributes
+                                        "hiddenAttributes": hiddenAttributes,
+                                        "modifiedId": componentId
                                     });
                     } else {
                         result.push({
@@ -507,7 +508,8 @@ function getEntrypointMessageFlow(connector, superTenantId, timeRanges, tenantId
                                         "group": schema[i]["group"],
                                         "type": componentType,
                                         "dataAttributes": dataAttributes,
-                                        "hiddenAttributes": hiddenAttributes
+                                        "hiddenAttributes": hiddenAttributes,
+                                        "modifiedId": componentId
                                     });
                     }
                 }

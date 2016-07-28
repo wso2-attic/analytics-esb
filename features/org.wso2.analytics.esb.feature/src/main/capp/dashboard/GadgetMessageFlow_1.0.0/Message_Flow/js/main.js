@@ -221,7 +221,7 @@ function buildLabel(node) {
         });
     }
     var targetUrl = pageUrl + '?' + hiddenParams;
-    var labelText = '<div class="nodeLabel" data-node-type="' + node.type + '" data-component-id="' + node.id 
+    var labelText = '<div class="nodeLabel" data-node-type="' + node.type + '" data-component-id="' + node.modifiedId
     + '" data-hash-code="' + hashCode + '" data-target-url="' + targetUrl + '"><h4><a href="#">' + node.label + "</a></h4>";
 
     if (node.dataAttributes && gadgetMaximized) {
