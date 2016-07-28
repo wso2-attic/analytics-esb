@@ -15,7 +15,9 @@ $(function() {
     timeFrom = gadgetUtil.timeFrom();
     timeTo = gadgetUtil.timeTo();
     console.log("MESSAGE_TABLE[" + page.name + "]: TimeFrom: " + timeFrom + " TimeTo: " + timeTo);
-
+    
+    $.fn.dataTable.ext.errMode = 'none';
+    
     oTable = $('#tblMessages').DataTable({
         dom: '<"dataTablesTop"' +
              'f' +
@@ -36,6 +38,7 @@ $(function() {
                     { title: "Start Time" },
                     { title: "Status" }
         ],
+        "sErrMode": 'throw',
         "ajax": {
             "url" : CONTEXT,
             "data" : function (d) {
@@ -47,6 +50,10 @@ $(function() {
             }
         }
     });
+    
+    $('#tblMessages').on('error.dt', function ( e, settings, techNote, message ) {
+        console.error( message );
+    }).DataTable();
 
     //Binding custom searching on Enter key press
     $('#tblMessages_filter input').unbind();
