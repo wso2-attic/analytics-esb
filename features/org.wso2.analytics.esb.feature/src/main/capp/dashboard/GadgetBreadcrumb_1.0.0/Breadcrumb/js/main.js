@@ -19,12 +19,19 @@ $(function() {
     
     function appendTrail(url,text) {
         var ol = $(".breadcrumb");
-        var li = jQuery('<li/>');
-        var a = jQuery('<a/>');
-        li.addClass("active dashboard-name truncate");
-        a.attr("href",url);
-        a.text(text);
-        li.append(a);
+        var li = $('<li/>');
+        var a = $('<a/>');
+        
+        if(['message','mediator'].indexOf(text) > -1){
+            li.addClass("text-muted truncate");
+            li.append(text);
+        }
+        else{
+            li.addClass("truncate");
+            a.attr("href",url);
+            a.text(text);
+            li.append(a);
+        }
         ol.append(li);
     }
     

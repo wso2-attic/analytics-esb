@@ -52,7 +52,6 @@ var COLOR_RED = "#D9534F";
 var COLOR_GREEN = "#5CB85C";
 
 var PARENT_WINDOW = window.parent.document;
-var PARAM_SHARED = "shared=true"
 
 function getDashboardBaseUrl() {
     var currentUrl = window.parent.location.href;
@@ -238,8 +237,10 @@ function GadgetUtil() {
     };
 
     this.isSharedDashboard = function() {
-        var href = parent.window.location.href;
-        return href.includes(PARAM_SHARED);
+        if( (this.getQueryString().shared) && 
+            (['true','false'].indexOf(this.getQueryString().shared) > -1) ){
+            return $.parseJSON(this.getQueryString().shared);
+        }
     }
 }
 
@@ -261,32 +262,12 @@ function mediaScreenSize(){
     }
 }
 
-// Light/Dark Theme Switcher
-$(document).ready(function() {
-    
-    $(gadgetUtil.getGadgetWrapper()).addClass('loading');
-    
-    if((gadgetUtil.getCookie('dashboardTheme') == 'dark') || gadgetUtil.getCookie('dashboardTheme') == ''){
-        $('body').addClass('dark');
-    }
-    else{
-        $('body').removeClass('dark');
-    }
-    
+$(document).ready(function() {  
     if(typeof $.fn.nanoScroller == 'function'){
         $(".nano").nanoScroller();
     }
-    
     mediaScreenSize();
-    
 });
-
-var readyInterval = setInterval(function() {
-    if (document.readyState == "complete") {
-        $(gadgetUtil.getGadgetWrapper()).removeClass('loading');
-        clearInterval(readyInterval);
-    }   
-}, 100);
 
 $(window).resize(function(){
     mediaScreenSize();
