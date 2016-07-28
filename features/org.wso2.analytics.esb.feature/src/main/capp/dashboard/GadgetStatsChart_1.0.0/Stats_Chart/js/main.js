@@ -13,7 +13,7 @@ $(function() {
         $('#stats').show();
         if(qs[PARAM_ID]) {
             $("#title")
-                .html(qs[PARAM_ID])
+                .html('for ' + qs[PARAM_ID])
                 .attr('title', qs[PARAM_ID]);
         }
     }
