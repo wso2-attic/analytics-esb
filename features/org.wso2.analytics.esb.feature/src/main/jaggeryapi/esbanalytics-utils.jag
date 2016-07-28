@@ -444,6 +444,21 @@ function getEntrypointMessageFlow(connector, superTenantId, timeRanges, tenantId
 			var splitByColon = splitByAt[1].split(":"); // ["14", "PaymentServiceEp"]
 
 			componentId = splitByAt[0] + "@0:" + splitByColon[1];
+            for (var j = 0; j < schema.length; j++) {
+                if (schema[j] != null) {
+                    var componentIdTmp = schema[j]["id"];
+                    var componentIdParentTmp = schema[j]["parentId"];
+                    var tempGroupId = schema[j]["group"];
+                    if (componentIdTmp == componentId) {
+                        schema[j]["id"] = originalCompId;
+                    } else if (componentIdParentTmp == componentId) {
+                        schema[j]["parentId"] = originalCompId;
+                    }
+                    if (tempGroupId == componentId) {
+                        schema[j]["group"] = originalCompId;
+                    }
+                }
+            }
 		}
 
 
