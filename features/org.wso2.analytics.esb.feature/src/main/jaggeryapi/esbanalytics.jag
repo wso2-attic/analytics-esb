@@ -592,7 +592,6 @@
                             result[j]["type"] = "group";
                         }
                     }
-                    log.info(removedComponents);
                 }
                 break;
             }
