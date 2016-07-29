@@ -6,7 +6,7 @@ var qs = gadgetUtil.getQueryString();
 var timeFrom, timeTo, timeUnit = null;
 
 var TOPDOWN = "TD";
-var LEFT_TO_RIGHT = "LR";
+var LEFT_TO_RIGHT = "TD";
 var orientation = TOPDOWN;
 var gadgetMaximized = gadgetUtil.getView() == 'maximized';
 
