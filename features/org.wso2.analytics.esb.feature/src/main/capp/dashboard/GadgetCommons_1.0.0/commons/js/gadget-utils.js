@@ -156,7 +156,6 @@ function GadgetUtil() {
         for (var param in params) {
             url = url + param + "=" + params[param] + "&";
         }
-        console.log("++ AJAX TO: " + context + url);
         $.ajax({
             url: context + url,
             type: "GET",
@@ -248,9 +247,9 @@ function GadgetUtil() {
         return null;
     };
 
-    this.isSharedDashboard = function() {
-        if( (this.getQueryString().shared) && 
-            (['true','false'].indexOf(this.getQueryString().shared) > -1) ){
+    this.isSharedDashboard = function () {
+        if (this.getQueryString().shared &&
+            (['true', 'false'].indexOf(this.getQueryString().shared) > -1)) {
             return $.parseJSON(this.getQueryString().shared);
         }
     }

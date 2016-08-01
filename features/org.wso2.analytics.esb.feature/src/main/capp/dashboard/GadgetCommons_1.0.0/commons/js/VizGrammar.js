@@ -25,7 +25,6 @@ var arc = function(dataTable, config) {
 
       var summarize = {};
       summarize[this.metadata.names[config.x]] = "sum";
-      console.log(summarize);
 
       dataTable.push({
       "name": "summary",

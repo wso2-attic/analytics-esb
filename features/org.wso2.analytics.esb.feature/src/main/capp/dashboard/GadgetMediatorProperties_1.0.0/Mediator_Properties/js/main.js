@@ -35,7 +35,6 @@ function mediatorClicked(data) {
 function onData(response) {
     try {
         var data = response.message;
-        console.log(data); 
         if (!data) {
             $("#canvas").html(gadgetUtil.getEmptyRecordsText());
             return;

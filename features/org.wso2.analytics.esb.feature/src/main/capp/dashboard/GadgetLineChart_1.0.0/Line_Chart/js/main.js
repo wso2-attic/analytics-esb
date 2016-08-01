@@ -23,7 +23,6 @@ $(function() {
     }
     var timeFrom = gadgetUtil.timeFrom();
     var timeTo = gadgetUtil.timeTo();
-    console.log("LINE_CHART[" + page + "]: TimeFrom: " + timeFrom + " TimeTo: " + timeTo);
     gadgetUtil.fetchData(CONTEXT, {
         type: type,
         id: qs.id,

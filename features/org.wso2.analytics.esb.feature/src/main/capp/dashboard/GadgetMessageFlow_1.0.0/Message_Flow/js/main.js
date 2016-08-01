@@ -20,7 +20,6 @@ $(function() {
     }
     timeFrom = gadgetUtil.timeFrom();
     timeTo = gadgetUtil.timeTo();
-    console.log("MESSAGE_FLOW[" + page.name + "]: TimeFrom: " + timeFrom + " TimeTo: " + timeTo);
 
     gadgetUtil.fetchData(CONTEXT, {
         type: page.type,
@@ -43,7 +42,6 @@ $(function() {
         } else {
             var componentId = $(this).data("component-id");
             var hashCode = $(this).data("hash-code");
-            console.log("## componentId [ " + componentId + " ] hashCode [ " + hashCode + "]");
             message = {
                 componentId: componentId,
                 hashCode: hashCode
@@ -212,7 +210,6 @@ function buildLabel(node) {
     var hashCode;
     var hiddenParams = '';
     if (node.hiddenAttributes) {
-        console.log(node.hiddenAttributes);
         node.hiddenAttributes.forEach(function(item, i) {
             hiddenParams += '&' + item.name + '=' + item.value;
             if (item.name === "hashCode") {

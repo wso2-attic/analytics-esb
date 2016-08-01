@@ -12,7 +12,6 @@ $(function() {
     }
     timeFrom = gadgetUtil.timeFrom();
     timeTo = gadgetUtil.timeTo();
-    console.log("TOP_FIVE[" + config.name + "]: TimeFrom: " + timeFrom + " TimeTo: " + timeTo);
     gadgetUtil.fetchData(CONTEXT, {
         type: config.type,
         timeFrom: timeFrom,

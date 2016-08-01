@@ -31,12 +31,12 @@ $(function() {
             if(qs[PARAM_ID]) {
                 href = href.replace(/(id=)[^\&]+/, '$1' + item);
             } else {
-                href = href + "?" + PARAM_ID + "=" + item;
+                if (href.includes("?")) {
+                    href = href + "&" + PARAM_ID + "=" + item;
+                } else {
+                    href = href + "?" + PARAM_ID + "=" + item;
+                }
             }
-            if (gadgetUtil.isSharedDashboard()) {
-                href += SHARED_PARAM;
-            }
-            // console.log(href); 
             parent.window.location = href;
         }).on('typeahead:open', function(evt, item) {
             wso2.gadgets.controls.resizeGadget({

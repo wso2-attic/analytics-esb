@@ -12,7 +12,6 @@ function getQueryString() {
 }
 
 function fetchData(params, callback, error) {
-    console.log("++ Fetching data from: " + new Date(params.timeFrom) + " To: " + new Date(params.timeTo));
     $.ajax({
         url: "/portal/apis/esbanalytics" + "?type=" + params.type + "&timeFrom=" + params.timeFrom + "&timeTo=" + params.timeTo,
         type: "GET",

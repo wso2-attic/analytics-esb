@@ -19,7 +19,6 @@ $(function() {
     }
     var timeFrom = gadgetUtil.timeFrom();
     var timeTo = gadgetUtil.timeTo();
-    console.log("STATS_CHART[" + page + "]: TimeFrom: " + timeFrom + " TimeTo: " + timeTo);
     if (page) {
         type = page.type;
     }

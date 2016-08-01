@@ -144,7 +144,6 @@ gadgets.HubSettings.onConnect = function() {
 };
 
 function onChartZoomed(data) {
-    console.log(data); 
     message = {
         timeFrom: data.timeFrom,
         timeTo: data.timeTo,

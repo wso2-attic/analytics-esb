@@ -14,8 +14,7 @@ $(function() {
     }
     timeFrom = gadgetUtil.timeFrom();
     timeTo = gadgetUtil.timeTo();
-    console.log("MESSAGE_TABLE[" + page.name + "]: TimeFrom: " + timeFrom + " TimeTo: " + timeTo);
-    
+
     $.fn.dataTable.ext.errMode = 'none';
     
     oTable = $('#tblMessages').DataTable({
@@ -105,7 +104,6 @@ function onTimeRangeChanged(data) {
 function onData(response) {
     try {
         var data = response.message;
-        console.log(data.length); 
         if (data.length <= 0) {
             $("#canvas").html(gadgetUtil.getEmptyRecordsText());
             return;
