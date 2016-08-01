@@ -581,7 +581,8 @@
                     // Cleanup
                     for (var k = 0; k < tmpResult.length; k++) {
                         var group = tmpResult[k]["group"];
-                        if (removedComponents.indexOf(group) == -1) {
+                        var parentId = tmpResult[k]["parents"];
+                        if (removedComponents.indexOf(group) == -1 && removedComponents.indexOf(parentId[0]) == -1) {
                             result.push(tmpResult[k]);
                         }
                     }
