@@ -1,7 +1,7 @@
-(1) Installing @product.name@, v@product.version@
+(1) Installing WSO2 Enterprise Service Bus Analytics, v5.0.0
 ================================================
 
-@product.name@ @product.version@ can be run either in standalone mode or as a webapp within a
+WSO2 Enterprise Service Bus Analytics, v5.0.0 can be run either in standalone mode or as a webapp within a
 servlet container.
 
 
@@ -12,10 +12,10 @@ Standalone Mode
 
 2. All the shell scripts and .bat files are available in CARBON_HOME/bin directory.
 
-3. To start @product.name@ you can run wso2server.sh in all *nix
+3. To start Enterprise Service Bus Analytics you can run wso2server.sh in all *nix
    systems & wso2server.bat file on Windows operating systems.
 
-4. Some of the commands that can be used to start @product.name@:
+4. Some of the commands that can be used to start Enterprise Service Bus Analytics:
       i)  ./wso2server.sh {console|start|stop|restart|version}
      ii)  wso2server.bat {version}
 
@@ -84,7 +84,7 @@ System Requirements
 
 2. Java SE Development Kit 1.6.0_24 or higher
 
-3. To build @product.name@ from the Source distribution, it is also necessary that you
+3. To build Enterprise Service Bus Analytics from the Source distribution, it is also necessary that you
    have Maven 3.0.3 or later.
 
 For more details see

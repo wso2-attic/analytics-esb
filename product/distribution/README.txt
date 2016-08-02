@@ -1,4 +1,4 @@
-WSO2 Enterprise Service Bus Analytics, v3.0.0
+WSO2 Enterprise Service Bus Analytics, v5.0.0
 ==================================
 
 @buildNumber@
@@ -58,7 +58,7 @@ Installation & Running
 1. Extract the downloaded zip file
 2. Run the wso2server.sh or wso2server.bat file in the bin directory
 3. Once the server starts, point your Web browser to
-   https://localhost:9443/carbon/
+   https://localhost:9444/carbon/
 
 For more details, see the Installation Guide
 
@@ -209,7 +209,7 @@ By default mode, it would ask you to enter the master password
 > ciphertool -Dchange  (in UNIX)
 
 For more details see
-http://docs.wso2.org/display/Carbon420/WSO2+Carbon+Secure+Vault
+https://docs.wso2.com/display/Carbon447/Enabling+Cipher+Tool+for+Password+Encryption
 
 
 Training
