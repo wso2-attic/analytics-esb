@@ -483,6 +483,7 @@
                     // Populate table data
                     var componentNameRegex = new RegExp("^.*@\\d*:(.*)");
                     var groups = [];
+                    var compIds = [];
                     for (var i = 0; i < schema.length; i++) {
                         var groupLabel;
                         if (schema[i] != null) {
@@ -549,7 +550,14 @@
                                     hiddenAttributes.push({"name": "id", "value": componentId});
                                 }
 
-                                if (schema[i]["parentId"] == schema[i]["group"]) {
+                                var compId = schema[i]["id"];
+                                var parentId = schema[i]["parentId"];
+                                if (compIds.indexOf(compId) < 0) {
+                                    compIds.push(compId);
+                                }
+                                if (parentId != null && (compIds.indexOf(parentId) < 0)) {
+                                    compIds.splice(compIds.indexOf(compId), 1);
+                                } else if (schema[i]["parentId"] == schema[i]["group"]) {
                                     tmpResult.push({
                                         "id": originalCompId,
                                         "label": componentLabel,
@@ -577,6 +585,7 @@
                             }
                         }
                     }
+                    compIds = null;
 
                     // Cleanup
                     for (var k = 0; k < tmpResult.length; k++) {
