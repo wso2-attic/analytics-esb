@@ -663,7 +663,7 @@
                 var entryPoint = request.getParameter("entryPoint");
                 var timeUnit = timeRangeUtil.getSuitableTimeRangeUnit(timeFrom, timeTo);
                 var tableName = "MEDIATOR-STAT-PER-" + timeUnit;
-                result = esbanalyticsUtils.getLatency(connector, superTenantId, timeFrom, timeTo, tableName, componentName, entryPoint, tenantId);
+                result = esbanalyticsUtils.getMessageRate(connector, superTenantId, timeFrom, timeTo, tableName, componentName, entryPoint, tenantId);
                 break;
             }
             case TYPE_SEQUENCE_LATENCY:

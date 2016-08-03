@@ -90,6 +90,8 @@ $(function() {
                     timeTo: new Date(moment()).getTime(),
                     timeUnit: "Hour"
                 };
+                gadgetUtil.updateURLParam("timeFrom", message.timeFrom.toString());
+                gadgetUtil.updateURLParam("timeTo", message.timeTo.toString());
                 break;
             case 'LastDay':
                 dateLabel.html(moment().subtract(1, 'day').format('MMMM D, YYYY hh:mm A') + ' - ' + moment().format('MMMM D, YYYY hh:mm A'));
@@ -98,6 +100,8 @@ $(function() {
                     timeTo: new Date(moment()).getTime(),
                     timeUnit: "Day"
                 };
+                gadgetUtil.updateURLParam("timeFrom", message.timeFrom.toString());
+                gadgetUtil.updateURLParam("timeTo", message.timeTo.toString());
                 break;
             case 'LastMonth':
                 dateLabel.html(moment().subtract(29, 'days').format('MMMM D, YYYY hh:mm A') + ' - ' + moment().format('MMMM D, YYYY hh:mm A'));
@@ -106,6 +110,8 @@ $(function() {
                     timeTo: new Date(moment()).getTime(),
                     timeUnit: "Month"
                 };
+                gadgetUtil.updateURLParam("timeFrom", message.timeFrom.toString());
+                gadgetUtil.updateURLParam("timeTo", message.timeTo.toString());
                 break;
             case 'LastYear':
                 dateLabel.html(moment().subtract(1, 'year').format('MMMM D, YYYY hh:mm A') + ' - ' + moment().format('MMMM D, YYYY hh:mm A'));
@@ -114,6 +120,8 @@ $(function() {
                     timeTo: new Date(moment()).getTime(),
                     timeUnit: "Year"
                 };
+                gadgetUtil.updateURLParam("timeFrom", message.timeFrom.toString());
+                gadgetUtil.updateURLParam("timeTo", message.timeTo.toString());
                 break;
             default:
                 return;

@@ -253,6 +253,63 @@ function GadgetUtil() {
             return $.parseJSON(this.getQueryString().shared);
         }
     }
+
+    this.updateURLParam = function (key, value) {
+        if (typeof (history.pushState) === "undefined") {
+            console.warn("Browser doesn't support updating the url.");
+            return;
+        }
+
+        var searchPath = window.parent.location.search,
+            replace = new RegExp("(&|\\?)" + key + "=(.*?)(&|$)", "g"),
+            urlParams = this.getURLParams(),
+            values = [],
+            unfiltered = "?filtered=false";
+        console.log("this.getUrlParameters()" + this.getUrlParameters());
+
+        if (Object.prototype.toString.call(value) === '[object Array]') {
+            values = value;
+        } else if (Object.prototype.toString.call(value) === "[object String]") {
+            values.push(value);
+        } else {
+            console.error("value should be either an array of strings or a string");
+            return;
+        }
+        if (searchPath.replace(unfiltered, "")) {
+            if (key in urlParams) {
+                if (values.length > 0) {
+                    searchPath = searchPath.replace(replace, "$1" + key + "=" + values.toString() + "$3");
+                } else {
+                    if (searchPath.replace(replace, "")) {
+                        searchPath = searchPath.replace(replace, "$1").replace(/&$/, '');
+                    } else {
+                        searchPath = unfiltered;
+                    }
+                }
+            } else if (values.length > 0) {
+                searchPath += "&" + key + "=" + values.toString();
+            }
+        } else if (values.length > 0) {
+            searchPath = searchPath.replace(unfiltered, "");
+            searchPath += "?" + key + "=" + values.toString();
+        }
+        console.log("searchPath:" + searchPath);
+        window.parent.history.pushState({}, "", searchPath);
+    }
+
+    this.getURLParams = function () {
+        var match,
+            pl = /\+/g,
+            search = /([^&=]+)=?([^&]*)/g,
+            decode = function (s) {
+                return decodeURIComponent(s.replace(pl, " "));
+            },
+            query = this.getUrlParameters(),
+            urlParams = {};
+        while (match = search.exec(query))
+            urlParams[decode(match[1])] = decode(match[2]).split(',');
+        return urlParams;
+    }
 }
 
 var gadgetUtil = new GadgetUtil();
