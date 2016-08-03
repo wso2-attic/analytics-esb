@@ -8,7 +8,7 @@
         componentIndex INT -i, componentId STRING, startTime LONG, endTime LONG, duration LONG, beforePayload STRING,
         afterPayload STRING, contextPropertyMap STRING, transportPropertyMap STRING, children STRING, entryPoint
         STRING, entryPointHashcode STRING, faultCount INT, hashCode STRING, host STRING, meta_tenantId INT -i, _timestamp LONG -i",
-        incrementalProcessing "esbFlowEvent, MINUTE",
+        incrementalParams "esbFlowEvent, MINUTE",
         mergeSchema "false");
 
         CREATE TEMPORARY TABLE esbEvent USING CarbonAnalytics
@@ -18,7 +18,7 @@
         STRING, afterPayload STRING, contextPropertyMap STRING, transportPropertyMap STRING, children STRING,
         entryPoint FACET -i, entryPointHashcode STRING -i, faultCount INT, meta_tenantId INT -i, _timestamp LONG -i",
         primaryKeys "meta_tenantId, messageFlowId, componentId, componentType, componentIndex, componentName",
-        incrementalProcessing "esbEvent, MINUTE",
+        incrementalParams "esbEvent, MINUTE",
         mergeSchema "false");
 
         INSERT INTO TABLE esbEvent
@@ -36,7 +36,7 @@
         noOfInvocation LONG -sp, faultCount LONG, startTime LONG -i, facetStartTime FACET -i, entryPoint FACET -i,
          meta_tenantId INT -i, _timestamp LONG -i",
         primaryKeys "meta_tenantId, year, month, day, hour, minute, second, componentId, componentType, componentName",
-        incrementalProcessing "esbServiceStatPerSecond, MINUTE",
+        incrementalParams "esbServiceStatPerSecond, MINUTE",
         mergeSchema "false");
 
         INSERT INTO TABLE esbServiceStatPerSecond
@@ -90,7 +90,7 @@
         maxDuration LONG, noOfInvocation LONG -sp, faultCount LONG, startTime LONG -i, facetStartTime FACET -i,
          meta_tenantId INT -i, _timestamp LONG -i",
         primaryKeys "meta_tenantId, year, month, day, hour, minute, second, entryPointHashcode, hashCode, componentId, componentType, componentName",
-        incrementalProcessing "mediatorStatPerSecond, MINUTE",
+        incrementalParams "mediatorStatPerSecond, MINUTE",
         mergeSchema "false");
 
         INSERT INTO TABLE mediatorStatPerSecond
@@ -119,7 +119,7 @@
         maxDuration LONG, noOfInvocation LONG -sp, faultCount LONG, startTime LONG -i, facetStartTime FACET -i,
         entryPoint FACET -i, meta_tenantId INT -i, _timestamp LONG -i",
         primaryKeys "meta_tenantId, year, month, day, hour, minute, componentId, componentType, componentName",
-        incrementalProcessing "esbServiceStatPerMinute, HOUR",
+        incrementalParams "esbServiceStatPerMinute, HOUR",
         mergeSchema "false");
 
         INSERT INTO TABLE esbServiceStatPerMinute
@@ -165,7 +165,7 @@
         noOfInvocation LONG -sp, faultCount LONG, startTime LONG -i, facetStartTime FACET -i, meta_tenantId INT -i, 
         _timestamp LONG -i",
         primaryKeys "meta_tenantId, year, month, day, hour, minute, entryPointHashcode, hashCode, componentId, componentType, componentName",
-        incrementalProcessing "mediatorStatPerMinute, HOUR",
+        incrementalParams "mediatorStatPerMinute, HOUR",
         mergeSchema "false");
 
         INSERT INTO TABLE mediatorStatPerMinute

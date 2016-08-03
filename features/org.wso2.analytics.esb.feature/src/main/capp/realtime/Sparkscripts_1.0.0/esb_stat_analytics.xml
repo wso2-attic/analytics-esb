@@ -9,7 +9,7 @@
         maxDuration LONG, noOfInvocation LONG -sp, faultCount LONG, startTime LONG -i, facetStartTime FACET -i,
         entryPoint FACET -i, meta_tenantId INT -i, _timestamp LONG -i",
         primaryKeys "meta_tenantId, year, month, day, hour, minute, componentId, componentType, componentName",
-        incrementalProcessing "esbServiceStatPerMinute, HOUR",
+        incrementalParams "esbServiceStatPerMinute, HOUR",
         mergeSchema "false");
         
         CREATE TEMPORARY TABLE mediatorStatPerMinute USING CarbonAnalytics
@@ -19,7 +19,7 @@
         componentName FACET -i, componentType FACET -i, totalDuration LONG, minDuration LONG, maxDuration LONG,
         noOfInvocation LONG -sp, faultCount LONG, startTime LONG -i, facetStartTime FACET -i, meta_tenantId INT -i, _timestamp LONG -i",
         primaryKeys "meta_tenantId, year, month, day, hour, minute, entryPointHashcode, hashCode, componentId, componentType, componentName",
-        incrementalProcessing "mediatorStatPerMinute, HOUR",
+        incrementalParams "mediatorStatPerMinute, HOUR",
         mergeSchema "false");
 
         CREATE TEMPORARY TABLE esbServiceStatPerHour USING CarbonAnalytics
