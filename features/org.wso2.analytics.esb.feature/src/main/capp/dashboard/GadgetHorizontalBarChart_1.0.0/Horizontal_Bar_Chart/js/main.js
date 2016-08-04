@@ -81,7 +81,9 @@ function onData(data) {
             } else {
                 baseUrl += "?";
             }
-            var targetUrl =  baseUrl + PARAM_ID + "=" + id + "&timeFrom=" + timeFrom + "&timeTo=" + timeTo;
+            var targetUrl = baseUrl + PARAM_ID + "=" + id;
+            gadgetUtil.updateURLParam("timeFrom", timeFrom.toString());
+            gadgetUtil.updateURLParam("timeTo", timeFrom.toString());
             if (timeUnit != null) {
                 targetUrl += "&timeUnit=" + timeUnit;
             }

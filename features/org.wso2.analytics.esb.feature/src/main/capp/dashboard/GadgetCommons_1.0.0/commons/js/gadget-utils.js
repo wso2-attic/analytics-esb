@@ -265,7 +265,6 @@ function GadgetUtil() {
             urlParams = this.getURLParams(),
             values = [],
             unfiltered = "?filtered=false";
-        console.log("this.getUrlParameters()" + this.getUrlParameters());
 
         if (Object.prototype.toString.call(value) === '[object Array]') {
             values = value;
@@ -293,7 +292,6 @@ function GadgetUtil() {
             searchPath = searchPath.replace(unfiltered, "");
             searchPath += "?" + key + "=" + values.toString();
         }
-        console.log("searchPath:" + searchPath);
         window.parent.history.pushState({}, "", searchPath);
     }
 
