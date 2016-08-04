@@ -715,9 +715,50 @@
                         schema = JSON.parse(config["values"]["configData"]);
                         entryHashCode = config["values"]["hashcode"];
                     }
+                    query = stringify({
+                        "query": "hashcode : \"" + entryHashCode + "\" AND meta_tenantId : [" + tenantId + " TO " + tenantId + "]",
+                        "start": 0,
+                        "count": 100,
+                        "sortBy": [
+                            {
+                                "field": "_timestamp",
+                                "sortType": "ASC",
+                                "reversed": "false"
+                            }
+                        ]
+                    });
+                    resp = connector.search(superTenantId, tableName, query);
+                    if (resp.status == "success") {
+                        config = JSON.parse(resp.getMessage())[0];
+                    } else {
+                        log.error(resp.getMessage());
+                    }
+                    var artifactFirstEntryTime = null;
+                    if (config["values"] != null) {
+                        artifactFirstEntryTime = config["timestamp"];
+                    }
 
+                    var componentIdArray = [];
+                    for (var j = 0; j < schema.length; j++) {
+                        if (schema[j] != null) {
+                            var componentId = schema[j]["id"];
+                            var isIndirectComponent = componentId.indexOf("@indirect");
+                            var originalCompId = componentId;
+                            if (isIndirectComponent > 0) {
+                                // PaymentServiceEp@14:PaymentServiceEp@indirect --> PaymentServiceEp@0:PaymentServiceEp
+                                var splitByAt = componentId.split("@"); // ["PaymentServiceEp", "14:PaymentServiceEp", "indirect"]
+                                var splitByColon = splitByAt[1].split(":"); // ["14", "PaymentServiceEp"]
+                                componentId = splitByAt[0] + "@0:" + splitByColon[1];
+                            }
+                            componentIdArray.push(componentId);
+                        }
+                    }
                     // get components info from different tables
-                    var timeRanges = timeRangeUtil.getDateTimeRanges(timeFrom, timeTo);
+                    var dataFetchTime = artifactFirstEntryTime;
+                    if (timeFrom < artifactFirstEntryTime ) {
+                        dataFetchTime = timeFrom;
+                    }
+                    var timeRanges = timeRangeUtil.getDateTimeRanges(dataFetchTime, timeTo);
                     var searchParams = [];
                     var aggregateFields = [];
                     aggregateFields.push({fields: ["totalDuration"], aggregate: "SUM", alias: "TotalDuration"});
@@ -728,22 +769,24 @@
                     aggregateFields.push({fields: ["componentType"], aggregate: "FIRST", alias: "componentType"});
                     for (var i = 0; i < timeRanges.size(); i++) {
                         timeRange = timeRanges.get(i);
-                        var searchParam = {
-                            tableName: "MEDIATOR-STAT-PER-" + timeRange.unit,
-                            groupByField: "componentId",
-                            query: "hashCode : \"" + entryHashCode + "\" AND startTime : [" + timeRange.range[0] + " TO " + timeRange.range[1] + "} AND meta_tenantId : [" + tenantId + " TO " + tenantId + "]",
-                            aggregateLevel: 0,
-                            parentPath: [],
-                            noOfRecords: 10000
+                        for (var j=0; j < componentIdArray.length; j++) {
+                            var comId = componentIdArray[j];
+                            var searchParam = {
+                                tableName: "MEDIATOR-STAT-PER-" + timeRange.unit,
+                                groupByField: "componentId",
+                                query: "componentId : \"" + comId + "\" AND startTime : [" + timeRange.range[0] + " TO " + timeRange.range[1] + "} AND meta_tenantId : [" + tenantId + " TO " + tenantId + "]",
+                                aggregateLevel: 0,
+                                parentPath: [],
+                                noOfRecords: 10000
+                            }
+                            searchParam.aggregateFields = aggregateFields;
+                            searchParams.push(searchParam);
                         }
-                        searchParam.aggregateFields = aggregateFields;
-                        searchParams.push(searchParam);
                     }
                     var resp = connector.searchMultiTablesWithAggregates(superTenantId, JSON.stringify(searchParams));
                     var componentMap = {};
                     if (resp.status == "success") {
                         var allTables = JSON.parse(resp.getMessage());
-
                         // Aggregate all tables and prepare component map
                         var fields = ["Invocations", "TotalDuration", "MaxDuration", "Faults"];
                         for (var i = 0; i < allTables.length; i++) {
@@ -776,6 +819,7 @@
                         var groupLabel;
                         var groupId = schema[i]["group"];
                         var componentId = schema[i]["id"];
+
                         var isIndirectComponent = componentId.indexOf("@indirect");
                         var originalCompId = componentId;
                         if (isIndirectComponent > 0) {
