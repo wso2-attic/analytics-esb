@@ -18,7 +18,27 @@ $(function() {
         return;
     }
     if (page != TYPE_LANDING && qs[PARAM_ID] == null) {
-        $("#canvas").html(gadgetUtil.getDefaultText());
+
+        switch(page) {
+            case 'api':
+                $("#canvas").html(gadgetUtil.getInfoText('Please select an API and a valid date range to view stats.'));
+                break;
+            case 'proxy':
+                $("#canvas").html(gadgetUtil.getInfoText('Please select a Proxy Service and a valid date range to view stats.'));
+                break;
+            case 'sequences':
+                $("#canvas").html(gadgetUtil.getInfoText('Please select a Sequence and a valid date range to view stats.'));
+                break;
+            case 'endpoint':
+                $("#canvas").html(gadgetUtil.getInfoText('Please select an Endpoint and a valid date range to view stats.'));
+                break;
+            case 'inbound':
+                $("#canvas").html(gadgetUtil.getInfoText('Please select an Inbound Endpoint and a valid date range to view stats.'));
+                break;
+            default:
+                $("#canvas").html(gadgetUtil.getInfoText());
+        };
+        
         return;
     }
     var timeFrom = gadgetUtil.timeFrom();
