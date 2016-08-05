@@ -181,7 +181,7 @@ function GadgetUtil() {
         return '<div class="status-message">'+
                 '<div class="message message-info">'+
                     '<h4><i class="icon fw fw-info"></i>No records found</h4>'+
-                    '<p>Please select a date range to view stats.</p>'+
+                    '<p>Please select a valid date range to view stats.</p>'+
                 '</div>'+
             '</div>';
     };
