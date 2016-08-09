@@ -47,7 +47,7 @@ $(function() {
              'lip' +
              '>',
         language: {
-            searchPlaceholder: "beforePayload: value or afterPayload: value"
+            searchPlaceholder: "beforePayload: \"value\" OR afterPayload: \"value\""
         },
         "processing": true,
         "serverSide": true,
