@@ -20,7 +20,7 @@
     <groupId>org.wso2.analytics.esb</groupId>
     <artifactId>wso2esb-analytics-parent</artifactId>
     <packaging>pom</packaging>
-    <version>5.0.0</version>
+    <version>5.0.1-SNAPSHOT</version>
 
     <licenses>
         <license>
@@ -431,7 +431,7 @@
         <url>https://github.com/wso2/analytics-esb.git</url>
         <developerConnection>scm:git:https://github.com/wso2/analytics-esb.git</developerConnection>
         <connection>scm:git:https://github.com/wso2/analytics-esb.git</connection>
-        <tag>v5.0.0-rc3</tag>
+        <tag>HEAD</tag>
     </scm>
 
     <profiles>
@@ -463,7 +463,7 @@
     </profiles>
 
     <properties>
-        <esb.analytics.version>5.0.0</esb.analytics.version>
+        <esb.analytics.version>5.0.1-SNAPSHOT</esb.analytics.version>
 
         <carbon.kernel.version>4.4.7</carbon.kernel.version>
         <carbon.analytics.version>1.2.2</carbon.analytics.version>
