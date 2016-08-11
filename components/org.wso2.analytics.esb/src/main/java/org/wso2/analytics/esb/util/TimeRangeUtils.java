@@ -32,6 +32,7 @@ import org.wso2.analytics.esb.bean.TimeRange;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -175,5 +176,27 @@ public class TimeRangeUtils {
             }
         }
         return ranges;
+    }
+
+    public static long roundFloor(long timestamp, String timeUnit) {
+        RangeUnit timeUnitEnum = RangeUnit.valueOf(timeUnit);
+        MutableDateTime mutableDateTime = new MutableDateTime(timestamp);
+        long newFloorTimestamp = mutableDateTime.getMillis();
+        switch (timeUnitEnum) {
+            case MONTH:
+                newFloorTimestamp = mutableDateTime.monthOfYear().roundFloor().getMillis();
+                break;
+            case DAY:
+                newFloorTimestamp = mutableDateTime.dayOfMonth().roundFloor().getMillis();
+                break;
+            case HOUR:
+                newFloorTimestamp = mutableDateTime.hourOfDay().roundFloor().getMillis();
+                break;
+        }
+        if (log.isDebugEnabled()) {
+            log.debug("Original date: " + formatter.format(new Date(timestamp)) +
+                    " -> Rounded date:" + formatter.format(new Date(newFloorTimestamp)));
+        }
+        return newFloorTimestamp;
     }
 }
