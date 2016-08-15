@@ -1,10 +1,10 @@
 {
-    "id": "Line_Chart",
+    "id": "EsbAnalytics-Gadget-Line_Chart",
     "title": "Line Chart",
     "type": "gadget",
     "thumbnail": "store://gadget/usa-business-revenue/index.png",
     "data": {
-        "url": "store://gadget/Line_Chart/index.xml"
+        "url": "store://gadget/EsbAnalytics-Gadget-Line_Chart/index.xml"
     },
     "listen": {
         "subscriber": {

@@ -1,10 +1,10 @@
 {
-    "id": "Message_Table",
+    "id": "EsbAnalytics-Gadget-Message_Table",
     "title": "Messages",
     "type": "gadget",
     "thumbnail": "store://gadget/usa-business-revenue/index.png",
     "data": {
-        "url": "store://gadget/Message_Table/index.xml"
+        "url": "store://gadget/EsbAnalytics-Gadget-Message_Table/index.xml"
     },
     "listen": {
         "subscriber": {

@@ -1,11 +1,11 @@
 {
-    "id": "Message_Flow",
+    "id": "EsbAnalytics-Gadget-Message_Flow",
     "title": "Message Flow",
     "type": "gadget",
     "category": "Widgets",
-    "thumbnail": "store://gadget/Message_Flow/index.png",
+    "thumbnail": "store://gadget/EsbAnalytics-Gadget-Message_Flow/index.png",
     "data": {
-        "url": "store://gadget/Message_Flow/index.xml"
+        "url": "store://gadget/EsbAnalytics-Gadget-Message_Flow/index.xml"
     },
     "listen": {
         "subscriber": {

@@ -1,11 +1,11 @@
 {
-  "id": "Breadcrumb",
-  "title": "Breadcrumb",
+  "id": "EsbAnalytics-Gadget-Breadcrumb",
+  "title": "EsbAnalytics-Gadget-Breadcrumb",
   "type": "widget",
   "category": "Widget",
-  "thumbnail": "store://gadget/Breadcrumb/index.png",
+  "thumbnail": "store://gadget/EsbAnalytics-Gadget-Breadcrumb/index.png",
   "data": {
-    "url": "store://gadget/Breadcrumb/index.xml"
+    "url": "store://gadget/EsbAnalytics-Gadget-Breadcrumb/index.xml"
   },
   "styles": {
     "borders": false,

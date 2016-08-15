@@ -1,11 +1,11 @@
 {
-  "id": "Stats_Chart",
+  "id": "EsbAnalytics-Gadget-Stats_Chart",
   "title": "Stats Chart",
   "type": "gadget",
   "category": "Gadget",
-  "thumbnail": "store://gadget/Stats_Chart/index.png",
+  "thumbnail": "store://gadget/EsbAnalytics-Gadget-Stats_Chart/index.png",
   "data": {
-    "url": "store://gadget/Stats_Chart/index.xml"
+    "url": "store://gadget/EsbAnalytics-Gadget-Stats_Chart/index.xml"
   },
   "styles": {
     "borders": true,
