@@ -23,58 +23,30 @@
         <ColumnDefinition>
             <Name>meta_tenantId</Name>
             <EnableIndexing>true</EnableIndexing>
-            <IsPrimaryKey>true</IsPrimaryKey>
+            <IsPrimaryKey>false</IsPrimaryKey>
             <EnableScoreParam>false</EnableScoreParam>
             <Type>INTEGER</Type>
         </ColumnDefinition>
         <ColumnDefinition>
-            <Name>year</Name>
+            <Name>messageFlowId</Name>
             <EnableIndexing>true</EnableIndexing>
-            <IsPrimaryKey>true</IsPrimaryKey>
-            <EnableScoreParam>false</EnableScoreParam>
-            <Type>INTEGER</Type>
-        </ColumnDefinition>
-        <ColumnDefinition>
-            <Name>month</Name>
-            <EnableIndexing>true</EnableIndexing>
-            <IsPrimaryKey>true</IsPrimaryKey>
-            <EnableScoreParam>false</EnableScoreParam>
-            <Type>INTEGER</Type>
-        </ColumnDefinition>
-        <ColumnDefinition>
-            <Name>day</Name>
-            <EnableIndexing>true</EnableIndexing>
-            <IsPrimaryKey>true</IsPrimaryKey>
-            <EnableScoreParam>false</EnableScoreParam>
-            <Type>INTEGER</Type>
-        </ColumnDefinition>
-        <ColumnDefinition>
-            <Name>hour</Name>
-            <EnableIndexing>true</EnableIndexing>
-            <IsPrimaryKey>true</IsPrimaryKey>
-            <EnableScoreParam>false</EnableScoreParam>
-            <Type>INTEGER</Type>
-        </ColumnDefinition>
-        <ColumnDefinition>
-            <Name>minute</Name>
-            <EnableIndexing>true</EnableIndexing>
-            <IsPrimaryKey>true</IsPrimaryKey>
-            <EnableScoreParam>false</EnableScoreParam>
-            <Type>INTEGER</Type>
-        </ColumnDefinition>
-        <ColumnDefinition>
-            <Name>second</Name>
-            <EnableIndexing>true</EnableIndexing>
-            <IsPrimaryKey>true</IsPrimaryKey>
-            <EnableScoreParam>false</EnableScoreParam>
-            <Type>INTEGER</Type>
-        </ColumnDefinition>
-        <ColumnDefinition>
-            <Name>componentId</Name>
-            <EnableIndexing>true</EnableIndexing>
-            <IsPrimaryKey>true</IsPrimaryKey>
+            <IsPrimaryKey>false</IsPrimaryKey>
             <EnableScoreParam>false</EnableScoreParam>
             <Type>FACET</Type>
+        </ColumnDefinition>
+        <ColumnDefinition>
+            <Name>host</Name>
+            <EnableIndexing>true</EnableIndexing>
+            <IsPrimaryKey>false</IsPrimaryKey>
+            <EnableScoreParam>false</EnableScoreParam>
+            <Type>FACET</Type>
+        </ColumnDefinition>
+        <ColumnDefinition>
+            <Name>hashCode</Name>
+            <EnableIndexing>true</EnableIndexing>
+            <IsPrimaryKey>false</IsPrimaryKey>
+            <EnableScoreParam>false</EnableScoreParam>
+            <Type>STRING</Type>
         </ColumnDefinition>
         <ColumnDefinition>
             <Name>componentName</Name>
@@ -86,44 +58,23 @@
         <ColumnDefinition>
             <Name>componentType</Name>
             <EnableIndexing>true</EnableIndexing>
-            <IsPrimaryKey>true</IsPrimaryKey>
+            <IsPrimaryKey>false</IsPrimaryKey>
             <EnableScoreParam>false</EnableScoreParam>
             <Type>FACET</Type>
         </ColumnDefinition>
         <ColumnDefinition>
-            <Name>totalDuration</Name>
-            <EnableIndexing>false</EnableIndexing>
-            <IsPrimaryKey>false</IsPrimaryKey>
-            <EnableScoreParam>false</EnableScoreParam>
-            <Type>LONG</Type>
-        </ColumnDefinition>
-        <ColumnDefinition>
-            <Name>minDuration</Name>
-            <EnableIndexing>false</EnableIndexing>
-            <IsPrimaryKey>false</IsPrimaryKey>
-            <EnableScoreParam>false</EnableScoreParam>
-            <Type>LONG</Type>
-        </ColumnDefinition>
-        <ColumnDefinition>
-            <Name>maxDuration</Name>
-            <EnableIndexing>false</EnableIndexing>
-            <IsPrimaryKey>false</IsPrimaryKey>
-            <EnableScoreParam>false</EnableScoreParam>
-            <Type>LONG</Type>
-        </ColumnDefinition>
-        <ColumnDefinition>
-            <Name>noOfInvocation</Name>
+            <Name>componentIndex</Name>
             <EnableIndexing>true</EnableIndexing>
             <IsPrimaryKey>false</IsPrimaryKey>
-            <EnableScoreParam>true</EnableScoreParam>
-            <Type>LONG</Type>
+            <EnableScoreParam>false</EnableScoreParam>
+            <Type>INTEGER</Type>
         </ColumnDefinition>
         <ColumnDefinition>
-            <Name>faultCount</Name>
-            <EnableIndexing>false</EnableIndexing>
+            <Name>componentId</Name>
+            <EnableIndexing>true</EnableIndexing>
             <IsPrimaryKey>false</IsPrimaryKey>
             <EnableScoreParam>false</EnableScoreParam>
-            <Type>LONG</Type>
+            <Type>FACET</Type>
         </ColumnDefinition>
         <ColumnDefinition>
             <Name>startTime</Name>
@@ -133,11 +84,53 @@
             <Type>LONG</Type>
         </ColumnDefinition>
         <ColumnDefinition>
-            <Name>facetStartTime</Name>
+            <Name>endTime</Name>
             <EnableIndexing>true</EnableIndexing>
             <IsPrimaryKey>false</IsPrimaryKey>
             <EnableScoreParam>false</EnableScoreParam>
-            <Type>FACET</Type>
+            <Type>LONG</Type>
+        </ColumnDefinition>
+        <ColumnDefinition>
+            <Name>duration</Name>
+            <EnableIndexing>false</EnableIndexing>
+            <IsPrimaryKey>false</IsPrimaryKey>
+            <EnableScoreParam>false</EnableScoreParam>
+            <Type>LONG</Type>
+        </ColumnDefinition>
+        <ColumnDefinition>
+            <Name>beforePayload</Name>
+            <EnableIndexing>true</EnableIndexing>
+            <IsPrimaryKey>false</IsPrimaryKey>
+            <EnableScoreParam>false</EnableScoreParam>
+            <Type>STRING</Type>
+        </ColumnDefinition>
+        <ColumnDefinition>
+            <Name>afterPayload</Name>
+            <EnableIndexing>true</EnableIndexing>
+            <IsPrimaryKey>false</IsPrimaryKey>
+            <EnableScoreParam>false</EnableScoreParam>
+            <Type>STRING</Type>
+        </ColumnDefinition>
+        <ColumnDefinition>
+            <Name>contextPropertyMap</Name>
+            <EnableIndexing>false</EnableIndexing>
+            <IsPrimaryKey>false</IsPrimaryKey>
+            <EnableScoreParam>false</EnableScoreParam>
+            <Type>STRING</Type>
+        </ColumnDefinition>
+        <ColumnDefinition>
+            <Name>transportPropertyMap</Name>
+            <EnableIndexing>false</EnableIndexing>
+            <IsPrimaryKey>false</IsPrimaryKey>
+            <EnableScoreParam>false</EnableScoreParam>
+            <Type>STRING</Type>
+        </ColumnDefinition>
+        <ColumnDefinition>
+            <Name>children</Name>
+            <EnableIndexing>false</EnableIndexing>
+            <IsPrimaryKey>false</IsPrimaryKey>
+            <EnableScoreParam>false</EnableScoreParam>
+            <Type>STRING</Type>
         </ColumnDefinition>
         <ColumnDefinition>
             <Name>entryPoint</Name>
@@ -146,9 +139,23 @@
             <EnableScoreParam>false</EnableScoreParam>
             <Type>FACET</Type>
         </ColumnDefinition>
+        <ColumnDefinition>
+            <Name>entryPointHashcode</Name>
+            <EnableIndexing>true</EnableIndexing>
+            <IsPrimaryKey>false</IsPrimaryKey>
+            <EnableScoreParam>false</EnableScoreParam>
+            <Type>STRING</Type>
+        </ColumnDefinition>
+        <ColumnDefinition>
+            <Name>faultCount</Name>
+            <EnableIndexing>true</EnableIndexing>
+            <IsPrimaryKey>false</IsPrimaryKey>
+            <EnableScoreParam>false</EnableScoreParam>
+            <Type>INTEGER</Type>
+        </ColumnDefinition>
     </TableSchema>
     <Source>
-        <StreamId>esb-stat-per-second:1.0.0</StreamId>
+        <StreamId>org.wso2.esb.analytics.stream.Event:1.0.0</StreamId>
     </Source>
     <MergeSchema>false</MergeSchema>
     <RecordStoreName>EVENT_STORE_WO</RecordStoreName>

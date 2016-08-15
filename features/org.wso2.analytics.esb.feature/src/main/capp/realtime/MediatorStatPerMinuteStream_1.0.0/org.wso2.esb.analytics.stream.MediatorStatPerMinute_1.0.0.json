@@ -1,5 +1,5 @@
 {
-  "name": "mediator-stat-per-minute",
+  "name": "org.wso2.esb.analytics.stream.MediatorStatPerMinute",
   "version": "1.0.0",
   "nickName": "",
   "description": "",

@@ -7,9 +7,9 @@ function getMostInvokedComponentNames(connector, superTenantId, componentType, t
     var timeFrom = request.getParameter("timeFrom");
     var timeTo = request.getParameter("timeTo");
     if (componentType == "Proxy Service" || componentType == "API" || componentType == "Inbound EndPoint") {
-        var tableName = "ESB-STAT-PER-MINUTE";
+        var tableName = "org_wso2_esb_analytics_stream_StatPerMinute";
     } else {
-        var tableName = "MEDIATOR-STAT-PER-MINUTE";
+        var tableName = "org_wso2_esb_analytics_stream_MediatorStatPerMinute";
     }
     var query = stringify({
                               "fieldName": "componentName",
@@ -40,9 +40,9 @@ function getMostInvokedComponentNames(connector, superTenantId, componentType, t
 function getComponentNames(connector, superTenantId, componentType, tenantId) {
     result = [];
     if (componentType == "Proxy Service" || componentType == "API" || componentType == "Inbound EndPoint") {
-        var tableName = "ESB-STAT-PER-MINUTE";
+        var tableName = "org_wso2_esb_analytics_stream_StatPerMinute";
     } else {
-        var tableName = "MEDIATOR-STAT-PER-MINUTE";
+        var tableName = "org_wso2_esb_analytics_stream_MediatorStatPerMinute";
     }
     query = stringify({
                           "fieldName": "componentName",
@@ -181,8 +181,8 @@ function getStats(connector, superTenantId, componentType, componentName, entryP
             parentPath: [],
             noOfRecords: 1000
         }
-        if (table != "MEDIATOR-STAT-PER-" && componentType == "ALL" && (timeRange.unit == "SECOND" || timeRange.unit == "MINUTE")) {
-            searchParam["tableName"] = searchParam["tableName"] + "-ALL"
+        if (table != "org_wso2_esb_analytics_stream_MediatorStatPer" && componentType == "ALL" && (timeRange.unit == "SECOND" || timeRange.unit == "MINUTE")) {
+            searchParam["tableName"] = searchParam["tableName"] + "ALL"
         }
         searchParam.aggregateFields = aggregateFields;
         searchParams.push(searchParam);
@@ -263,8 +263,8 @@ function getComponentMessages(connector, superTenantId, componentName, component
             ]
         });
 
-    var resp = connector.search(superTenantId, "ESB-EVENT", query);
-    var count = connector.searchCount(superTenantId, "ESB-EVENT", query);
+    var resp = connector.search(superTenantId, "org_wso2_esb_analytics_stream_Event", query);
+    var count = connector.searchCount(superTenantId, "org_wso2_esb_analytics_stream_Event", query);
     var limit = count.getMessage();
 
     if (resp.status == "success") {
@@ -350,7 +350,7 @@ function getEntrypointMessageFlow(connector, superTenantId, timeRanges, tenantId
     var entryName = request.getParameter("id");
 
     // get schema 
-    var tableName = "ESB-CONFIG-ENTRY-STREAM";
+    var tableName = "ORG_WSO2_ESB_ANALYTICS_STREAM_CONFIGENTRY";
     var query = stringify({
             "query": "_entryName : \"" + entryName + "\" AND _timestamp : [" + 0000000000 + " TO " + timeTo + "} AND meta_tenantId : [" + tenantId + " TO " + tenantId + "]",
             "start": 0,
@@ -387,7 +387,7 @@ function getEntrypointMessageFlow(connector, superTenantId, timeRanges, tenantId
             for (var i = 0; i < timeRanges.size(); i++) {
                 timeRange = timeRanges.get(i);
                 var searchParam = {
-                    tableName: "MEDIATOR-STAT-PER-" + timeRange.unit,
+                    tableName: "org_wso2_esb_analytics_stream_MediatorStatPer" + timeRange.unit,
                     groupByField: "componentId",
                     query: "entryPointHashcode : \"" + entryHashCode + "\" AND startTime : [" + timeRange.range[0] + " TO " + timeRange.range[1] + "} AND meta_tenantId : [" + tenantId + " TO " + tenantId + "]",
                     aggregateLevel: 0,

@@ -1,5 +1,5 @@
 {
-  "name": "esb-stat-per-second-all",
+  "name": "org.wso2.esb.analytics.stream.StatPerSecond",
   "version": "1.0.0",
   "nickName": "per-second",
   "description": "Proxy,API,Endpoint stat per second based",

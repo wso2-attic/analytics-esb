@@ -19,5 +19,5 @@
   -->
 
 <artifact name="MediatorStatPerSecondStream" version="1.0.0" type="event/stream" serverRole="DataAnalyticsServer">
-    <file>mediator-stat-per-second_1.0.0.json</file>
+    <file>org.wso2.esb.analytics.stream.MediatorStatPerSecond_1.0.0.json</file>
 </artifact>

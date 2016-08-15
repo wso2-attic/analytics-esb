@@ -1,8 +1,8 @@
 {
-  "name": "mediator-stat-per-second",
+  "name": "org.wso2.esb.analytics.stream.StatPerMinuteAll",
   "version": "1.0.0",
-  "nickName": "mediator-per-second",
-  "description": "Mediator, Sequnce stats per second based",
+  "nickName": "",
+  "description": "",
   "metaData": [
     {
       "name": "tenantId",
@@ -31,23 +31,7 @@
       "type": "INT"
     },
     {
-      "name": "second",
-      "type": "INT"
-    },
-    {
-      "name": "entryPoint",
-      "type": "STRING"
-    },
-    {
-      "name": "entryPointHashcode",
-      "type": "STRING"
-    },
-    {
       "name": "componentId",
-      "type": "STRING"
-    },
-    {
-      "name": "hashCode",
       "type": "STRING"
     },
     {
@@ -84,6 +68,10 @@
     },
     {
       "name": "facetStartTime",
+      "type": "STRING"
+    },
+    {
+      "name": "entryPoint",
       "type": "STRING"
     },
     {

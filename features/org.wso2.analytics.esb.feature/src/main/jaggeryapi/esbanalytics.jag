@@ -140,10 +140,10 @@
                 var timeUnit = timeRangeUtil.getSuitableTimeRangeUnit(timeFrom, timeTo);
                 var tableSuffix = "";
                 if (timeUnit == "SECOND" || timeUnit == "MINUTE") {
-                    tableSuffix = "-ALL";
+                    tableSuffix = "ALL";
                 }
 
-                var tableName = "ESB-STAT-PER-" + timeUnit + tableSuffix;
+                var tableName = "org_wso2_esb_analytics_stream_StatPer" + timeUnit + tableSuffix;
                 timeFrom = timeRangeUtil.roundFloor(timeFrom, timeUnit);
                 query = stringify({
                     query: "_componentId : ALL AND startTime : [" + timeFrom + " TO " + timeTo + "} AND meta_tenantId : [" + tenantId + " TO " + tenantId + "]",
@@ -194,9 +194,9 @@
                 var timeUnit = timeRangeUtil.getSuitableTimeRangeUnit(timeFrom, timeTo);
                 var tableSuffix = "";
                 if (timeUnit == "SECOND" || timeUnit == "MINUTE") {
-                    tableSuffix = "-ALL";
+                    tableSuffix = "ALL";
                 }
-                var tableName = "ESB-STAT-PER-" + timeUnit + tableSuffix;
+                var tableName = "org_wso2_esb_analytics_stream_StatPer" + timeUnit + tableSuffix;
                 timeFrom = timeRangeUtil.roundFloor(timeFrom, timeUnit);
                 query = stringify({
                     query: "_componentId : ALL AND startTime : [" + timeFrom + " TO " + timeTo + "} AND meta_tenantId : [" + tenantId + " TO " + tenantId + "]",
@@ -249,7 +249,7 @@
             {
                 var componentName = request.getParameter("id");
                 var timeUnit = timeRangeUtil.getSuitableTimeRangeUnit(timeFrom, timeTo);
-                var tableName = "ESB-STAT-PER-" + timeUnit;
+                var tableName = "org_wso2_esb_analytics_stream_StatPer" + timeUnit;
                 timeFrom = timeRangeUtil.roundFloor(timeFrom, timeUnit);
                 result = esbanalyticsUtils.getMessageRate(connector, superTenantId, timeFrom, timeTo, tableName, componentName, null, tenantId);
                 break;
@@ -257,7 +257,7 @@
             case TYPE_PROXY_LATENCY:
             {
                 var timeUnit = timeRangeUtil.getSuitableTimeRangeUnit(timeFrom, timeTo);
-                var tableName = "ESB-STAT-PER-" + timeUnit;
+                var tableName = "org_wso2_esb_analytics_stream_StatPer" + timeUnit;
                 timeFrom = timeRangeUtil.roundFloor(timeFrom, timeUnit);
                 var componentName = request.getParameter("id");
                 result = esbanalyticsUtils.getLatency(connector, superTenantId, timeFrom, timeTo, tableName, componentName, null, tenantId);
@@ -283,7 +283,7 @@
             case TYPE_API_MESSAGE_RATE:
             {
                 var timeUnit = timeRangeUtil.getSuitableTimeRangeUnit(timeFrom, timeTo);
-                var tableName = "ESB-STAT-PER-" + timeUnit;
+                var tableName = "org_wso2_esb_analytics_stream_StatPer" + timeUnit;
                 var componentName = request.getParameter("id");
                 timeFrom = timeRangeUtil.roundFloor(timeFrom, timeUnit);
                 result = esbanalyticsUtils.getMessageRate(connector, superTenantId, timeFrom, timeTo, tableName, componentName, null, tenantId);
@@ -292,7 +292,7 @@
             case TYPE_API_LATENCY:
             {
                 var timeUnit = timeRangeUtil.getSuitableTimeRangeUnit(timeFrom, timeTo);
-                var tableName = "ESB-STAT-PER-" + timeUnit;
+                var tableName = "org_wso2_esb_analytics_stream_StatPer" + timeUnit;
                 var componentName = request.getParameter("id");
                 timeFrom = timeRangeUtil.roundFloor(timeFrom, timeUnit);
                 result = esbanalyticsUtils.getLatency(connector, superTenantId, timeFrom, timeTo, tableName, componentName, null, tenantId);
@@ -321,7 +321,7 @@
                 var componentId = request.getParameter("id");
                 var entryPoint = request.getParameter("entryPoint");
                 var timeUnit = timeRangeUtil.getSuitableTimeRangeUnit(timeFrom, timeTo);
-                var tableName = "MEDIATOR-STAT-PER-" + timeUnit;
+                var tableName = "org_wso2_esb_analytics_stream_MediatorStatPer" + timeUnit;
                 timeFrom = timeRangeUtil.roundFloor(timeFrom, timeUnit);
                 query = "entryPoint : " + entryPoint + " AND _componentId : \"" + componentId + "\" AND startTime : [" + timeFrom + " TO " + timeTo + "} AND meta_tenantId : [" + tenantId + " TO " + tenantId + "]";
                 query = stringify({
@@ -370,7 +370,7 @@
             {
                 result = [];
                 var timeUnit = timeRangeUtil.getSuitableTimeRangeUnit(timeFrom, timeTo);
-                var tableName = "MEDIATOR-STAT-PER-" + timeUnit;
+                var tableName = "org_wso2_esb_analytics_stream_MediatorStatPer" + timeUnit;
                 var componentId = request.getParameter("id");
                 var entryPoint = request.getParameter("entryPoint");
                 timeFrom = timeRangeUtil.roundFloor(timeFrom, timeUnit);
@@ -416,7 +416,7 @@
                 var result = [];
                 var tmpResult = [];
                 var messageId = request.getParameter("id");
-                var tableName = "ESB-EVENT";
+                var tableName = "org_wso2_esb_analytics_stream_Event";
                 // Get Message details
                 var query = stringify({
                     "tableName": tableName,
@@ -438,7 +438,7 @@
                 }
 
                 // Get schema
-                var tableName = "ESB-CONFIG-ENTRY-STREAM";
+                var tableName = "ORG_WSO2_ESB_ANALYTICS_STREAM_CONFIGENTRY";
                 var query = stringify({
                     "query": "_hashcode : \"" + entryPointHashCode + "\" meta_tenantId : [" + tenantId + " TO " + tenantId + "]",
                     "start": 0,
@@ -631,7 +631,7 @@
                 var componentName = request.getParameter("id");
                 var entryPoint = request.getParameter("entryPoint");
                 var timeUnit = timeRangeUtil.getSuitableTimeRangeUnit(timeFrom, timeTo);
-                var tableName = "MEDIATOR-STAT-PER-" + timeUnit;
+                var tableName = "org_wso2_esb_analytics_stream_MediatorStatPer" + timeUnit;
                 timeFrom = timeRangeUtil.roundFloor(timeFrom, timeUnit);
                 var result = esbanalyticsUtils.getMessageRate(connector, superTenantId, timeFrom, timeTo, tableName, componentName, entryPoint, tenantId);
                 break;
@@ -639,7 +639,7 @@
             case TYPE_ENDPOINT_LATENCY:
             {
                 var timeUnit = timeRangeUtil.getSuitableTimeRangeUnit(timeFrom, timeTo);
-                var tableName = "MEDIATOR-STAT-PER-" + timeUnit;
+                var tableName = "org_wso2_esb_analytics_stream_MediatorStatPer" + timeUnit;
                 var componentName = request.getParameter("id");
                 var entryPoint = request.getParameter("entryPoint");
                 timeFrom = timeRangeUtil.roundFloor(timeFrom, timeUnit);
@@ -672,7 +672,7 @@
                 var componentName = request.getParameter("id");
                 var entryPoint = request.getParameter("entryPoint");
                 var timeUnit = timeRangeUtil.getSuitableTimeRangeUnit(timeFrom, timeTo);
-                var tableName = "MEDIATOR-STAT-PER-" + timeUnit;
+                var tableName = "org_wso2_esb_analytics_stream_MediatorStatPer" + timeUnit;
                 timeFrom = timeRangeUtil.roundFloor(timeFrom, timeUnit);
                 result = esbanalyticsUtils.getMessageRate(connector, superTenantId, timeFrom, timeTo, tableName, componentName, entryPoint, tenantId);
                 break;
@@ -680,7 +680,7 @@
             case TYPE_SEQUENCE_LATENCY:
             {
                 var timeUnit = timeRangeUtil.getSuitableTimeRangeUnit(timeFrom, timeTo);
-                var tableName = "MEDIATOR-STAT-PER-" + timeUnit;
+                var tableName = "org_wso2_esb_analytics_stream_MediatorStatPer" + timeUnit;
                 var componentName = request.getParameter("id");
                 var entryPoint = request.getParameter("entryPoint");
                 timeFrom = timeRangeUtil.roundFloor(timeFrom, timeUnit);
@@ -699,7 +699,7 @@
                 var result = [];
                 var entryName = request.getParameter("id");
                 // get schema 
-                var tableName = "ESB-CONFIG-ENTRY-STREAM";
+                var tableName = "ORG_WSO2_ESB_ANALYTICS_STREAM_CONFIGENTRY";
                 var query = stringify({
                     "query": "_entryName : \"" + entryName + "\" AND _timestamp : [0000000000 TO " + timeTo + "] AND meta_tenantId : [" + tenantId + " TO " + tenantId + "]",
                     "start": 0,
@@ -784,7 +784,7 @@
                         for (var j=0; j < componentIdArray.length; j++) {
                             var comId = componentIdArray[j];
                             var searchParam = {
-                                tableName: "MEDIATOR-STAT-PER-" + timeRange.unit,
+                                tableName: "org_wso2_esb_analytics_stream_MediatorStatPer" + timeRange.unit,
                                 groupByField: "componentId",
                                 query: "componentId : \"" + comId + "\" AND startTime : [" + timeRange.range[0] + " TO " + timeRange.range[1] + "} AND meta_tenantId : [" + tenantId + " TO " + tenantId + "]",
                                 aggregateLevel: 0,
@@ -941,7 +941,7 @@
             {
                 var componentName = request.getParameter("id");
                 var timeUnit = timeRangeUtil.getSuitableTimeRangeUnit(timeFrom, timeTo);
-                var tableName = "ESB-STAT-PER-" + timeUnit;
+                var tableName = "org_wso2_esb_analytics_stream_StatPer" + timeUnit;
                 timeFrom = timeRangeUtil.roundFloor(timeFrom, timeUnit);
                 result = esbanalyticsUtils.getMessageRate(connector, superTenantId, timeFrom, timeTo, tableName, componentName, null, tenantId);
                 break;
@@ -949,7 +949,7 @@
             case TYPE_INBOUND_ENDPOINT_LATENCY:
             {
                 var timeUnit = timeRangeUtil.getSuitableTimeRangeUnit(timeFrom, timeTo);
-                var tableName = "ESB-STAT-PER-" + timeUnit;
+                var tableName = "org_wso2_esb_analytics_stream_StatPer" + timeUnit;
                 var componentName = request.getParameter("id");
                 timeFrom = timeRangeUtil.roundFloor(timeFrom, timeUnit);
                 result = esbanalyticsUtils.getLatency(connector, superTenantId, timeFrom, timeTo, tableName, componentName, null, tenantId);
@@ -971,7 +971,7 @@
             case TYPE_OVERALL_STATS:
             {
                 var timeRanges = timeRangeUtil.getDateTimeRanges(timeFrom, timeTo);
-                var table = "ESB-STAT-PER-";
+                var table = "org_wso2_esb_analytics_stream_StatPer";
                 var result = esbanalyticsUtils.getStats(connector, superTenantId, "ALL", "ALL", null, timeRanges, table, tenantId);
                 break;
             }
@@ -979,7 +979,7 @@
             {
                 var componentName = request.getParameter("id");
                 var timeRanges = timeRangeUtil.getDateTimeRanges(timeFrom, timeTo);
-                var table = "ESB-STAT-PER-";
+                var table = "org_wso2_esb_analytics_stream_StatPer";
                 var result = esbanalyticsUtils.getStats(connector, superTenantId, "Proxy", componentName, null, timeRanges, table, tenantId);
                 break;
             }
@@ -987,7 +987,7 @@
             {
                 var componentName = request.getParameter("id");
                 var timeRanges = timeRangeUtil.getDateTimeRanges(timeFrom, timeTo);
-                var table = "ESB-STAT-PER-";
+                var table = "org_wso2_esb_analytics_stream_StatPer";
                 var result = esbanalyticsUtils.getStats(connector, superTenantId, "API", componentName, null, timeRanges, table, tenantId);
                 break;
             }
@@ -996,7 +996,7 @@
                 var componentName = request.getParameter("id");
                 var entryPoint = request.getParameter("entryPoint");
                 var timeRanges = timeRangeUtil.getDateTimeRanges(timeFrom, timeTo);
-                var table = "MEDIATOR-STAT-PER-";
+                var table = "org_wso2_esb_analytics_stream_MediatorStatPer";
                 var result = esbanalyticsUtils.getStats(connector, superTenantId, "Sequence", componentName, entryPoint, timeRanges, table, tenantId);
                 break;
             }
@@ -1005,7 +1005,7 @@
                 var componentName = request.getParameter("id");
                 var timeRanges = timeRangeUtil.getDateTimeRanges(timeFrom, timeTo);
                 var entryPoint = request.getParameter("entryPoint");
-                var table = "MEDIATOR-STAT-PER-";
+                var table = "org_wso2_esb_analytics_stream_MediatorStatPer";
                 var result = esbanalyticsUtils.getStats(connector, superTenantId, "Endpoint", componentName, entryPoint, timeRanges, table, tenantId);
                 break;
             }
@@ -1013,7 +1013,7 @@
             {
                 var componentName = request.getParameter("id");
                 var timeRanges = timeRangeUtil.getDateTimeRanges(timeFrom, timeTo);
-                var table = "ESB-STAT-PER-";
+                var table = "org_wso2_esb_analytics_stream_StatPer";
                 var result = esbanalyticsUtils.getStats(connector, superTenantId, "Inbound", componentName, null, timeRanges, table, tenantId);
                 break;
             }
@@ -1022,7 +1022,7 @@
                 var componentId = request.getParameter("id");
                 var entryPoint = request.getParameter("entryPoint");
                 var timeRanges = timeRangeUtil.getDateTimeRanges(timeFrom, timeTo);
-                var table = "MEDIATOR-STAT-PER-";
+                var table = "org_wso2_esb_analytics_stream_MediatorStatPer";
                 var result = esbanalyticsUtils.getStats(connector, superTenantId, "Mediator", componentId, entryPoint, timeRanges, table, tenantId);
                 break;
             }
@@ -1064,7 +1064,7 @@
                 var result = {};
                 var messageId = request.getParameter("id");
                 var componentId = request.getParameter("componentId");
-                var tableName = "ESB-EVENT";
+                var tableName = "org_wso2_esb_analytics_stream_Event";
                 // Get Message details for the current component
                 var query = stringify({
                     "tableName": tableName,

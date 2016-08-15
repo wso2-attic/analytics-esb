@@ -63,18 +63,11 @@
             <Type>INTEGER</Type>
         </ColumnDefinition>
         <ColumnDefinition>
-            <Name>entryPoint</Name>
+            <Name>second</Name>
             <EnableIndexing>true</EnableIndexing>
             <IsPrimaryKey>true</IsPrimaryKey>
             <EnableScoreParam>false</EnableScoreParam>
-            <Type>FACET</Type>
-        </ColumnDefinition>
-        <ColumnDefinition>
-            <Name>entryPointHashcode</Name>
-            <EnableIndexing>true</EnableIndexing>
-            <IsPrimaryKey>true</IsPrimaryKey>
-            <EnableScoreParam>false</EnableScoreParam>
-            <Type>STRING</Type>
+            <Type>INTEGER</Type>
         </ColumnDefinition>
         <ColumnDefinition>
             <Name>componentId</Name>
@@ -84,16 +77,9 @@
             <Type>FACET</Type>
         </ColumnDefinition>
         <ColumnDefinition>
-            <Name>hashCode</Name>
-            <EnableIndexing>true</EnableIndexing>
-            <IsPrimaryKey>true</IsPrimaryKey>
-            <EnableScoreParam>false</EnableScoreParam>
-            <Type>STRING</Type>
-        </ColumnDefinition>
-        <ColumnDefinition>
             <Name>componentName</Name>
             <EnableIndexing>true</EnableIndexing>
-            <IsPrimaryKey>true</IsPrimaryKey>
+            <IsPrimaryKey>false</IsPrimaryKey>
             <EnableScoreParam>false</EnableScoreParam>
             <Type>FACET</Type>
         </ColumnDefinition>
@@ -134,7 +120,7 @@
         </ColumnDefinition>
         <ColumnDefinition>
             <Name>faultCount</Name>
-            <EnableIndexing>true</EnableIndexing>
+            <EnableIndexing>false</EnableIndexing>
             <IsPrimaryKey>false</IsPrimaryKey>
             <EnableScoreParam>false</EnableScoreParam>
             <Type>LONG</Type>
@@ -153,9 +139,16 @@
             <EnableScoreParam>false</EnableScoreParam>
             <Type>FACET</Type>
         </ColumnDefinition>
+        <ColumnDefinition>
+            <Name>entryPoint</Name>
+            <EnableIndexing>true</EnableIndexing>
+            <IsPrimaryKey>false</IsPrimaryKey>
+            <EnableScoreParam>false</EnableScoreParam>
+            <Type>FACET</Type>
+        </ColumnDefinition>
     </TableSchema>
     <Source>
-        <StreamId>mediator-stat-per-minute:1.0.0</StreamId>
+        <StreamId>org.wso2.esb.analytics.stream.StatPerSecond:1.0.0</StreamId>
     </Source>
     <MergeSchema>false</MergeSchema>
     <RecordStoreName>EVENT_STORE_WO</RecordStoreName>

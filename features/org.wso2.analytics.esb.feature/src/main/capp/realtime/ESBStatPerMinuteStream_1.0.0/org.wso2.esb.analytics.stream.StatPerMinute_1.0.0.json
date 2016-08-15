@@ -1,8 +1,8 @@
 {
-  "name": "esb-stat-per-second",
+  "name": "org.wso2.esb.analytics.stream.StatPerMinute",
   "version": "1.0.0",
-  "nickName": "per-second",
-  "description": "Proxy,API,Endpoint stat per second based",
+  "nickName": "",
+  "description": "",
   "metaData": [
     {
       "name": "tenantId",
@@ -28,10 +28,6 @@
     },
     {
       "name": "minute",
-      "type": "INT"
-    },
-    {
-      "name": "second",
       "type": "INT"
     },
     {

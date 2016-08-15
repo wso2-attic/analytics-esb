@@ -1,5 +1,5 @@
 {
-  "name": "esb-event",
+  "name": "org.wso2.esb.analytics.stream.Event",
   "version": "1.0.0",
   "nickName": "",
   "description": "",

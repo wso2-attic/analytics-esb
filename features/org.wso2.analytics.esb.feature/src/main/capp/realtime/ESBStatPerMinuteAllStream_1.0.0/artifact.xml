@@ -19,5 +19,5 @@
   -->
 
 <artifact name="ESBStatPerMinuteAllStream" version="1.0.0" type="event/stream" serverRole="DataAnalyticsServer">
-    <file>esb-stat-per-minute-all_1.0.0.json</file>
+    <file>org.wso2.esb.analytics.stream.StatPerMinuteAll_1.0.0.json</file>
 </artifact>

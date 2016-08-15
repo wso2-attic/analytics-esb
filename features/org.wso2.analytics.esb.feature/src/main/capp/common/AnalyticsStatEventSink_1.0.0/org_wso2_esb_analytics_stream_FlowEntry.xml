@@ -50,7 +50,7 @@
         </ColumnDefinition>
     </TableSchema>
     <Source>
-        <StreamId>esb-flow-entry-stream:1.0.0</StreamId>
+        <StreamId>org.wso2.esb.analytics.stream.FlowEntry:1.0.0</StreamId>
     </Source>
     <MergeSchema>false</MergeSchema>
     <RecordStoreName>EVENT_STORE_WO</RecordStoreName>

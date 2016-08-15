@@ -1,31 +1,28 @@
 /* Enter a unique ExecutionPlan */
-@Plan:name('ESBAnalyticsExecutionPlan')
+@Plan:name('EsbAnalytics-ExecutionPlan-statistic')
 
-/* Enter a unique description for ExecutionPlan */
--- @Plan:description('ExecutionPlan')
-
-@Import('esb-flow-entry-stream:1.0.0')
+@Import('org.wso2.esb.analytics.stream.FlowEntry:1.0.0')
 define stream flowEntry (meta_compressed bool, meta_tenantId int, messageId string, flowData string);
 
-@Export('esb-event:1.0.0')
+@Export('org.wso2.esb.analytics.stream.Event:1.0.0')
 define stream esbEvent (meta_tenantId int, messageFlowId string, host string, hashCode string, componentName string, componentType string, componentIndex int, componentId string, startTime long, endTime long, duration long, beforePayload string, afterPayload string, contextPropertyMap string, transportPropertyMap string, children string, entryPoint string, entryPointHashcode string, faultCount int, _timestamp long);
 
-@Export('esb-stat-per-second:1.0.0')
+@Export('org.wso2.esb.analytics.stream.StatPerSecond:1.0.0')
 define stream perSecond (meta_tenantId int, year int, month int, day int, hour int, minute int, second int, componentId string, componentName string, componentType string, totalDuration long, minDuration long, maxDuration long, noOfInvocation long, faultCount long, startTime long, facetStartTime string, entryPoint string, _timestamp long);
 
-@Export('esb-stat-per-second-all:1.0.0')
+@Export('org.wso2.esb.analytics.stream.StatPerSecondAll:1.0.0')
 define stream perSecondAll (meta_tenantId int, year int, month int, day int, hour int, minute int, second int, componentId string, componentName string, componentType string, totalDuration long, minDuration long, maxDuration long, noOfInvocation long, faultCount long, startTime long, facetStartTime string, entryPoint string, _timestamp long);
 
-@Export('esb-stat-per-minute:1.0.0')
+@Export('org.wso2.esb.analytics.stream.StatPerMinute:1.0.0')
 define stream esbStatPerMin (meta_tenantId int, year int, month int, day int, hour int, minute int, componentId string, componentName string, componentType string, totalDuration long, minDuration long, maxDuration long, noOfInvocation long, faultCount long, startTime long, facetStartTime string, entryPoint string, _timestamp long);
 
-@Export('esb-stat-per-minute-all:1.0.0')
+@Export('org.wso2.esb.analytics.stream.StatPerMinuteAll:1.0.0')
 define stream esbStatPerMinAll (meta_tenantId int, year int, month int, day int, hour int, minute int, componentId string, componentName string, componentType string, totalDuration long, minDuration long, maxDuration long, noOfInvocation long, faultCount long, startTime long, facetStartTime string, entryPoint string, _timestamp long);
 
-@Export('mediator-stat-per-second:1.0.0')
+@Export('org.wso2.esb.analytics.stream.MediatorStatPerSecond:1.0.0')
 define stream mediatorStatPerSec (meta_tenantId int, year int, month int, day int, hour int, minute int, second int, entryPoint string, entryPointHashcode string, componentId string, hashCode string, componentName string, componentType string, totalDuration long, minDuration long, maxDuration long, noOfInvocation long, faultCount long, startTime long, facetStartTime string, _timestamp long);
 
-@Export('mediator-stat-per-minute:1.0.0')
+@Export('org.wso2.esb.analytics.stream.MediatorStatPerMinute:1.0.0')
 define stream mediatorStatPerMin (meta_tenantId int, year int, month int, day int, hour int, minute int, entryPoint string, entryPointHashcode string, componentId string, hashCode string, componentName string, componentType string, totalDuration long, minDuration long, maxDuration long, noOfInvocation long, faultCount long, startTime long, facetStartTime string, _timestamp long);
 
 from flowEntry#esbAnalytics:decompress(meta_compressed, meta_tenantId, flowData, messageId)
