@@ -47,8 +47,9 @@ public class TestConstants {
     public static final String ESB_STAT_PER_MONTH_TABLE = "org_wso2_esb_analytics_stream_StatPerMonth";
     
     public static final String ESB_FLOW_ENTRY_STREAM_NAME = "org.wso2.esb.analytics.stream.FlowEntry";
+    public static final String ESB_CONFIGS_ENTRY_STREAM_NAME = "org.wso2.esb.analytics.stream.ConfigEntry";
     public static final String ESB_CONFIGS_TABLE = "org_wso2_esb_analytics_stream_ConfigEntry";
-    public static final String ESB_EVENTS_TABLE = "org_wso2_esb_analytics_stream_Event";
+    public static final String ESB_EVENTS_TABLE = "org_wso2_esb_analytics_stream_event";
     
     /* 
      * IDs of tenants define at automation.xml
