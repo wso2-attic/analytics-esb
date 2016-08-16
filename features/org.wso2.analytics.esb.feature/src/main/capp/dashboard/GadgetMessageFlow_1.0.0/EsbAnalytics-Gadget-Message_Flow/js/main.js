@@ -12,6 +12,48 @@ var gadgetMaximized = gadgetUtil.getView() == 'maximized';
 
 var SHARED_PARAM = "&shared=true";
 
+/**
+ * detect IE
+ * returns version of IE or false, if browser is not Internet Explorer
+ */
+function detectIE() {
+    var ua = window.navigator.userAgent;
+
+    var msie = ua.indexOf('MSIE ');
+    if (msie > 0) {
+        // IE 10 or older => return version number
+        return parseInt(ua.substring(msie + 5, ua.indexOf('.', msie)), 10);
+    }
+
+    var trident = ua.indexOf('Trident/');
+    if (trident > 0) {
+        // IE 11 => return version number
+        var rv = ua.indexOf('rv:');
+        return parseInt(ua.substring(rv + 3, ua.indexOf('.', rv)), 10);
+    }
+
+    var edge = ua.indexOf('Edge/');
+    if (edge > 0) {
+       // Edge (IE 12+) => return version number
+       return parseInt(ua.substring(edge + 5, ua.indexOf('.', edge)), 10);
+    }
+
+    // other browser
+    return false;
+}
+
+/**
+ * Fix for browser version compatible issue
+ * returns compatible styling for IE or Non IE by detecting IE
+ */
+var hiddenLineStyle;
+if(detectIE() !== false){
+    hiddenLineStyle = 'display: none;';
+}
+else {
+    hiddenLineStyle = 'stroke-width: 0px;';
+}
+
 $(function() {
     
     if (qs[PARAM_ID] == null) {
@@ -116,9 +158,9 @@ function onData(response) {
                 g.setNode(nodes[i].id, { label: "", clusterLabelPos: 'top' });
 
                 //Add arbitary nodes for group
-                g.setNode(nodes[i].id + "-s", { label: nodes[i].label, style: 'stroke-width: 0px;' });
+                g.setNode(nodes[i].id + "-s", { label: nodes[i].label, style: hiddenLineStyle });
                 // g.setEdge(nodes[i].id + "-s", nodes[i].id + "-e",  { style: 'display: none;; fill: #ffd47f'});
-                g.setNode(nodes[i].id + "-e", { label: "", style: 'stroke-width: 0px;' });
+                g.setNode(nodes[i].id + "-e", { label: "", style: hiddenLineStyle });
                 g.setParent(nodes[i].id + "-s", nodes[i].id);
                 g.setParent(nodes[i].id + "-e", nodes[i].id);
 
@@ -158,8 +200,8 @@ function onData(response) {
             if (nodes[i].group != null) {
                 g.setParent(nodes[i].id, nodes[i].group);
                 if (nodes[i].type != "group" && !isParent(nodes, nodes[i])) {
-                    g.setEdge(nodes[i].group + "-s", nodes[i].id, { style: 'stroke-width: 0px;' });
-                    g.setEdge(nodes[i].id, nodes[i].group + "-e", { style: 'stroke-width: 0px;' });
+                    g.setEdge(nodes[i].group + "-s", nodes[i].id, { style: hiddenLineStyle });
+                    g.setEdge(nodes[i].id, nodes[i].group + "-e", { style: hiddenLineStyle });
                 }
 
 
