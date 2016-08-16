@@ -19,5 +19,5 @@
   -->
 
 <artifact name="ESBAnalyticsExecutionPlan" version="1.0.0" type="event/execution-plan" serverRole="ComplexEventProcessor">
-    <file>ESBAnalytics.siddhiql</file>
+    <file>EsbAnalytics-ExecutionPlan-statistic.siddhiql</file>
 </artifact>

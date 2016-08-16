@@ -19,5 +19,5 @@
   -->
 
 <artifact name="ESBStatPerMinuteEventSink" version="1.0.0" type="analytics/eventstore" serverRole="DataAnalyticsServer">
-    <file>esb-stat-per-minute.xml</file>
+    <file>org_wso2_esb_analytics_stream_StatPerMinute.xml</file>
 </artifact>

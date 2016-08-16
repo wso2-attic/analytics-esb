@@ -68,7 +68,7 @@ public class ESBAnalyticsStatisticsTestCase extends DASIntegrationBaseTest {
         Thread.sleep(WAIT_FOR_INDEXING);
         log.info("Indexing complete. Executing the spark scripts...");
         AnalyticsProcessorAdminServiceStub analyticsStub = getAnalyticsProcessorStub(TIMEOUT);
-        analyticsStub.executeScript("esb_stat_analytics");
+        analyticsStub.executeScript("EsbAnalytics-SparkScript-Realtime-Statistic");
     }
 
     

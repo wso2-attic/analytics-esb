@@ -63,7 +63,7 @@ public class ESBAnalyticsPublishingTestCase extends DASIntegrationBaseTest {
             Event event = new Event();
             event.setPayloadData(payloadData);
             event.setMetaData(metaData);
-            dataPublisherClient.publish(TestConstants.ESB_CONFIGS_TABLE, "1.0.0", event);
+            dataPublisherClient.publish(TestConstants.ESB_CONFIGS_ENTRY_STREAM_NAME, "1.0.0", event);
             Thread.sleep(5000);
             int configsCount = this.analyticsDataAPI.searchCount(-1234, TestConstants.ESB_CONFIGS_TABLE, 
                     TestConstants.META_TENANT_ID + ":" + tenantId);

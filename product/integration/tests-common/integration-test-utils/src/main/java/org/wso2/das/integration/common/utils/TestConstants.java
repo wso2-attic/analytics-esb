@@ -32,23 +32,24 @@ public class TestConstants {
     public static final String META_TENANT_ID = "meta_tenantId";
     
     // Event streams
-    public static final String MEDIATOR_STAT_PER_SECOND_TABLE = "MEDIATOR-STAT-PER-SECOND";
-    public static final String MEDIATOR_STAT_PER_MINUTE_TABLE = "MEDIATOR-STAT-PER-MINUTE";
-    public static final String MEDIATOR_STAT_PER_HOUR_TABLE = "MEDIATOR-STAT-PER-HOUR";
-    public static final String MEDIATOR_STAT_PER_DAY_TABLE = "MEDIATOR-STAT-PER-DAY";
-    public static final String MEDIATOR_STAT_PER_MONTH_TABLE = "MEDIATOR-STAT-PER-MONTH";
+    public static final String MEDIATOR_STAT_PER_SECOND_TABLE = "org_wso2_esb_analytics_stream_MediatorStatPerSecond";
+    public static final String MEDIATOR_STAT_PER_MINUTE_TABLE = "org_wso2_esb_analytics_stream_MediatorStatPerMinute";
+    public static final String MEDIATOR_STAT_PER_HOUR_TABLE = "org_wso2_esb_analytics_stream_MediatorStatPerHour";
+    public static final String MEDIATOR_STAT_PER_DAY_TABLE = "org_wso2_esb_analytics_stream_MediatorStatPerDay";
+    public static final String MEDIATOR_STAT_PER_MONTH_TABLE = "org_wso2_esb_analytics_stream_MediatorStatPerMonth";
     
-    public static final String ESB_STAT_PER_SECOND_TABLE = "ESB-STAT-PER-SECOND";
-    public static final String ESB_STAT_PER_SECOND_ALL_TABLE = "ESB-STAT-PER-SECOND-ALL";
-    public static final String ESB_STAT_PER_MINUTE_TABLE = "ESB-STAT-PER-MINUTE";
-    public static final String ESB_STAT_PER_MINUTE_ALL_TABLE = "ESB-STAT-PER-MINUTE-ALL";
-    public static final String ESB_STAT_PER_HOUR_TABLE = "ESB-STAT-PER-HOUR";
-    public static final String ESB_STAT_PER_DAY_TABLE = "ESB-STAT-PER-DAY";
-    public static final String ESB_STAT_PER_MONTH_TABLE = "ESB-STAT-PER-MONTH";
+    public static final String ESB_STAT_PER_SECOND_TABLE = "org_wso2_esb_analytics_stream_StatPerSecond";
+    public static final String ESB_STAT_PER_SECOND_ALL_TABLE = "org_wso2_esb_analytics_stream_StatPerSecondAll";
+    public static final String ESB_STAT_PER_MINUTE_TABLE = "org_wso2_esb_analytics_stream_StatPerMinute";
+    public static final String ESB_STAT_PER_MINUTE_ALL_TABLE = "org_wso2_esb_analytics_stream_StatPerMinuteAll";
+    public static final String ESB_STAT_PER_HOUR_TABLE = "org_wso2_esb_analytics_stream_StatPerHour";
+    public static final String ESB_STAT_PER_DAY_TABLE = "org_wso2_esb_analytics_stream_StatPerDay";
+    public static final String ESB_STAT_PER_MONTH_TABLE = "org_wso2_esb_analytics_stream_StatPerMonth";
     
-    public static final String ESB_FLOW_ENTRY_STREAM_NAME = "esb-flow-entry-stream";
-    public static final String ESB_CONFIGS_TABLE = "esb-config-entry-stream";
-    public static final String ESB_EVENTS_TABLE = "ESB-EVENT";
+    public static final String ESB_FLOW_ENTRY_STREAM_NAME = "org.wso2.esb.analytics.stream.FlowEntry";
+    public static final String ESB_CONFIGS_ENTRY_STREAM_NAME = "org.wso2.esb.analytics.stream.ConfigEntry";
+    public static final String ESB_CONFIGS_TABLE = "org_wso2_esb_analytics_stream_ConfigEntry";
+    public static final String ESB_EVENTS_TABLE = "org_wso2_esb_analytics_stream_event";
     
     /* 
      * IDs of tenants define at automation.xml

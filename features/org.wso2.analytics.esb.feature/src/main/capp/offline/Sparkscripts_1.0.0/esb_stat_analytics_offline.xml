@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <Analytics>
-    <Name>esb_stat_analytics_offline</Name>
+    <Name>EsbAnalytics-SparkScript-Offline-Statistic</Name>
     <Script>
         CREATE TEMPORARY TABLE esbFlowEvent USING CompressedEventAnalytics
-        OPTIONS(tableName "ESB-FLOW-ENTRY-STREAM",
+        OPTIONS(tableName "org_wso2_esb_analytics_stream_FlowEntry",
         schema "messageFlowId STRING, componentType STRING, componentName STRING,
         componentIndex INT -i, componentId STRING, startTime LONG, endTime LONG, duration LONG, beforePayload STRING,
         afterPayload STRING, contextPropertyMap STRING, transportPropertyMap STRING, children STRING, entryPoint
@@ -12,7 +12,7 @@
         mergeSchema "false");
 
         CREATE TEMPORARY TABLE esbEvent USING CarbonAnalytics
-        OPTIONS (tableName "ESB-EVENT",
+        OPTIONS (tableName "org_wso2_esb_analytics_stream_Event",
         schema "messageFlowId FACET -i, host STRING, hashCode STRING -i, componentName FACET -i, componentType FACET -i,
         componentIndex INT, componentId FACET -i, startTime LONG -i, endTime LONG -i, duration LONG, beforePayload
         STRING, afterPayload STRING, contextPropertyMap STRING, transportPropertyMap STRING, children STRING,
@@ -30,7 +30,7 @@
         INCREMENTAL_TABLE_COMMIT esbFlowEvent;
 
         CREATE TEMPORARY TABLE esbServiceStatPerSecond USING CarbonAnalytics
-        OPTIONS (tableName "ESB-Stat-per-Second",
+        OPTIONS (tableName "org_wso2_esb_analytics_stream_StatPerSecond",
         schema "year INT -i, month INT -i, day INT -i, hour INT -I, minute INT -i, second INT -i, componentId FACET -i,
         componentName FACET -i, componentType FACET -i, totalDuration LONG, minDuration LONG, maxDuration LONG,
         noOfInvocation LONG -sp, faultCount LONG, startTime LONG -i, facetStartTime FACET -i, entryPoint FACET -i,
@@ -59,7 +59,7 @@
         temp.componentName, temp.componentType, temp.entryPoint, temp.meta_tenantId) result;
 
         CREATE TEMPORARY TABLE esbServiceStatPerSecondAll USING CarbonAnalytics
-        OPTIONS (tableName "ESB-Stat-per-Second-all",
+        OPTIONS (tableName "org_wso2_esb_analytics_stream_StatPerSecondAll",
         schema "year INT -i, month INT -i, day INT -i, hour INT -I, minute INT -i, second INT -i, componentId FACET -i,
         componentName FACET -i, componentType FACET -i, totalDuration LONG, minDuration LONG, maxDuration LONG,
         noOfInvocation LONG -sp, faultCount LONG, startTime LONG -i, facetStartTime FACET -i, entryPoint FACET -i,
@@ -83,7 +83,7 @@
         GROUP BY year, month, day, hour, minute, second, meta_tenantId) temp;
 
         CREATE TEMPORARY TABLE mediatorStatPerSecond USING CarbonAnalytics
-        OPTIONS (tableName "mediator-stat-per-second",
+        OPTIONS (tableName "org_wso2_esb_analytics_stream_MediatorStatPerSecond",
         schema "year INT -i, month INT -i, day INT -i, hour INT -I, minute INT -i, second INT -i, entryPoint FACET -i,
         entryPointHashcode STRING -i, componentId FACET -i, hashCode STRING -i, componentName
         FACET -i, componentType FACET -i, totalDuration LONG, minDuration LONG,
@@ -113,7 +113,7 @@
         INCREMENTAL_TABLE_COMMIT esbEvent;
 
         CREATE TEMPORARY TABLE esbServiceStatPerMinute USING CarbonAnalytics
-        OPTIONS (tableName "ESB-Stat-per-Minute",
+        OPTIONS (tableName "org_wso2_esb_analytics_stream_StatPerMinute",
         schema "year INT -i, month INT -i, day INT -i, hour INT -i, minute INT -i, componentId FACET -i,
         componentName FACET -i, componentType FACET -i, totalDuration LONG, minDuration LONG,
         maxDuration LONG, noOfInvocation LONG -sp, faultCount LONG, startTime LONG -i, facetStartTime FACET -i,
@@ -133,7 +133,7 @@
         GROUP BY year, month, day, hour, minute, componentId, componentName, componentType, entryPoint, meta_tenantId;
 
         CREATE TEMPORARY TABLE esbServiceStatPerMinuteAll USING CarbonAnalytics
-        OPTIONS (tableName "ESB-Stat-per-Minute-all",
+        OPTIONS (tableName "org_wso2_esb_analytics_stream_StatPerMinuteAll",
         schema "year INT -i, month INT -i, day INT -i, hour INT -i, minute INT -i, componentId FACET -i,
         componentName FACET -i, componentType FACET -i, totalDuration LONG, minDuration LONG,
         maxDuration LONG, noOfInvocation LONG -sp, faultCount LONG, startTime LONG -i, facetStartTime FACET -i,
@@ -158,7 +158,7 @@
         INCREMENTAL_TABLE_COMMIT esbServiceStatPerSecond;
 
         CREATE TEMPORARY TABLE mediatorStatPerMinute USING CarbonAnalytics
-        OPTIONS (tableName "mediator-stat-per-minute",
+        OPTIONS (tableName "org_wso2_esb_analytics_stream_MediatorStatPerMinute",
         schema "year INT -i, month INT -i, day INT -i, hour INT -I, minute INT -i, entryPoint FACET -i,
         entryPointHashcode STRING -i, componentId FACET -i, hashCode STRING -i,
         componentName FACET -i, componentType FACET -i, totalDuration LONG, minDuration LONG, maxDuration LONG,
@@ -182,7 +182,7 @@
         INCREMENTAL_TABLE_COMMIT mediatorStatPerSecond;
 
         CREATE TEMPORARY TABLE esbServiceStatPerHour USING CarbonAnalytics
-        OPTIONS (tableName "ESB-Stat-per-Hour",
+        OPTIONS (tableName "org_wso2_esb_analytics_stream_StatPerHour",
         schema "year INT -i, month INT -i, day INT -i, hour INT -I, componentId FACET -i,
         componentName FACET -i, componentType FACET -i, totalDuration LONG, minDuration INT, maxDuration INT,
         noOfInvocation LONG -sp, faultCount LONG, startTime LONG -i, facetStartTime FACET -i, entryPoint FACET -i,
@@ -204,7 +204,7 @@
         INCREMENTAL_TABLE_COMMIT esbServiceStatPerMinute;
 
         CREATE TEMPORARY TABLE esbServiceStatPerHourAll USING CarbonAnalytics
-        OPTIONS (tableName "ESB-Stat-per-Hour",
+        OPTIONS (tableName "org_wso2_esb_analytics_stream_StatPerHour",
         schema "year INT -i, month INT -i, day INT -i, hour INT -I, componentId FACET -i,
         componentName FACET -i, componentType FACET -i, totalDuration LONG, minDuration INT, maxDuration INT,
         noOfInvocation LONG -sp, faultCount LONG, startTime LONG -i, facetStartTime FACET -i, entryPoint FACET -i,
@@ -226,7 +226,7 @@
         GROUP BY year, month, day, hour, meta_tenantId) temp;
 
         CREATE TEMPORARY TABLE mediatorStatPerHour USING CarbonAnalytics
-        OPTIONS (tableName "mediator-stat-per-hour",
+        OPTIONS (tableName "org_wso2_esb_analytics_stream_MediatorStatPerHour",
         schema "year INT -i, month INT -i, day INT -i, hour INT -I, entryPoint FACET -i, entryPointHashcode STRING -i,
         componentId FACET -i, hashCode STRING -i, componentName FACET -i, componentType FACET -i, totalDuration LONG,
         minDuration INT, maxDuration INT, noOfInvocation LONG -sp, faultCount LONG, startTime LONG -i,
@@ -249,7 +249,7 @@
         INCREMENTAL_TABLE_COMMIT mediatorStatPerMinute;
 
         CREATE TEMPORARY TABLE esbServiceStatPerDay USING CarbonAnalytics
-        OPTIONS (tableName "ESB-Stat-per-Day",
+        OPTIONS (tableName "org_wso2_esb_analytics_stream_StatPerDay",
         schema "year INT -i, month INT -i, day INT -i, componentId FACET -i, componentName FACET -i,
         componentType FACET -i, totalDuration LONG, minDuration INT, maxDuration INT, noOfInvocation LONG -sp,
         faultCount LONG, startTime LONG -i, facetStartTime FACET -i, entryPoint FACET -i, meta_tenantId INT -i,
@@ -270,7 +270,7 @@
         INCREMENTAL_TABLE_COMMIT esbServiceStatPerHour;
 
         CREATE TEMPORARY TABLE esbServiceStatPerDayAll USING CarbonAnalytics
-        OPTIONS (tableName "ESB-Stat-per-Day",
+        OPTIONS (tableName "org_wso2_esb_analytics_stream_StatPerDay",
         schema "year INT -i, month INT -i, day INT -i, componentId FACET -i, componentName FACET -i,
         componentType FACET -i, totalDuration LONG, minDuration INT, maxDuration INT, noOfInvocation LONG -sp,
         faultCount LONG, startTime LONG -i, facetStartTime FACET -i, entryPoint FACET -i, meta_tenantId INT -i, 
@@ -292,7 +292,7 @@
         GROUP BY year, month, day, meta_tenantId) temp;
 
         CREATE TEMPORARY TABLE mediatorStatPerDay USING CarbonAnalytics
-        OPTIONS (tableName "mediator-stat-per-day",
+        OPTIONS (tableName "org_wso2_esb_analytics_stream_MediatorStatPerDay",
         schema "year INT -i, month INT -i, day INT -i, entryPoint FACET -i, entryPointHashcode STRING -i,
         componentId FACET -i, hashCode STRING -i, componentName FACET -i, componentType FACET -i, totalDuration
         LONG, minDuration INT, maxDuration INT, noOfInvocation LONG -sp, faultCount LONG, startTime LONG -i,
@@ -314,7 +314,7 @@
         INCREMENTAL_TABLE_COMMIT mediatorStatPerHour;
 
         CREATE TEMPORARY TABLE esbServiceStatPerMonth USING CarbonAnalytics
-        OPTIONS (tableName "ESB-Stat-per-Month",
+        OPTIONS (tableName "org_wso2_esb_analytics_stream_StatPerMonth",
         schema "year INT -i, month INT -i, componentId FACET -i, componentName FACET -i,
         componentType FACET -i, totalDuration LONG, minDuration INT, maxDuration INT, noOfInvocation LONG -sp,
         faultCount LONG, startTime LONG -i, facetStartTime FACET -i, entryPoint FACET -i, meta_tenantId INT -i,
@@ -333,7 +333,7 @@
         GROUP BY year, month, componentId, componentName, componentType, entryPoint, meta_tenantId;
 
         CREATE TEMPORARY TABLE esbServiceStatPerMonthAll USING CarbonAnalytics
-        OPTIONS (tableName "ESB-Stat-per-Month",
+        OPTIONS (tableName "org_wso2_esb_analytics_stream_StatPerMonth",
         schema "year INT -i, month INT -i, componentId FACET -i, componentName FACET -i,
         componentType FACET -i, totalDuration LONG, minDuration INT, maxDuration INT, noOfInvocation LONG -sp,
         faultCount LONG, startTime LONG -i, facetStartTime FACET -i, entryPoint FACET -i, meta_tenantId INT -i,
@@ -355,7 +355,7 @@
         GROUP BY year, month, meta_tenantId) temp;
 
         CREATE TEMPORARY TABLE mediatorStatPerMonth USING CarbonAnalytics
-        OPTIONS (tableName "mediator-stat-per-month",
+        OPTIONS (tableName "org_wso2_esb_analytics_stream_MediatorStatPerMonth",
         schema "year INT -i, month INT -i, entryPoint FACET -i, entryPointHashcode STRING -i,
         componentId FACET -i, hashCode STRING -i, componentName FACET -i, componentType FACET -i, totalDuration LONG,
         minDuration INT, maxDuration INT, noOfInvocation LONG -sp, faultCount LONG, startTime LONG -i,

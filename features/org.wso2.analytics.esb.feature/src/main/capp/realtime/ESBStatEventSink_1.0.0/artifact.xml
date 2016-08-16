@@ -19,5 +19,5 @@
   -->
 
 <artifact name="ESBStatEventSink" version="1.0.0" type="analytics/eventstore" serverRole="DataAnalyticsServer">
-    <file>esb-event.xml</file>
+    <file>org_wso2_esb_analytics_stream_Event.xml</file>
 </artifact>

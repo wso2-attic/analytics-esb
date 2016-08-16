@@ -1,4 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <artifact name="AnalyticsStatEventReceiver" version="1.0.0" type="event/receiver" serverRole="DataAnalyticsServer">
-    <file>esb_analytics_stat_receiver.xml</file>
+    <file>EsbAnalytics-Receiver-wso2event-FlowEntry.xml</file>
 </artifact>
