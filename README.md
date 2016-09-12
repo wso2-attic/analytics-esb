@@ -1,7 +1,7 @@
 #WSO2 ESB Analytics
 WSO2 ESB Analytics provides capabilities to monitor the services which are deployed in the WSO2 ESB. It provides the ability to monitor statistics of top level components like SOAP services (Proxy), REST services (API) and second level components like inbound endpoints, sequences, endpoints and the atomic level components of mediators. WSO2 ESB analytics is powered by the WSO2 Data Analytics Server (DAS).
 
-#WSO2 ESB Analytics has following key capabilities
+#WSO2 ESB Analytics has the following key capabilities
 
 - Monitoring coarse grained statistics like Transactions Per Second (TPS), request count, failure count, latency (min, max, average) for ESB artifacts like Proxy, API, Sequence, Endpoint, Inbound endpoint
 - Monitoring fine grained, mediator level statistics for a given message flow or for a given message
@@ -14,12 +14,12 @@ You can install the WSO2 ESB analytics component by following the ESB [documenta
 
 #How to Contribute
 
-* Please report issues at [WSO2 JIRA](https://wso2.org/jira/browse/ANLYESB)
-* Send your pull requests to [analytics-esb](https://github.com/wso2/analytics-esb) repository
+* Please report issues to our [ESB Analytics JIRA](https://wso2.org/jira/browse/ANLYESB)
+* Send your pull requests to the [analytics-esb](https://github.com/wso2/analytics-esb) repository
 
 #Contact us
 
-WSO2 developers can be contacted via the mailing lists:
+You can talk to us via the following mailing lists:
 
 * WSO2 Developers List : dev@wso2.org
 * WSO2 Architecture List : architecture@wso2.org
