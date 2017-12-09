@@ -12,17 +12,11 @@
             <package name="org.wso2.das.integration.tests.globalpurging"/>
         </packages>
     </test>
-
+    
     <test name="analytics-esb-tests" preserve-order="true" parallel="false">
         <classes>
             <class name="org.wso2.das.integration.tests.esb.ESBAnalyticsPublishingTestCase"/>
             <class name="org.wso2.das.integration.tests.esb.ESBAnalyticsStatisticsTestCase"/>
-        </classes>
-    </test>
-
-    <test name="security-test" preserve-order="true" parallel="false">
-        <classes>
-            <class name="org.wso2.das.integration.tests.security.XSSTest"/>
         </classes>
     </test>
 </suite>
